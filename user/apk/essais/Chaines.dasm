@@ -1,0 +1,37 @@
+.classe public final Lcom/velum/essais/Chaines;
+
+.methode public static calcul()I
+    .registres 4
+    new-instance v0, Ljava/lang/StringBuilder;
+    invoke-direct {v0}, Ljava/lang/StringBuilder;-><init>()V
+    const-string v1, "Velum"
+    invoke-virtual {v0, v1}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+    const/16 v1, 42
+    invoke-virtual {v0, v1}, Ljava/lang/StringBuilder;->append(I)Ljava/lang/StringBuilder;
+    invoke-virtual {v0}, Ljava/lang/StringBuilder;->toString()Ljava/lang/String;
+    move-result-object v0
+    invoke-virtual {v0}, Ljava/lang/String;->length()I
+    move-result v3
+    const/4 v1, 0
+    invoke-virtual {v0, v1}, Ljava/lang/String;->charAt(I)C
+    move-result v1
+    add-int/2addr v3, v1
+    const/16 v1, 1234
+    invoke-static {v1}, Ljava/lang/String;->valueOf(I)Ljava/lang/String;
+    move-result-object v1
+    invoke-virtual {v1}, Ljava/lang/String;->length()I
+    move-result v1
+    add-int/2addr v3, v1
+    const-string v1, "ab"
+    const-string v2, "cde"
+    invoke-virtual {v1, v2}, Ljava/lang/String;->concat(Ljava/lang/String;)Ljava/lang/String;
+    move-result-object v1
+    invoke-virtual {v1}, Ljava/lang/String;->length()I
+    move-result v2
+    add-int/2addr v3, v2
+    const-string v2, "abcde"
+    invoke-virtual {v1, v2}, Ljava/lang/String;->equals(Ljava/lang/Object;)Z
+    move-result v2
+    add-int/2addr v3, v2
+    return v3
+.fin

@@ -1,0 +1,16 @@
+paquet = "com.velum.bonjour"
+version_code = 1
+version_nom = "1.0"
+sdk_min = 21
+sdk_cible = 34
+libelle = "@string/nom_appli"
+activite = "com.velum.bonjour.Principale"
+permissions = []
+
+[chaines.defaut]
+nom_appli = "Bonjour APK"
+accueil = "Hello from an APK"
+
+[chaines.fr]
+nom_appli = "Bonjour APK"
+accueil = "Bonjour depuis un APK"

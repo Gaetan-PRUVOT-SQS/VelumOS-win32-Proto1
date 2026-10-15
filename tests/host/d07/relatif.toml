@@ -1,0 +1,14 @@
+paquet = "com.velum.relatif"
+version_code = 7
+version_nom = "0.7"
+sdk_min = 21
+sdk_cible = 34
+libelle = "Essai relatif"
+activite = "Principale"
+permissions = ["android.permission.INTERNET", "android.permission.VIBRATE"]
+
+[chaines.defaut]
+accueil = "Hello"
+
+[chaines.fr]
+accueil = "Bonjour"

@@ -1,0 +1,76 @@
+.classe public interface abstract Lcom/velum/essais/Forme;
+
+.methode public abstract aire()I
+.fin
+
+.classe public Lcom/velum/essais/Cube;
+.super Lcom/velum/essais/Carre;
+
+.methode public <init>(I)V
+    .registres 2
+    invoke-direct {p0, p1}, Lcom/velum/essais/Carre;-><init>(I)V
+    return-void
+.fin
+
+.methode public aire()I
+    .registres 2
+    invoke-super {p0}, Lcom/velum/essais/Carre;->aire()I
+    move-result v0
+    mul-int/lit8 v0, v0, 6
+    return v0
+.fin
+
+.classe public Lcom/velum/essais/Carre;
+.realise Lcom/velum/essais/Forme;
+
+.champ protected cote:I
+
+.methode public <init>(I)V
+    .registres 2
+    invoke-direct {p0}, Ljava/lang/Object;-><init>()V
+    iput p1, p0, Lcom/velum/essais/Carre;->cote:I
+    return-void
+.fin
+
+.methode public aire()I
+    .registres 2
+    iget v0, p0, Lcom/velum/essais/Carre;->cote:I
+    mul-int/2addr v0, v0
+    return v0
+.fin
+
+.methode public rang()I
+    .registres 2
+    const/4 v0, 1
+    return v0
+.fin
+
+.classe public final Lcom/velum/essais/Appels;
+
+.champ private static final BASE:I = 0
+
+.methode public static calcul()I
+    .registres 5
+    sget v4, Lcom/velum/essais/Appels;->BASE:I
+    new-instance v0, Lcom/velum/essais/Carre;
+    const/4 v2, 3
+    invoke-direct {v0, v2}, Lcom/velum/essais/Carre;-><init>(I)V
+    new-instance v1, Lcom/velum/essais/Cube;
+    const/4 v2, 2
+    invoke-direct {v1, v2}, Lcom/velum/essais/Cube;-><init>(I)V
+    invoke-interface {v0}, Lcom/velum/essais/Forme;->aire()I
+    move-result v2
+    add-int/2addr v4, v2
+    invoke-interface {v1}, Lcom/velum/essais/Forme;->aire()I
+    move-result v2
+    add-int/2addr v4, v2
+    invoke-virtual {v1}, Lcom/velum/essais/Carre;->aire()I
+    move-result v2
+    add-int/2addr v4, v2
+    invoke-virtual {v1}, Lcom/velum/essais/Cube;->rang()I
+    move-result v2
+    add-int/2addr v4, v2
+    instance-of v2, v1, Lcom/velum/essais/Carre;
+    add-int/2addr v4, v2
+    return v4
+.fin

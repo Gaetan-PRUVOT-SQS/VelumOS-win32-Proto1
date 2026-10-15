@@ -1,0 +1,200 @@
+name: Nocturne
+
+on:
+  schedule:
+    - cron: '17 2 * * *'
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  inventaire:
+    name: Inventaire des lots et des scénarios
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    outputs:
+      lots: ${{ steps.liste.outputs.lots }}
+      groupes: ${{ steps.liste.outputs.groupes }}
+    steps:
+      - name: Récupérer le dépôt
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Lister les lots hôte et les groupes de scénarios
+        id: liste
+        run: |
+          python3 - <<'EOF' >> "$GITHUB_OUTPUT"
+          import json
+          from pathlib import Path
+
+          noms = {p.stem.removeprefix("lot-") for p in Path("mk").glob("lot-*.mk")}
+          noms.add("skel")
+          lots = sorted(n for n in noms if Path("tests/host", n).is_dir())
+          groupes = sorted({p.stem.split("_")[0] for p in Path("tests/qemu").glob("*.py")})
+          print("lots=" + json.dumps(lots))
+          print("groupes=" + json.dumps(groupes))
+          EOF
+
+  hote:
+    name: Tests hôte ${{ matrix.lot }}
+    needs: inventaire
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        lot: ${{ fromJSON(needs.inventaire.outputs.lots) }}
+    env:
+      B: build/nocturne-hote
+      LOT: ${{ matrix.lot }}
+    steps:
+      - name: Récupérer le dépôt
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Installer les dépendances
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            build-essential python3 python3-pil python3-pytest \
+            gdisk mtools dosfstools cpio git curl xz-utils openssl unzip
+
+      - name: Lancer les tests du lot
+        run: make CROSS= B="$B" -j3 "host-$LOT"
+
+  scenarios:
+    name: Scénarios QEMU ${{ matrix.groupe }}, BIOS et UEFI, TCG
+    needs: inventaire
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        groupe: ${{ fromJSON(needs.inventaire.outputs.groupes) }}
+    env:
+      B: build/nocturne-scenarios
+      GROUPE: ${{ matrix.groupe }}
+      VTEST_SANS_KVM: '1'
+    steps:
+      - name: Récupérer le dépôt
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Installer les dépendances
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            build-essential python3 python3-pil python3-pytest \
+            gdisk mtools dosfstools cpio git qemu-system-x86 ovmf curl xz-utils \
+            openssl unzip
+
+      - name: Lire l'empreinte de Limine
+        id: limine
+        run: |
+          empreinte=$(sed -n 's/^LIMINE_SHA256 := \([0-9a-f]\{64\}\)$/\1/p' Makefile)
+          test -n "$empreinte"
+          echo "sha256=$empreinte" >> "$GITHUB_OUTPUT"
+
+      - name: Restaurer Limine
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: build/limine
+          key: limine-${{ runner.os }}-${{ steps.limine.outputs.sha256 }}
+
+      - name: Compiler le noyau et l'image
+        run: |
+          make limine
+          make CROSS= B="$B" -j3 all
+
+      - name: Jouer les scénarios du groupe
+        run: |
+          python3 tools/run_scenarios.py --kernel "$B/debug/kernel.elf" \
+            --root "$B/debug/root" --out "$B/qemu" --filter "${GROUPE}_" --jobs 2
+
+      - name: Conserver les journaux et captures en cas d'échec
+        if: failure()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: journaux-qemu-${{ matrix.groupe }}
+          path: build/nocturne-scenarios/qemu
+          if-no-files-found: ignore
+          retention-days: 7
+
+  cibles:
+    name: make ${{ matrix.cible }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: ${{ matrix.delai }}
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - cible: repro
+            delai: 60
+          - cible: fuzz-replay
+            delai: 45
+          - cible: analyse
+            delai: 45
+          - cible: test-matrice
+            delai: 120
+    env:
+      B: build/nocturne-${{ matrix.cible }}
+      CIBLE: ${{ matrix.cible }}
+      VTEST_SANS_KVM: '1'
+    steps:
+      - name: Récupérer le dépôt
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Installer les dépendances
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            build-essential python3 python3-pil python3-pytest \
+            gdisk mtools dosfstools cpio git qemu-system-x86 ovmf curl xz-utils \
+            openssl unzip clang clang-tidy cppcheck
+
+      - name: Lire l'empreinte de Limine
+        id: limine
+        run: |
+          empreinte=$(sed -n 's/^LIMINE_SHA256 := \([0-9a-f]\{64\}\)$/\1/p' Makefile)
+          test -n "$empreinte"
+          echo "sha256=$empreinte" >> "$GITHUB_OUTPUT"
+
+      - name: Restaurer Limine
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: build/limine
+          key: limine-${{ runner.os }}-${{ steps.limine.outputs.sha256 }}
+
+      - name: Préparer Limine
+        run: make limine
+
+      - name: Lancer la cible
+        run: make CROSS= B="$B" -j3 "$CIBLE"
+
+      - name: Conserver les journaux en cas d'échec
+        if: failure()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: journaux-${{ matrix.cible }}
+          path: |
+            build/nocturne-${{ matrix.cible }}/qemu
+            build/nocturne-${{ matrix.cible }}/**/*.log
+          if-no-files-found: ignore
+          retention-days: 7

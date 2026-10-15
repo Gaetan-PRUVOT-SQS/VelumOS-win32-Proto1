@@ -1,0 +1,35 @@
+.classe public final Lcom/velum/essais/Tableaux;
+
+.methode public static calcul()I
+    .registres 6
+    const/4 v0, 5
+    new-array v1, v0, [I
+    fill-array-data v1, :entiers
+    array-length v2, v1
+    const/4 v3, 0
+    const/4 v4, 0
+:boucle
+    if-ge v3, v2, :apres
+    aget v5, v1, v3
+    add-int/2addr v4, v5
+    add-int/lit8 v3, v3, 1
+    goto :boucle
+:apres
+    const/4 v3, 2
+    const/16 v5, 1000
+    aput v5, v1, v3
+    aget v5, v1, v3
+    add-int/2addr v4, v5
+    const/4 v0, 3
+    new-array v1, v0, [B
+    fill-array-data v1, :octets
+    const/4 v3, 0
+    aget-byte v5, v1, v3
+    add-int/2addr v4, v5
+    add-int/2addr v4, v2
+    return v4
+:entiers
+    .donnees-tableau 4 3 -1 40 100 7
+:octets
+    .donnees-tableau 1 -1 2 127
+.fin

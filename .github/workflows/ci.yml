@@ -1,0 +1,88 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
+jobs:
+  statique:
+    name: Contrôles statiques
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - name: Récupérer le dépôt
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Installer les dépendances
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            build-essential python3 shellcheck shfmt
+
+      - name: Installer ruff et reuse (versions épinglées)
+        run: |
+          pipx install 'ruff==0.16.9'
+          pipx install 'reuse==5.0.2'
+          ruff --version
+          reuse --version
+
+      - name: Lancer les contrôles statiques
+        run: tools/ci.sh statique
+
+  verification:
+    name: Compilation, tests hôte, démarrage QEMU
+    needs: statique
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    permissions:
+      contents: read
+    steps:
+      - name: Récupérer le dépôt
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Installer les dépendances
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            build-essential python3 python3-pil python3-pytest \
+            gdisk mtools dosfstools cpio git qemu-system-x86 ovmf curl xz-utils \
+            openssl unzip
+
+      - name: Lire l'empreinte de Limine
+        id: limine
+        run: |
+          empreinte=$(sed -n 's/^LIMINE_SHA256 := \([0-9a-f]\{64\}\)$/\1/p' Makefile)
+          test -n "$empreinte"
+          echo "sha256=$empreinte" >> "$GITHUB_OUTPUT"
+
+      - name: Restaurer Limine
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: build/limine
+          key: limine-${{ runner.os }}-${{ steps.limine.outputs.sha256 }}
+
+      - name: Lancer la vérification
+        run: tools/ci.sh construction
+
+      - name: Conserver les journaux et captures en cas d'échec
+        if: failure()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: journaux-qemu
+          path: build/main/qemu
+          if-no-files-found: ignore
+          retention-days: 7

@@ -1,0 +1,9 @@
+LOTS += d04
+KSRC_d04 :=
+DIRS_d04 := lib/dexcode tests/host/d04 include/velum/apk/dexcode.h
+HT_d04 := $(sort $(wildcard tests/host/d04/test_*.c))
+HSRC_d04 := $(sort $(wildcard lib/dexcode/*.c)) lib/libk/str.c
+HINC_d04 := -Ilib/dexcode
+ULIBS += dexcode
+ULIB_dexcode_LOT := d04
+ULIB_dexcode_SRC := $(sort $(wildcard lib/dexcode/*.c))

@@ -1,0 +1,60 @@
+.classe public final Lcom/velum/essais/Aiguillages;
+
+.methode private static dense(I)I
+    .registres 2
+    packed-switch p0, :table
+    const/4 v0, -1
+    return v0
+:dix
+    const/4 v0, 1
+    return v0
+:onze
+    const/4 v0, 2
+    return v0
+:douze
+    const/4 v0, 4
+    return v0
+:table
+    .table-dense 10 :dix :onze :douze
+.fin
+
+.methode private static creuse(I)I
+    .registres 2
+    sparse-switch p0, :table
+    const/4 v0, 0
+    return v0
+:moins
+    const/16 v0, 100
+    return v0
+:mille
+    const/16 v0, 200
+    return v0
+:table
+    .table-creuse 1000=:mille -5=:moins
+.fin
+
+.methode public static calcul()I
+    .registres 3
+    const/4 v2, 0
+    const/16 v0, 10
+:boucle
+    invoke-static {v0}, Lcom/velum/essais/Aiguillages;->dense(I)I
+    move-result v1
+    add-int/2addr v2, v1
+    add-int/lit8 v0, v0, 1
+    const/16 v1, 14
+    if-lt v0, v1, :boucle
+    const/4 v0, -5
+    invoke-static {v0}, Lcom/velum/essais/Aiguillages;->creuse(I)I
+    move-result v1
+    add-int/2addr v2, v1
+    const/16 v0, 1000
+    invoke-static {v0}, Lcom/velum/essais/Aiguillages;->creuse(I)I
+    move-result v1
+    add-int/2addr v2, v1
+    const/4 v0, 7
+    invoke-static {v0}, Lcom/velum/essais/Aiguillages;->creuse(I)I
+    move-result v1
+    add-int/2addr v2, v1
+    return v2
+.fin

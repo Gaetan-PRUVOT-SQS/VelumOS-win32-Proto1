@@ -1,0 +1,34 @@
+[Arithmetique]
+source = "Arithmetique.dasm"
+classe = "Lcom/velum/essais/Arithmetique;"
+resultat = 1410065813
+
+[Boucles]
+source = "Boucles.dasm"
+classe = "Lcom/velum/essais/Boucles;"
+resultat = 5215
+
+[Tableaux]
+source = "Tableaux.dasm"
+classe = "Lcom/velum/essais/Tableaux;"
+resultat = 1153
+
+[Aiguillages]
+source = "Aiguillages.dasm"
+classe = "Lcom/velum/essais/Aiguillages;"
+resultat = 306
+
+[Exceptions]
+source = "Exceptions.dasm"
+classe = "Lcom/velum/essais/Exceptions;"
+resultat = 36
+
+[Appels]
+source = "Appels.dasm"
+classe = "Lcom/velum/essais/Appels;"
+resultat = 59
+
+[Chaines]
+source = "Chaines.dasm"
+classe = "Lcom/velum/essais/Chaines;"
+resultat = 103

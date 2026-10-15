@@ -1,0 +1,50 @@
+.classe public Ld08/Base;
+
+.champ public static compteur:I = 7
+.champ public static grand:J = 5000000000
+.champ public static nom:Ljava/lang/String; = "base"
+.champ public x:I
+.champ public y:J
+
+.methode public static <clinit>()V
+    .registres 1
+    return-void
+.fin
+
+.methode public <init>()V
+    .registres 1
+    return-void
+.fin
+
+.methode public valeur()I
+    .registres 2
+    const/4 v0, 1
+    return v0
+.fin
+
+.methode public static somme(IJ)I
+    .registres 3
+    return p0
+.fin
+
+.classe public Ld08/Fille;
+.super Ld08/Base;
+.realise Ld08/Marque;
+
+.champ public z:I
+
+.methode public valeur()I
+    .registres 2
+    const/4 v0, 2
+    return v0
+.fin
+
+.methode public marque()V
+    .registres 1
+    return-void
+.fin
+
+.classe public interface abstract Ld08/Marque;
+
+.methode public abstract marque()V
+.fin

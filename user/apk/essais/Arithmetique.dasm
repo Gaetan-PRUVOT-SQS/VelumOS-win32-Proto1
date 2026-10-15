@@ -1,0 +1,34 @@
+.classe public final Lcom/velum/essais/Arithmetique;
+
+.methode public static calcul()I
+    .registres 6
+    const v0, 0x80000000
+    const/4 v1, -1
+    div-int v2, v0, v1
+    rem-int v3, v0, v1
+    const v4, 0x7fffffff
+    add-int/lit8 v4, v4, 1
+    xor-int v2, v2, v4
+    add-int v2, v2, v3
+    const-wide v0, 0x7fffffffffffffff
+    const-wide/16 v4, 1
+    add-long v0, v0, v4
+    const-wide/16 v4, -1
+    div-long v0, v0, v4
+    const/16 v4, 63
+    ushr-long v0, v0, v4
+    long-to-int v0, v0
+    add-int v2, v2, v0
+    const v0, 100000
+    mul-int v0, v0, v0
+    add-int v2, v2, v0
+    const/16 v1, 1000
+    rem-int v0, v0, v1
+    add-int v2, v2, v0
+    const/4 v0, -7
+    div-int/lit8 v1, v0, 2
+    rem-int/lit8 v0, v0, 2
+    add-int v2, v2, v1
+    add-int v2, v2, v0
+    return v2
+.fin

@@ -1,0 +1,68 @@
+.classe public final Ld09/Exc;
+
+.methode public static dansCadre()I
+    .registres 3
+    const/4 v0, 0
+    const/4 v1, 5
+:d
+    div-int v1, v1, v0
+:f
+    const/4 v0, 1
+    return v0
+:h
+    move-exception v2
+    const/4 v0, 7
+    return v0
+    .attrape Ljava/lang/ArithmeticException; :d :f :h
+.fin
+
+.methode private static leve()I
+    .registres 2
+    const/4 v0, 0
+    throw v0
+.fin
+
+.methode public static dansAppelant()I
+    .registres 2
+:d
+    invoke-static {}, Ld09/Exc;->leve()I
+    move-result v0
+:f
+    return v0
+:h
+    move-exception v1
+    const/16 v0, 42
+    return v0
+    .attrape Ljava/lang/NullPointerException; :d :f :h
+.fin
+
+.methode public static nonAttrapee()I
+    .registres 2
+:d
+    invoke-static {}, Ld09/Exc;->leve()I
+    move-result v0
+:f
+    return v0
+:h
+    const/4 v0, 3
+    return v0
+    .attrape Ljava/lang/ArithmeticException; :d :f :h
+.fin
+
+.methode public static finalement()I
+    .registres 3
+    const/4 v0, 0
+:d
+    invoke-static {}, Ld09/Exc;->leve()I
+:f
+    return v0
+:autre
+    const/4 v0, 1
+    return v0
+:h
+    move-exception v1
+    add-int/lit8 v0, v0, 9
+    return v0
+    .attrape Ljava/lang/ArithmeticException; :d :f :autre
+    .attrape tout :d :f :h
+.fin

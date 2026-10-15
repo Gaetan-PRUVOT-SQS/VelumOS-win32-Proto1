@@ -1,0 +1,44 @@
+.classe public final Ld09/Rec;
+
+.methode public static descend(I)I
+    .registres 2
+    if-eqz v1, :zero
+    add-int/lit8 v0, v1, -1
+    invoke-static {v0}, Ld09/Rec;->descend(I)I
+    move-result v0
+    add-int/lit8 v0, v0, 1
+    return v0
+:zero
+    const/4 v0, 0
+    return v0
+.fin
+
+.methode public static infini()I
+    .registres 1
+    invoke-static {}, Ld09/Rec;->infini()I
+    move-result v0
+    return v0
+.fin
+
+.methode public static reprise()I
+    .registres 2
+:d
+    invoke-static {}, Ld09/Rec;->infini()I
+    move-result v0
+:f
+    return v0
+:h
+    move-exception v1
+    const/4 v0, 5
+    invoke-static {v0}, Ld09/Rec;->descend(I)I
+    move-result v0
+    return v0
+    .attrape Ljava/lang/StackOverflowError; :d :f :h
+.fin
+
+.methode public static boucle()I
+    .registres 1
+:b
+    nop
+    goto :b
+.fin

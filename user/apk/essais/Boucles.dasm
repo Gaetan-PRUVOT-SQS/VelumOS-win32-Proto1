@@ -1,0 +1,23 @@
+.classe public final Lcom/velum/essais/Boucles;
+
+.methode public static calcul()I
+    .registres 3
+    const/4 v0, 0
+    const/4 v1, 1
+:boucle
+    const/16 v2, 100
+    if-gt v1, v2, :apres
+    add-int/2addr v0, v1
+    add-int/lit8 v1, v1, 1
+    goto :boucle
+:apres
+    const/16 v1, 10
+:descente
+    if-eqz v1, :sortie
+    mul-int/lit8 v2, v1, 3
+    add-int/2addr v0, v2
+    add-int/lit8 v1, v1, -1
+    goto/16 :descente
+:sortie
+    return v0
+.fin
