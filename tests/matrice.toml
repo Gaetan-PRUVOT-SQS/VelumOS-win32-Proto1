@@ -41,7 +41,7 @@ id = "F05"
 sous_systeme = "a02"
 titre = "Allocation et libération de frames (alignement, plages, limites)"
 mode = "A"
-tests = ["tests/host/a02/test_alloc_pages.c", "tests/host/a02/test_alloc_zone.c", "tests/host/a02/test_free.c", "tests/host/a02/test_nextfit.c", "tests/host/a02/test_unit_range.c"]
+tests = ["tests/host/a02/test_alloc_pages.c", "tests/host/a02/test_alloc_zone.c", "tests/host/a02/test_free.c", "tests/host/a02/test_nextfit.c", "tests/host/a02/test_unit_range.c", "tests/host/a02/test_alloc_args.c", "tests/host/a02/test_alloc_one.c", "tests/host/a02/test_complexity.c", "tests/host/a02/test_fail_after.c", "tests/host/a02/test_hint.c", "tests/host/a02/test_region.c", "tests/host/a02/test_unit_bits.c", "tests/host/a02/test_unit_find.c", "tests/host/a02/test_unit_find2.c", "tests/host/a02/test_unit_scan.c"]
 
 [[fonction]]
 id = "F06"
@@ -55,21 +55,21 @@ id = "F07"
 sous_systeme = "a02"
 titre = "Détection des libérations invalides (double, mauvais propriétaire, adresse)"
 mode = "A"
-tests = ["tests/host/a02/test_free_faults.c", "tests/qemu/a02_fault_double_free.py", "tests/qemu/a02_fault_wrong_owner.py", "tests/qemu/a02_fault_bad_align.py", "tests/qemu/a02_fault_bad_range.py"]
+tests = ["tests/host/a02/test_free_faults.c", "tests/qemu/a02_fault_double_free.py", "tests/qemu/a02_fault_wrong_owner.py", "tests/qemu/a02_fault_bad_align.py", "tests/qemu/a02_fault_bad_range.py", "tests/host/a02/test_free_faults2.c"]
 
 [[fonction]]
 id = "F08"
 sous_systeme = "a02"
 titre = "Budget des métadonnées et gestion de plus de 4 Gio"
 mode = "A"
-tests = ["tests/host/a02/test_budget.c", "tests/qemu/a02_mem4g.py"]
+tests = ["tests/host/a02/test_budget.c", "tests/qemu/a02_mem4g.py", "tests/qemu/a02_boot.py", "tests/host/a02/test_init_errors.c", "tests/host/a02/test_init_layout.c", "tests/host/a02/test_init_limits.c", "tests/host/a02/test_init_misc.c", "tests/host/a02/test_init_ranges.c", "tests/host/a02/test_init_reclaim.c"]
 
 [[fonction]]
 id = "F09"
 sous_systeme = "a03"
 titre = "Mappage, protection et W^X"
 mode = "A"
-tests = ["tests/host/a03/test_map.c", "tests/host/a03/test_protect.c", "tests/host/a03/test_unmap.c", "tests/host/a03/test_audit.c"]
+tests = ["tests/host/a03/test_map.c", "tests/host/a03/test_protect.c", "tests/host/a03/test_unmap.c", "tests/host/a03/test_audit.c", "tests/host/a03/test_find.c", "tests/host/a03/test_kwin.c", "tests/host/a03/test_span.c", "tests/host/a03/test_uptr.c", "tests/host/a03/test_walk.c"]
 
 [[fonction]]
 id = "F10"
@@ -90,35 +90,35 @@ id = "F12"
 sous_systeme = "a03"
 titre = "Page de garde et faute de page noyau"
 mode = "A"
-tests = ["tests/qemu/a03_guard.py", "tests/qemu/a03_vmm.py", "tests/host/a03/test_ustack.c", "tests/host/a03/test_reserve.c"]
+tests = ["tests/qemu/a03_guard.py", "tests/qemu/a03_vmm.py", "tests/host/a03/test_ustack.c", "tests/host/a03/test_reserve.c", "tests/host/a07/test_ustack.c", "tests/host/a07/test_ustack_err.c"]
 
 [[fonction]]
 id = "F13"
 sous_systeme = "a04"
 titre = "Allocation par classes, alignements, redimensionnement"
 mode = "A"
-tests = ["tests/host/a04/test_class_small.c", "tests/host/a04/test_class_large.c", "tests/host/a04/test_align.c", "tests/host/a04/test_realloc.c"]
+tests = ["tests/host/a04/test_class_small.c", "tests/host/a04/test_class_large.c", "tests/host/a04/test_align.c", "tests/host/a04/test_realloc.c", "tests/host/a04/test_arena.c", "tests/host/a04/test_arena_give.c", "tests/host/a04/test_layout.c", "tests/host/a04/test_slab_geometry.c", "tests/host/a04/test_slab_life.c", "tests/host/a04/test_slab_release.c", "tests/host/a04/test_tags.c"]
 
 [[fonction]]
 id = "F14"
 sous_systeme = "a04"
 titre = "Détection de corruption et de double libération"
 mode = "A"
-tests = ["tests/host/a04/test_check_debug.c", "tests/host/a04/test_free_debug.c", "tests/host/a04/test_check_slab.c"]
+tests = ["tests/host/a04/test_check_debug.c", "tests/host/a04/test_free_debug.c", "tests/host/a04/test_check_slab.c", "tests/host/a04/test_check_state.c", "tests/host/a04/test_free_debug_wa.c", "tests/host/a04/test_free_faults.c", "tests/host/a04/test_free_inner.c", "tests/host/a04/test_realloc_faults.c"]
 
 [[fonction]]
 id = "F15"
 sous_systeme = "a04"
 titre = "Absence de fuite et injection d'échec à chaque rang"
 mode = "A"
-tests = ["tests/host/a04/test_fail_rank.c", "tests/host/a04/test_stats.c", "tests/host/a04/test_meta.c", "tests/qemu/a04_heap.py", "tests/qemu/a04_heap_petite_ram.py"]
+tests = ["tests/host/a04/test_fail_rank.c", "tests/host/a04/test_stats.c", "tests/host/a04/test_meta.c", "tests/qemu/a04_heap.py", "tests/qemu/a04_heap_petite_ram.py", "tests/host/a04/test_before_init.c", "tests/host/a04/test_concurrent.c", "tests/host/a04/test_exhaust.c", "tests/host/a04/test_exhaust_large.c", "tests/host/a04/test_lock.c", "tests/host/a04/test_realloc_fail.c", "tests/host/a04/test_selftest.c", "tests/host/a04/test_unmap_fail.c"]
 
 [[fonction]]
 id = "F16"
 sous_systeme = "a05"
 titre = "Analyse des tables ACPI (RSDP, MADT, FADT, _S5), y compris corrompues"
 mode = "A"
-tests = ["tests/host/a05/test_acpi_rsdp.c", "tests/host/a05/test_acpi_madt.c", "tests/host/a05/test_acpi_fadt.c", "tests/host/a05/test_acpi_s5.c", "tests/host/a05/test_acpi_sdt.c", "tests/host/a05/test_acpi_parse.c"]
+tests = ["tests/host/a05/test_acpi_rsdp.c", "tests/host/a05/test_acpi_madt.c", "tests/host/a05/test_acpi_fadt.c", "tests/host/a05/test_acpi_s5.c", "tests/host/a05/test_acpi_sdt.c", "tests/host/a05/test_acpi_parse.c", "tests/host/a05/test_acpi_collect.c", "tests/host/a05/test_acpi_misc.c"]
 
 [[fonction]]
 id = "F17"
@@ -139,7 +139,7 @@ id = "F19"
 sous_systeme = "a05"
 titre = "Extinction ACPI"
 mode = "A"
-tests = ["tests/qemu/a20_souris.py"]
+tests = ["tests/qemu/a20_souris.py", "tests/host/a05/test_sys.c"]
 
 [[fonction]]
 id = "F20"
@@ -161,7 +161,7 @@ id = "F22"
 sous_systeme = "a06"
 titre = "Verrous, mutex avec héritage de priorité, événements, sémaphores"
 mode = "A"
-tests = ["tests/host/a06/test_spin_excl.c", "tests/host/a06/test_spin_fifo.c", "tests/host/a06/test_mutex.c", "tests/host/a06/test_mutex_pi.c", "tests/host/a06/test_event.c", "tests/host/a06/test_sem.c"]
+tests = ["tests/host/a06/test_spin_excl.c", "tests/host/a06/test_spin_fifo.c", "tests/host/a06/test_mutex.c", "tests/host/a06/test_mutex_pi.c", "tests/host/a06/test_event.c", "tests/host/a06/test_sem.c", "tests/host/a06/test_mutex_panic.c"]
 
 [[fonction]]
 id = "F23"
@@ -175,7 +175,7 @@ id = "F24"
 sous_systeme = "a06"
 titre = "Détection d'interblocage"
 mode = "A"
-tests = ["tests/host/a06/test_lockdep.c", "tests/host/a06/test_spin_stuck.c"]
+tests = ["tests/host/a06/test_lockdep.c", "tests/host/a06/test_spin_stuck.c", "tests/host/a06/test_lockdep_ordre.c", "tests/host/a06/test_lockdep_reg.c"]
 
 [[fonction]]
 id = "F25"
@@ -219,7 +219,7 @@ id = "F30"
 sous_systeme = "a08"
 titre = "Table de handles, droits et génération"
 mode = "A"
-tests = ["tests/host/a08/test_htab.c", "tests/host/a08/test_htab2.c", "tests/host/a08/test_object.c"]
+tests = ["tests/host/a08/test_htab.c", "tests/host/a08/test_htab2.c", "tests/host/a08/test_object.c", "tests/host/a08/test_cleanup.c", "tests/host/a08/test_cleanup2.c"]
 
 [[fonction]]
 id = "F31"
@@ -233,7 +233,7 @@ id = "F32"
 sous_systeme = "a08"
 titre = "Attente multiple sans réveil perdu"
 mode = "A"
-tests = ["tests/host/a08/test_wait.c", "tests/host/a08/test_waitsim.c", "tests/host/a08/test_pulse.c"]
+tests = ["tests/host/a08/test_wait.c", "tests/host/a08/test_waitsim.c", "tests/host/a08/test_pulse.c", "tests/host/a08/test_chain.c", "tests/host/a08/test_event.c", "tests/host/a08/test_timer.c"]
 
 [[fonction]]
 id = "F33"
@@ -247,35 +247,35 @@ id = "F34"
 sous_systeme = "a09"
 titre = "Énumération PCI, BAR, capacités, MSI"
 mode = "A"
-tests = ["tests/host/a09/test_pci_enum_basic.c", "tests/host/a09/test_pci_enum_bridges.c", "tests/host/a09/test_pci_bar.c", "tests/host/a09/test_pci_cap.c", "tests/host/a09/test_pci_msi_encode.c", "tests/qemu/a09_pci.py", "tests/qemu/a09_pci_legacy.py", "tests/qemu/a09_pci_edu.py", "tests/host/a09/test_pci_intx.c", "tests/host/a09/test_pci_intx_wr.c"]
+tests = ["tests/host/a09/test_pci_enum_basic.c", "tests/host/a09/test_pci_enum_bridges.c", "tests/host/a09/test_pci_bar.c", "tests/host/a09/test_pci_cap.c", "tests/host/a09/test_pci_msi_encode.c", "tests/qemu/a09_pci.py", "tests/qemu/a09_pci_legacy.py", "tests/qemu/a09_pci_edu.py", "tests/host/a09/test_pci_intx.c", "tests/host/a09/test_pci_intx_wr.c", "tests/host/a09/test_pci_access.c", "tests/host/a09/test_pci_bar_scan.c", "tests/host/a09/test_pci_boot.c", "tests/host/a09/test_pci_boot_ecam.c", "tests/host/a09/test_pci_cfg.c", "tests/host/a09/test_pci_dev_caps.c", "tests/host/a09/test_pci_ecam.c", "tests/host/a09/test_pci_ecam_io.c", "tests/host/a09/test_pci_ecam_map.c", "tests/host/a09/test_pci_enable.c", "tests/host/a09/test_pci_enum_limits.c", "tests/host/a09/test_pci_irq_args.c", "tests/host/a09/test_pci_irq_intx.c", "tests/host/a09/test_pci_irq_msi.c", "tests/host/a09/test_pci_legacy_addr.c", "tests/host/a09/test_pci_lookup.c", "tests/host/a09/test_pci_map.c", "tests/host/a09/test_pci_msi_prog.c", "tests/host/a09/test_pci_names.c", "tests/host/a09/test_pci_probe.c", "tests/host/a09/test_pci_selftest.c"]
 
 [[fonction]]
 id = "F35"
 sous_systeme = "a09"
 titre = "Générateur aléatoire (amorçage, réensemencement, uniformité)"
 mode = "A"
-tests = ["tests/host/a09/test_rng_core.c", "tests/host/a09/test_rng_reseed.c", "tests/host/a09/test_rng_below.c", "tests/qemu/a09_random.py"]
+tests = ["tests/host/a09/test_rng_core.c", "tests/host/a09/test_rng_reseed.c", "tests/host/a09/test_rng_below.c", "tests/qemu/a09_random.py", "tests/host/a09/test_random_boot.c", "tests/host/a09/test_random_selftest.c", "tests/host/a09/test_rng_add.c", "tests/host/a09/test_rng_blocks.c", "tests/host/a09/test_rng_clock.c", "tests/host/a09/test_rng_freq.c", "tests/host/a09/test_rng_locks.c", "tests/host/a09/test_rng_retry.c", "tests/host/a09/test_rng_sources.c", "tests/host/a09/test_sys_getrandom.c"]
 
 [[fonction]]
 id = "F36"
 sous_systeme = "a09"
 titre = "SHA-256, HMAC et PBKDF2 contre les vecteurs officiels"
 mode = "A"
-tests = ["tests/host/a09/test_sha256_nist.c", "tests/host/a09/test_hmac_rfc4231.c", "tests/host/a09/test_pbkdf2_kat.c", "tests/host/a09/test_chacha20.c"]
+tests = ["tests/host/a09/test_sha256_nist.c", "tests/host/a09/test_hmac_rfc4231.c", "tests/host/a09/test_pbkdf2_kat.c", "tests/host/a09/test_chacha20.c", "tests/host/a09/test_ct.c", "tests/host/a09/test_hmac_split.c", "tests/host/a09/test_pbkdf2_args.c", "tests/host/a09/test_pbkdf2_meta.c", "tests/host/a09/test_sha256_ctx.c", "tests/host/a09/test_sha256_split.c"]
 
 [[fonction]]
 id = "F37"
 sous_systeme = "a10"
 titre = "Décodeur clavier (jeu 2) et souris PS/2 avec resynchronisation"
 mode = "A"
-tests = ["tests/host/a10/test_scan2_basic.c", "tests/host/a10/test_scan2_e1.c", "tests/host/a10/test_scan2_fuzz.c", "tests/host/a10/test_mouse_dec.c", "tests/host/a10/test_kbd_lost.c", "tests/host/a10/test_sys_priv.c"]
+tests = ["tests/host/a10/test_scan2_basic.c", "tests/host/a10/test_scan2_e1.c", "tests/host/a10/test_scan2_fuzz.c", "tests/host/a10/test_mouse_dec.c", "tests/host/a10/test_kbd_lost.c", "tests/host/a10/test_sys_priv.c", "tests/host/a10/test_kbd_events.c", "tests/host/a10/test_kbd_lost2.c", "tests/host/a10/test_kbd_lost3.c", "tests/host/a10/test_kbd_lost4.c", "tests/host/a10/test_kbd_lost5.c", "tests/host/a10/test_kbd_state.c", "tests/host/a10/test_mouse_accel.c", "tests/host/a10/test_mouse_cfg.c", "tests/host/a10/test_mouse_ev.c", "tests/host/a10/test_scan2_trip.c"]
 
 [[fonction]]
 id = "F38"
 sous_systeme = "a10"
 titre = "Dispositions AZERTY et QWERTY, touches mortes"
 mode = "AM"
-tests = ["tests/host/a10/test_layout_fr.c", "tests/host/a10/test_layout_us.c", "tests/host/a10/test_dead.c"]
+tests = ["tests/host/a10/test_layout_fr.c", "tests/host/a10/test_layout_us.c", "tests/host/a10/test_dead.c", "tests/host/a10/test_layout_reg.c", "tests/host/a10/test_layout_tables.c"]
 manuels = ["MT-11"]
 note = "Les touches mortes ~ et ` ont été écrites de mémoire, à confirmer sur un vrai clavier."
 
@@ -291,28 +291,28 @@ id = "F40"
 sous_systeme = "a11"
 titre = "Partitions GPT et MBR, bornes des E/S"
 mode = "A"
-tests = ["tests/host/a11/test_gpt.c", "tests/host/a11/test_gpt_hdr.c", "tests/host/a11/test_mbr.c", "tests/host/a11/test_blk_bounds.c", "tests/host/a11/test_ebr.c", "tests/host/a11/test_ebr_hostile.c", "tests/host/a11/test_ebr_scan.c", "tests/qemu/a11_etendue.py"]
+tests = ["tests/host/a11/test_gpt.c", "tests/host/a11/test_gpt_hdr.c", "tests/host/a11/test_mbr.c", "tests/host/a11/test_blk_bounds.c", "tests/host/a11/test_ebr.c", "tests/host/a11/test_ebr_hostile.c", "tests/host/a11/test_ebr_scan.c", "tests/qemu/a11_etendue.py", "tests/host/a11/test_blk_full.c", "tests/host/a11/test_blk_reg.c", "tests/host/a11/test_block_init.c", "tests/host/a11/test_crc32.c", "tests/host/a11/test_ebr_primaires.c", "tests/host/a11/test_gpt_entries.c", "tests/host/a11/test_partname.c"]
 
 [[fonction]]
 id = "F41"
 sous_systeme = "a11"
 titre = "Pilote virtio-blk (lecture, écriture, appareil hostile)"
 mode = "A"
-tests = ["tests/host/a11/test_virtq.c", "tests/host/a11/test_vblk_io.c", "tests/host/a11/test_vblk_neg.c", "tests/host/a11/test_vblk_fault.c", "tests/qemu/a11_virtio_blk.py", "tests/qemu/a11_absent.py"]
+tests = ["tests/host/a11/test_virtq.c", "tests/host/a11/test_vblk_io.c", "tests/host/a11/test_vblk_neg.c", "tests/host/a11/test_vblk_fault.c", "tests/qemu/a11_virtio_blk.py", "tests/qemu/a11_absent.py", "tests/host/a11/test_vblk_alloc.c", "tests/host/a11/test_vblk_intx.c", "tests/host/a11/test_virtio_cfg.c"]
 
 [[fonction]]
 id = "F42"
 sous_systeme = "a12"
 titre = "Analyse de l'initrd cpio hostile et des chemins"
 mode = "A"
-tests = ["tests/host/a12/test_cpio.c", "tests/host/a12/test_cpio_big.c", "tests/host/a12/test_path.c"]
+tests = ["tests/host/a12/test_cpio.c", "tests/host/a12/test_cpio_big.c", "tests/host/a12/test_path.c", "tests/host/a12/test_vfs_initrd.c", "tests/host/a12/test_vfs_initrd_ro.c"]
 
 [[fonction]]
 id = "F43"
 sous_systeme = "a12"
 titre = "FAT32 en lecture et écriture, noms longs, appels système de fichiers"
 mode = "AM"
-tests = ["tests/qemu/a12_fat32.py", "tests/tools/test_a12_fat32.py", "tests/host/a12/test_fat_fsinfo.c", "tests/host/a12/test_fat_rw.c", "tests/host/a12/test_fat_lfn.c", "tests/host/a12/test_fat_corrupt.c"]
+tests = ["tests/qemu/a12_fat32.py", "tests/tools/test_a12_fat32.py", "tests/host/a12/test_fat_fsinfo.c", "tests/host/a12/test_fat_rw.c", "tests/host/a12/test_fat_lfn.c", "tests/host/a12/test_fat_corrupt.c", "tests/host/a12/test_failpoints.c", "tests/host/a12/test_failpoints_io.c", "tests/host/a12/test_fat_bpb.c", "tests/host/a12/test_fat_bpb_lim.c", "tests/host/a12/test_fat_bps1024.c", "tests/host/a12/test_fat_fsinfo_err.c", "tests/host/a12/test_fat_fsinfo_lim.c", "tests/host/a12/test_fat_model.c", "tests/host/a12/test_fat_mute.c", "tests/host/a12/test_fat_names.c", "tests/host/a12/test_fat_ns.c", "tests/host/a12/test_fat_ns_etat.c", "tests/host/a12/test_fat_plein.c", "tests/host/a12/test_fat_units.c", "tests/host/a12/test_revue_rename_panne.c", "tests/host/a12/test_sys.c", "tests/host/a12/test_sys_dir.c", "tests/host/a12/test_sys_rw.c"]
 manuels = ["MT-23"]
 note = "Scénario QEMU sur une image mtools, relue par mtools et contrôlée par fsck.vfat (code 0 exigé). Tests hôte sur un faux disque en mémoire."
 
@@ -321,14 +321,14 @@ id = "F44"
 sous_systeme = "a13"
 titre = "Console noyau : texte, défilement, UTF-8, entrées hostiles"
 mode = "A"
-tests = ["tests/host/a13/test_kcon_scroll.c", "tests/host/a13/test_kcon_utf8.c", "tests/host/a13/test_kcon_hostile.c", "tests/host/a13/test_kcon_wrap.c", "tests/qemu/a13_console.py"]
+tests = ["tests/host/a13/test_kcon_scroll.c", "tests/host/a13/test_kcon_utf8.c", "tests/host/a13/test_kcon_hostile.c", "tests/host/a13/test_kcon_wrap.c", "tests/qemu/a13_console.py", "tests/host/a13/test_kcon_bulk.c", "tests/host/a13/test_kcon_ctl.c", "tests/host/a13/test_kcon_cursor.c", "tests/host/a13/test_kcon_geom.c", "tests/host/a13/test_kcon_tab.c", "tests/host/a13/test_sys_kcon.c"]
 
 [[fonction]]
 id = "F45"
 sous_systeme = "a13"
 titre = "Écran d'arrêt"
 mode = "AM"
-tests = ["tests/host/a13/test_bsod_paint.c", "tests/host/a13/test_bsod_table.c", "tests/qemu/a13_panic.py"]
+tests = ["tests/host/a13/test_bsod_paint.c", "tests/host/a13/test_bsod_table.c", "tests/qemu/a13_panic.py", "tests/host/a13/test_bsod_edge.c", "tests/host/a13/test_bsod_prop.c"]
 manuels = ["MT-21"]
 
 [[fonction]]
@@ -336,7 +336,7 @@ id = "F46"
 sous_systeme = "a13"
 titre = "Changement de mode graphique et validation de géométrie"
 mode = "A"
-tests = ["tests/host/a13/test_dispi_mode.c", "tests/host/a13/test_fbgeom.c", "tests/host/a13/test_display_modes.c", "tests/qemu/a13_modes.py"]
+tests = ["tests/host/a13/test_dispi_mode.c", "tests/host/a13/test_fbgeom.c", "tests/host/a13/test_display_modes.c", "tests/qemu/a13_modes.py", "tests/host/a13/test_dispi_detect.c", "tests/host/a13/test_dispi_prog.c", "tests/host/a13/test_dispi_virt.c", "tests/host/a13/test_display_boot.c", "tests/host/a13/test_display_cache.c", "tests/host/a13/test_display_fault.c", "tests/host/a13/test_display_lock.c", "tests/host/a13/test_display_modeargs.c", "tests/host/a13/test_display_modeconsole.c", "tests/host/a13/test_display_modefail.c", "tests/host/a13/test_display_state.c", "tests/host/a13/test_display_write.c"]
 
 [[fonction]]
 id = "F47"
@@ -351,49 +351,49 @@ id = "F48"
 sous_systeme = "a13"
 titre = "Appels système d'affichage face à des arguments hostiles"
 mode = "A"
-tests = ["tests/host/a13/test_sys_fuzz.c", "tests/host/a13/test_sys_map.c", "tests/host/a13/test_sys_setmode.c"]
+tests = ["tests/host/a13/test_sys_fuzz.c", "tests/host/a13/test_sys_map.c", "tests/host/a13/test_sys_setmode.c", "tests/host/a13/test_sys_info.c", "tests/host/a13/test_sys_mapfail.c", "tests/host/a13/test_sys_mapmode.c", "tests/host/a13/test_sys_mapproc.c", "tests/host/a13/test_sys_modes.c"]
 
 [[fonction]]
 id = "F49"
 sous_systeme = "a14"
 titre = "libc minimale (chaînes, nombres, tri, snprintf)"
 mode = "A"
-tests = ["tests/host/a14/test_strto_bounds.c", "tests/host/a14/test_qsort_random.c", "tests/host/a14/test_snprintf.c", "tests/host/a14/test_ctype.c"]
+tests = ["tests/host/a14/test_strto_bounds.c", "tests/host/a14/test_qsort_random.c", "tests/host/a14/test_snprintf.c", "tests/host/a14/test_ctype.c", "tests/host/a14/test_bsearch.c", "tests/host/a14/test_bsearch_large.c", "tests/host/a14/test_qsort_cases.c", "tests/host/a14/test_qsort_sizes.c", "tests/host/a14/test_rand.c", "tests/host/a14/test_rand_mt.c", "tests/host/a14/test_snprintf_str.c", "tests/host/a14/test_snprintf_va.c", "tests/host/a14/test_srand.c", "tests/host/a14/test_srand_dist.c", "tests/host/a14/test_stdlib_misc.c", "tests/host/a14/test_strdup.c", "tests/host/a14/test_strdup_bzero.c", "tests/host/a14/test_strto_bases.c", "tests/host/a14/test_strto_signs.c", "tests/host/a14/test_strto_unsigned.c"]
 
 [[fonction]]
 id = "F50"
 sous_systeme = "a14"
 titre = "Allocateur utilisateur (corruption, fragmentation, échec)"
 mode = "A"
-tests = ["tests/host/a14/test_malloc_corrupt.c", "tests/host/a14/test_malloc_frag.c", "tests/host/a14/test_malloc_fail.c", "tests/host/a14/test_malloc_churn.c"]
+tests = ["tests/host/a14/test_malloc_corrupt.c", "tests/host/a14/test_malloc_frag.c", "tests/host/a14/test_malloc_fail.c", "tests/host/a14/test_malloc_churn.c", "tests/host/a14/test_malloc_calloc.c", "tests/host/a14/test_malloc_free.c", "tests/host/a14/test_malloc_mt.c", "tests/host/a14/test_malloc_part.c", "tests/host/a14/test_malloc_realloc.c", "tests/host/a14/test_malloc_recycle.c"]
 
 [[fonction]]
 id = "F51"
 sous_systeme = "a14"
 titre = "Démarrage d'une appli, fils et verrous utilisateur"
 mode = "A"
-tests = ["tests/host/a14/test_start_parse_fuzz.c", "tests/host/a14/test_thread_basic.c", "tests/host/a14/test_mutex_stress.c", "tests/qemu/a14_vtest.py"]
+tests = ["tests/host/a14/test_start_parse_fuzz.c", "tests/host/a14/test_thread_basic.c", "tests/host/a14/test_mutex_stress.c", "tests/qemu/a14_vtest.py", "tests/host/a14/test_event.c", "tests/host/a14/test_event_edge.c", "tests/host/a14/test_exit.c", "tests/host/a14/test_mutex_basic.c", "tests/host/a14/test_relro.c", "tests/host/a14/test_spin.c", "tests/host/a14/test_start_parse_aux.c", "tests/host/a14/test_start_parse_cases.c", "tests/host/a14/test_start_parse_env.c", "tests/host/a14/test_start_parse_prefix.c", "tests/host/a14/test_stub.c", "tests/host/a14/test_stub_regs.c", "tests/host/a14/test_thread_attr.c", "tests/host/a14/test_thread_detach.c", "tests/host/a14/test_thread_exit.c", "tests/host/a14/test_thread_fail.c", "tests/host/a14/test_thread_states.c", "tests/host/a14/test_tls_asm.c"]
 
 [[fonction]]
 id = "F52"
 sous_systeme = "a15"
 titre = "Primitives de dessin et mélange alpha exact"
 mode = "A"
-tests = ["tests/host/a15/test_fill.c", "tests/host/a15/test_blit.c", "tests/host/a15/test_color.c", "tests/host/a15/test_gradient.c", "tests/host/a15/test_line.c", "tests/host/a15/test_rrect.c"]
+tests = ["tests/host/a15/test_fill.c", "tests/host/a15/test_blit.c", "tests/host/a15/test_color.c", "tests/host/a15/test_gradient.c", "tests/host/a15/test_line.c", "tests/host/a15/test_rrect.c", "tests/host/a15/test_blit_overlap.c", "tests/host/a15/test_frame.c", "tests/host/a15/test_gradient_big.c", "tests/host/a15/test_gradient_degen.c", "tests/host/a15/test_gradient_edges.c", "tests/host/a15/test_hvline.c", "tests/host/a15/test_pixel.c", "tests/host/a15/test_rrect_aa.c", "tests/host/a15/test_rrect_sym.c", "tests/host/a15/test_scaled.c", "tests/host/a15/test_scroll.c", "tests/host/a15/test_smooth.c", "tests/host/a15/test_smooth_regress.c", "tests/host/a15/test_surface.c", "tests/host/a15/test_visu_a.c", "tests/host/a15/test_visu_b.c", "tests/host/a15/test_visu_c.c", "tests/host/a15/test_visu_d.c"]
 
 [[fonction]]
 id = "F53"
 sous_systeme = "a15"
 titre = "Régions de rectangles contre un modèle bitmap"
 mode = "A"
-tests = ["tests/host/a15/test_region.c", "tests/host/a15/test_region_model.c"]
+tests = ["tests/host/a15/test_region.c", "tests/host/a15/test_region_model.c", "tests/host/a15/test_region_ovf.c"]
 
 [[fonction]]
 id = "F54"
 sous_systeme = "a15"
 titre = "Robustesse du dessin (fuzz, arguments extrêmes)"
 mode = "A"
-tests = ["tests/host/a15/test_fuzz.c", "tests/host/a15/test_invalid.c"]
+tests = ["tests/host/a15/test_fuzz.c", "tests/host/a15/test_invalid.c", "tests/host/a15/test_selftest.c"]
 
 [[fonction]]
 id = "F55"
@@ -408,14 +408,14 @@ id = "F56"
 sous_systeme = "a16"
 titre = "Décodage UTF-8 strict et recherche de glyphe"
 mode = "A"
-tests = ["tests/host/a16/test_utf8_valid.c", "tests/host/a16/test_utf8_invalid.c", "tests/host/a16/test_utf8_random.c", "tests/host/a16/test_glyph_lookup.c", "tests/host/a16/test_nbsp.c"]
+tests = ["tests/host/a16/test_utf8_valid.c", "tests/host/a16/test_utf8_invalid.c", "tests/host/a16/test_utf8_random.c", "tests/host/a16/test_glyph_lookup.c", "tests/host/a16/test_nbsp.c", "tests/host/a16/test_utf8_edges.c"]
 
 [[fonction]]
 id = "F57"
 sous_systeme = "a16"
 titre = "Mesure et rendu du texte"
 mode = "A"
-tests = ["tests/host/a16/test_width.c", "tests/host/a16/test_fit.c", "tests/host/a16/test_render.c", "tests/host/a16/test_draw_clip.c", "tests/qemu/a16_console_font.py", "tests/host/a16/test_font_bounds.c"]
+tests = ["tests/host/a16/test_width.c", "tests/host/a16/test_fit.c", "tests/host/a16/test_render.c", "tests/host/a16/test_draw_clip.c", "tests/qemu/a16_console_font.py", "tests/host/a16/test_font_bounds.c", "tests/host/a16/test_draw_args.c", "tests/host/a16/test_draw_compose.c", "tests/host/a16/test_draw_edge.c", "tests/host/a16/test_draw_pixels.c", "tests/host/a16/test_scene.c"]
 
 [[fonction]]
 id = "F58"
@@ -451,14 +451,14 @@ id = "F62"
 sous_systeme = "a18"
 titre = "Protocole de fenêtres : validation et rejet des messages hostiles"
 mode = "A"
-tests = ["tests/host/a18/test_core_proto.c", "tests/host/a18/test_srv_fuzz.c", "tests/host/a18/test_srv_faults.c"]
+tests = ["tests/host/a18/test_core_proto.c", "tests/host/a18/test_srv_fuzz.c", "tests/host/a18/test_srv_faults.c", "tests/host/a18/test_core_proto2.c", "tests/host/a18/test_core_utf8.c", "tests/host/a18/test_srv_input_edge.c"]
 
 [[fonction]]
 id = "F63"
 sous_systeme = "a18"
 titre = "Ordre Z, focus et activation"
 mode = "A"
-tests = ["tests/host/a18/test_core_z.c", "tests/host/a18/test_srv_focus.c", "tests/host/a18/test_srv_random.c"]
+tests = ["tests/host/a18/test_core_z.c", "tests/host/a18/test_srv_focus.c", "tests/host/a18/test_srv_random.c", "tests/host/a18/test_srv_keys.c", "tests/host/a18/test_srv_section_mark.c"]
 
 [[fonction]]
 id = "F64"
@@ -472,7 +472,7 @@ id = "F65"
 sous_systeme = "a18"
 titre = "Glisser, redimensionner, réduire et agrandir une fenêtre à la souris"
 mode = "AM"
-tests = ["tests/host/a18/test_core_drag.c", "tests/host/a18/test_core_hit.c"]
+tests = ["tests/host/a18/test_core_drag.c", "tests/host/a18/test_core_hit.c", "tests/host/a18/test_srv_mouse.c"]
 manuels = ["MT-06"]
 
 [[fonction]]
@@ -480,28 +480,28 @@ id = "F66"
 sous_systeme = "a19"
 titre = "Édition de texte UTF-8 (insertion, sélection, limites)"
 mode = "A"
-tests = ["tests/host/a19/test_edit.c", "tests/host/a19/test_edit_sel.c", "tests/host/a19/test_edit_fuzz.c", "tests/host/a19/test_edit_limit.c"]
+tests = ["tests/host/a19/test_edit.c", "tests/host/a19/test_edit_sel.c", "tests/host/a19/test_edit_fuzz.c", "tests/host/a19/test_edit_limit.c", "tests/host/a19/test_edit_clip.c", "tests/host/a19/test_edit_events.c", "tests/host/a19/test_edit_mouse.c", "tests/host/a19/test_clip.c", "tests/host/a19/test_utf8.c"]
 
 [[fonction]]
 id = "F67"
 sous_systeme = "a19"
 titre = "Focus, navigation au clavier et mnémoniques"
 mode = "A"
-tests = ["tests/host/a19/test_focus.c", "tests/host/a19/test_focus2.c", "tests/host/a19/test_a11y.c", "tests/host/a19/test_mnemonic.c", "tests/host/a19/test_button_kbd.c"]
+tests = ["tests/host/a19/test_focus.c", "tests/host/a19/test_focus2.c", "tests/host/a19/test_a11y.c", "tests/host/a19/test_mnemonic.c", "tests/host/a19/test_button_kbd.c", "tests/host/a19/test_button.c", "tests/host/a19/test_button_default.c", "tests/host/a19/test_check.c", "tests/host/a19/test_radio.c", "tests/host/a19/test_dbl.c", "tests/host/a19/test_hit.c"]
 
 [[fonction]]
 id = "F68"
 sous_systeme = "a19"
 titre = "Listes et menus"
 mode = "A"
-tests = ["tests/host/a19/test_list.c", "tests/host/a19/test_list_keys.c", "tests/host/a19/test_menu_keys.c", "tests/host/a19/test_menu_sub.c"]
+tests = ["tests/host/a19/test_list.c", "tests/host/a19/test_list_keys.c", "tests/host/a19/test_menu_keys.c", "tests/host/a19/test_menu_sub.c", "tests/host/a19/test_list_mouse.c", "tests/host/a19/test_menu_api.c", "tests/host/a19/test_menu_geom.c", "tests/host/a19/test_menu_life.c", "tests/host/a19/test_menu_misc.c", "tests/host/a19/test_menu_mouse.c", "tests/host/a19/test_menu_paint.c", "tests/host/a19/test_scroll.c", "tests/host/a19/test_scroll_model.c"]
 
 [[fonction]]
 id = "F69"
 sous_systeme = "a19"
 titre = "Échec d'allocation et absence de fuite des contrôles"
 mode = "A"
-tests = ["tests/host/a19/test_alloc_fail.c", "tests/host/a19/test_remove.c", "tests/host/a19/test_storm.c"]
+tests = ["tests/host/a19/test_alloc_fail.c", "tests/host/a19/test_remove.c", "tests/host/a19/test_storm.c", "tests/host/a19/test_null.c", "tests/host/a19/test_robust.c", "tests/host/a19/test_tree.c", "tests/host/a19/test_tree_invalid.c"]
 
 [[fonction]]
 id = "F70"
@@ -516,21 +516,21 @@ id = "F71"
 sous_systeme = "a20"
 titre = "Comptes, hachage PBKDF2 et limiteur d'essais"
 mode = "A"
-tests = ["tests/host/a20/test_acc_verify.c", "tests/host/a20/test_acc_hostile.c", "tests/host/a20/test_auth.c", "tests/host/a20/test_limiter.c"]
+tests = ["tests/host/a20/test_acc_verify.c", "tests/host/a20/test_acc_hostile.c", "tests/host/a20/test_auth.c", "tests/host/a20/test_limiter.c", "tests/host/a20/test_acc_fields.c", "tests/host/a20/test_acc_file.c", "tests/host/a20/test_acc_line.c", "tests/host/a20/test_mkuser_interop.c", "tests/host/a20/test_mkuser.py"]
 
 [[fonction]]
 id = "F72"
 sous_systeme = "a20"
 titre = "Connexion à la souris, bureau, menu Démarrer, extinction"
 mode = "A"
-tests = ["tests/qemu/a20_souris.py", "tests/qemu/a20_desktop.py", "tests/qemu/int_session.py", "tests/qemu/int_captures.py", "tests/host/a20/test_programmes.c"]
+tests = ["tests/qemu/a20_souris.py", "tests/qemu/a20_desktop.py", "tests/qemu/int_session.py", "tests/qemu/int_captures.py", "tests/host/a20/test_programmes.c", "tests/host/a20/render/test_render_menu.c", "tests/host/a20/render/test_render_menu_glass.c", "tests/host/a20/render/test_render_menu_kbd.c", "tests/host/a20/render/test_render_menu_pleins.c", "tests/host/a20/render/test_render_shell.c"]
 
 [[fonction]]
 id = "F73"
 sous_systeme = "a20"
 titre = "Dock en verre, tâches et liste des fenêtres"
 mode = "AM"
-tests = ["tests/host/a20/test_taskbar.c", "tests/host/a20/test_taskbar_sweep.c", "tests/host/a20/test_tasklist.c", "tests/host/a20/test_tasklist_state.c", "tests/host/a20/test_contrast.c"]
+tests = ["tests/host/a20/test_taskbar.c", "tests/host/a20/test_taskbar_sweep.c", "tests/host/a20/test_tasklist.c", "tests/host/a20/test_tasklist_state.c", "tests/host/a20/test_contrast.c", "tests/host/a20/render/test_render_bar.c", "tests/host/a20/render/test_render_dock.c", "tests/host/a20/render/test_render_dock_buf.c", "tests/host/a20/render/test_render_dock_edge.c", "tests/host/a20/render/test_render_tasks.c"]
 manuels = ["MT-16"]
 
 [[fonction]]
@@ -538,7 +538,7 @@ id = "F74"
 sous_systeme = "a20"
 titre = "Boîtes de dialogue (Exécuter, Éteindre l'ordinateur)"
 mode = "AM"
-tests = ["tests/host/a20/test_runcmd.c", "tests/host/a20/test_logon_flow.c", "tests/host/a20/test_sm_model.c", "tests/host/a20/test_typographie.py"]
+tests = ["tests/host/a20/test_runcmd.c", "tests/host/a20/test_logon_flow.c", "tests/host/a20/test_sm_model.c", "tests/host/a20/test_typographie.py", "tests/host/a20/render/test_render_dialogs.c", "tests/host/a20/render/test_render_dialogs_ring.c"]
 manuels = ["MT-07", "MT-08"]
 
 [[fonction]]
@@ -546,7 +546,7 @@ id = "F75"
 sous_systeme = "a20"
 titre = "Horloge de la zone de notification et formats de date"
 mode = "AM"
-tests = ["tests/host/a20/test_timefmt_clock.c", "tests/host/a20/test_timefmt_uptime.c"]
+tests = ["tests/host/a20/test_timefmt_clock.c", "tests/host/a20/test_timefmt_uptime.c", "tests/host/a20/render/test_render_date.c", "tests/host/a20/render/test_render_tray.c"]
 manuels = ["MT-10"]
 
 [[fonction]]
@@ -554,14 +554,14 @@ id = "F76"
 sous_systeme = "transverse"
 titre = "Construction du noyau, des applis et de l'image bootable (BIOS et UEFI)"
 mode = "A"
-tests = ["tests/qemu/skel_boot.py", "tests/tools/test_mkimage.py", "Makefile"]
+tests = ["tests/qemu/skel_boot.py", "tests/tools/test_mkimage.py", "Makefile", "tests/tools/test_dependances.py"]
 
 [[fonction]]
 id = "F77"
 sous_systeme = "transverse"
 titre = "Qualité du code : en-têtes autonomes, sécurité statique"
 mode = "A"
-tests = ["tools/scan_securite.py", "mk/test.mk"]
+tests = ["tools/scan_securite.py", "mk/test.mk", "tests/tools/test_scan_securite.py"]
 
 [[fonction]]
 id = "F78"
@@ -596,7 +596,7 @@ id = "F82"
 sous_systeme = "transverse"
 titre = "Reproductibilité de la construction sur une machine propre"
 mode = "AM"
-tests = ["tools/mkimage.py", "tools/build-toolchain.sh", "tests/tools/test_mkimage.py"]
+tests = ["tools/mkimage.py", "tools/build-toolchain.sh", "tests/tools/test_mkimage.py", "tests/tools/test_repro.py"]
 manuels = ["MT-24"]
 
 # Tests manuels. statut : "Réussi", "Échec", "Partiel", "Bloqué" ou "A exécuter". Un cas déjà joué
@@ -621,14 +621,14 @@ id = "F85"
 sous_systeme = "apk"
 titre = "Conteneur DEX hostile"
 mode = "A"
-tests = ["tests/host/d03/test_open.c", "tests/host/d03/test_class.c", "tests/host/d03/test_code.c", "tests/host/d03/test_hostile.c", "tests/host/d03/test_fuzz.c", "tests/host/d00/test_croise_dex.c"]
+tests = ["tests/host/d03/test_open.c", "tests/host/d03/test_class.c", "tests/host/d03/test_code.c", "tests/host/d03/test_hostile.c", "tests/host/d03/test_fuzz.c", "tests/host/d00/test_croise_dex.c", "tests/host/d03/test_cross.c", "tests/host/d03/test_leb.c", "tests/host/d03/test_misc.c", "tests/host/d03/test_mutf8.c", "tests/host/d03/test_read.c"]
 
 [[fonction]]
 id = "F86"
 sous_systeme = "apk"
 titre = "Décodage et vérification structurelle du bytecode"
 mode = "A"
-tests = ["tests/host/d04/test_table.c", "tests/host/d04/test_decode.c", "tests/host/d04/test_refus.c", "tests/host/d04/test_verify.c", "tests/host/d04/test_fuzz.c", "tests/tools/test_croise_opcodes.py"]
+tests = ["tests/host/d04/test_table.c", "tests/host/d04/test_decode.c", "tests/host/d04/test_refus.c", "tests/host/d04/test_verify.c", "tests/host/d04/test_fuzz.c", "tests/tools/test_croise_opcodes.py", "tests/host/d04/test_decode2.c"]
 
 [[fonction]]
 id = "F87"
@@ -657,7 +657,7 @@ id = "F90"
 sous_systeme = "apk"
 titre = "Interpréteur de bytecode et sémantique Java"
 mode = "A"
-tests = ["tests/host/d09/test_arith.c", "tests/host/d09/test_div.c", "tests/host/d09/test_conv.c", "tests/host/d09/test_float.c", "tests/host/d09/test_exc.c", "tests/host/d09/test_pile.c", "tests/host/d09/test_natif.c", "tests/host/d00/test_croise_vm.c", "tests/host/d11/test_essais.c"]
+tests = ["tests/host/d09/test_arith.c", "tests/host/d09/test_div.c", "tests/host/d09/test_conv.c", "tests/host/d09/test_float.c", "tests/host/d09/test_exc.c", "tests/host/d09/test_pile.c", "tests/host/d09/test_natif.c", "tests/host/d00/test_croise_vm.c", "tests/host/d11/test_essais.c", "tests/host/d09/test_essais.c"]
 
 [[fonction]]
 id = "F91"
@@ -672,7 +672,7 @@ id = "F92"
 sous_systeme = "apk"
 titre = "Registre des paquets et installation d'un APK sur /data"
 mode = "A"
-tests = ["tests/host/d10/test_install.c", "tests/host/d10/test_panne.c", "tests/host/d10/test_registre.c", "tests/host/d10/test_champs.c", "tests/host/d10/test_fuzz.c", "tests/host/d12/test_fs.c", "tests/host/d12/test_fs_panne.c", "tests/host/d12/test_inspect.c", "tests/qemu/int_apk_installation.py"]
+tests = ["tests/host/d10/test_install.c", "tests/host/d10/test_panne.c", "tests/host/d10/test_registre.c", "tests/host/d10/test_champs.c", "tests/host/d10/test_fuzz.c", "tests/host/d12/test_fs.c", "tests/host/d12/test_fs_panne.c", "tests/host/d12/test_inspect.c", "tests/qemu/int_apk_installation.py", "tests/host/d12/test_label.c"]
 
 [[fonction]]
 id = "F93"
@@ -694,31 +694,47 @@ id = "F95"
 sous_systeme = "a17"
 titre = "Verre : flou, saturation, teinte, reflet, liseré, repli opaque et bornes"
 mode = "A"
-tests = ["tests/host/a17/test_glass.c", "tests/host/a17/test_glass_blur.c", "tests/host/a17/test_glass_bounds.c", "tests/host/a17/test_glass_edge.c", "tests/host/a17/test_glass_robust.c", "tests/host/a17/test_glass_robust_band.c", "tests/host/a17/test_glass_robust_corner.c", "tests/host/a17/test_glass_robust_geo.c", "tests/host/a17/test_glass_robust_lg.c", "tests/host/a17/test_glass_robust_zone.c"]
+tests = ["tests/host/a17/test_glass.c", "tests/host/a17/test_glass_blur.c", "tests/host/a17/test_glass_bounds.c", "tests/host/a17/test_glass_edge.c", "tests/host/a17/test_glass_robust.c", "tests/host/a17/test_glass_robust_band.c", "tests/host/a17/test_glass_robust_corner.c", "tests/host/a17/test_glass_robust_geo.c", "tests/host/a17/test_glass_robust_lg.c", "tests/host/a17/test_glass_robust_zone.c", "tests/host/a17/test_glass_coins.c", "tests/host/a17/test_glass_degenere.c", "tests/host/a17/test_glass_exact.c", "tests/host/a17/test_glass_fallback.c", "tests/host/a17/test_glass_fuzz.c", "tests/host/a17/test_glass_perf.c", "tests/host/a17/test_glass_sombre.c", "tests/host/a17/test_frame_robust.c"]
 note = "Ombres de fenêtres non faites, flou du fond d'écran seulement (pas des fenêtres dessous)."
+exigence = "Le verre floute, teinte et borne son rendu, avec repli opaque sans mémoire de travail ou en transparence réduite"
+technique = "valeurs limites, partitions de rectangles, test métamorphique, test aléatoire à graine fixe"
+element = "rectangles hors surface, dégénérés et rognés, neuf genres de fenêtre, deux thèmes, coins arrondis"
+cas = ["coins arrondis", "neuf genres, deux themes", "repli opaque, relation metamorphique"]
 
 [[fonction]]
 id = "F96"
 sous_systeme = "a17"
 titre = "Palette clair et sombre : jetons, accesseurs de couleur et contrastes"
 mode = "A"
-tests = ["tests/host/a17/test_colors_ext.c", "tests/host/a17/test_contrast_bar.c", "tests/host/a17/test_contrast_win.c", "tests/host/a20/test_contrast_fonds.c", "tests/host/a20/test_contrast_plates.c", "tests/host/a20/test_uicolor.c"]
+tests = ["tests/host/a17/test_colors_ext.c", "tests/host/a17/test_contrast_bar.c", "tests/host/a17/test_contrast_win.c", "tests/host/a20/test_contrast_fonds.c", "tests/host/a20/test_contrast_plates.c", "tests/host/a20/test_uicolor.c", "tests/host/a17/test_theme_contrast.c", "tests/host/a17/test_theme_maquette.c", "tests/host/a17/test_theme_pal.c", "tests/host/a17/test_contrast_boot.c"]
 note = "Aucune appli ne bascule le thème : le sombre n'est exercé que par les tests."
+exigence = "La palette claire et sombre vient de la maquette et chaque paire texte et fond tient son rapport de contraste"
+technique = "partitions d'équivalence, test d'après un modèle (valeurs recalculées depuis la maquette), valeurs limites"
+element = "jetons de couleur, paires texte et fond, seuils 4,5:1 et 3:1"
+cas = ["P9 palette clair recalculee", "P25 paires texte et fond de la maquette"]
 
 [[fonction]]
 id = "F97"
 sous_systeme = "a17"
 titre = "Contrôles luna : taille des cases, anneau de focus, dégradé du bouton, encre, symétrie du verre"
 mode = "A"
-tests = ["tests/host/a17/test_ctrl_bornes.c", "tests/host/a17/test_ctrl_degrade.c", "tests/host/a17/test_ctrl_glass.c", "tests/host/a17/test_ctrl_ink.c", "tests/host/a19/test_glass.c", "tests/host/a19/test_glass_focus.c", "tests/host/a19/test_glass_font.c", "tests/host/a19/test_ring.c", "tests/host/a19/test_ring_ctl.c", "tests/host/a19/test_ring_face.c"]
+tests = ["tests/host/a17/test_ctrl_bornes.c", "tests/host/a17/test_ctrl_degrade.c", "tests/host/a17/test_ctrl_glass.c", "tests/host/a17/test_ctrl_ink.c", "tests/host/a19/test_glass.c", "tests/host/a19/test_glass_focus.c", "tests/host/a19/test_glass_font.c", "tests/host/a19/test_ring.c", "tests/host/a19/test_ring_ctl.c", "tests/host/a19/test_ring_face.c", "tests/host/a17/test_ctrl_etats.c", "tests/host/a17/test_ctrl_galerie.c", "tests/host/a17/test_ctrl_maquette.c", "tests/host/a19/test_edge_arrows.c", "tests/host/a19/test_edge_font.c"]
+exigence = "Les contrôles sont lisibles et reconnaissables dans leurs états, sur fond de verre, clair et sombre"
+technique = "table de décision (états), valeurs limites, test d'après un modèle (oracle maquette)"
+element = "combinaisons d'états du bouton, taille des cases, anneau de focus, encre des flèches"
+cas = ["table de decision : fonds du secondaire", "oracle maquette : radio coche"]
 
 [[fonction]]
 id = "F98"
 sous_systeme = "a17"
 titre = "Lanceur : disposition de 540 px, zones cliquables, dessin et activation"
 mode = "A"
-tests = ["tests/host/a17/test_launcher.c", "tests/host/a17/test_launcher_draw.c", "tests/host/a17/test_launcher_hit.c", "tests/host/a20/test_sm_layout.c", "tests/host/a20/test_sm_rect.c", "tests/host/a20/test_sm_activation.c"]
+tests = ["tests/host/a17/test_launcher.c", "tests/host/a17/test_launcher_draw.c", "tests/host/a17/test_launcher_hit.c", "tests/host/a20/test_sm_layout.c", "tests/host/a20/test_sm_rect.c", "tests/host/a20/test_sm_activation.c", "tests/host/a17/test_launcher_min.c", "tests/host/a17/test_launcher_pix.c", "tests/host/a17/test_launcher_place.c", "tests/host/a17/test_launcher_png.c", "tests/host/a20/test_sm_pleines.c", "tests/host/a20/test_programmes_menu.c"]
 note = "Recherche factice, quatre tuiles au plus, pas de Récents ni de Toutes les apps."
+exigence = "Le lanceur se place selon la taille de l'écran, ses tuiles sont cliquables et activables au clavier"
+technique = "valeurs limites, partitions d'équivalence, transitions d'états (survol, activation)"
+element = "largeur et hauteur d'écran, nombre de tuiles (0 à 4), zones cliquables"
+cas = ["taille minimale : valeurs limites", "lanceur: parcours clavier a quatre tuile"]
 
 [[fonction]]
 id = "F99"
@@ -732,29 +748,41 @@ id = "F100"
 sous_systeme = "a16"
 titre = "Polices Instrument Sans et JetBrains Mono : génération reproductible, jeu de caractères, budget"
 mode = "A"
-tests = ["tests/host/a16/test_genfont.py", "tests/host/a16/test_font_charset.c", "tests/host/a16/test_font_cover.c", "tests/host/a16/test_font_data.c", "tests/host/a16/test_font_budget.c"]
+tests = ["tests/host/a16/test_genfont.py", "tests/host/a16/test_font_charset.c", "tests/host/a16/test_font_cover.c", "tests/host/a16/test_font_data.c", "tests/host/a16/test_font_budget.c", "tests/host/a16/test_font_bare.c", "tests/host/a16/test_font_bits.c", "tests/host/a16/test_font_shape.c"]
 note = "Rendu 1 bit, donc moins fin que la maquette."
+exigence = "Les polices embarquées sont générées de façon reproductible, couvrent le jeu de caractères et tiennent dans 80 Kio"
+technique = "partitions d'équivalence, valeurs limites, test d'après un modèle"
+element = "glyphes du jeu de caractères, boîte serrée, bourrage à zéro, taille cumulée"
+cas = ["cellule de chaque glyphe", "bourrage a zero et boite serree"]
 
 [[fonction]]
 id = "F101"
 sous_systeme = "a18"
 titre = "Verre dans le serveur de fenêtres : bandes sales, équivalence incrémental et complet, échec d'allocation"
 mode = "A"
-tests = ["tests/host/a18/test_core_glass.c", "tests/host/a18/test_core_glass_chain.c", "tests/host/a18/test_core_glass_eq.c", "tests/host/a18/test_srv_glass.c", "tests/host/a18/test_srv_glass_ext.c"]
+tests = ["tests/host/a18/test_core_glass.c", "tests/host/a18/test_core_glass_chain.c", "tests/host/a18/test_core_glass_eq.c", "tests/host/a18/test_srv_glass.c", "tests/host/a18/test_srv_glass_ext.c", "tests/host/a18/test_srv_glass_copy.c", "tests/host/a18/test_core_meter.c", "tests/host/a18/test_srv_render_ref.c"]
+exigence = "La composition par zones sales du serveur donne les mêmes pixels que la composition complète, verre compris"
+technique = "test métamorphique, injection de panne, valeurs limites"
+element = "bandes sales, rectangles étendus par le flou, échec d'allocation du tampon"
+cas = ["copie : le rectangle etendu et rien d'au", "rendu du framebuffer inchange par la mes"]
 
 [[fonction]]
 id = "F102"
 sous_systeme = "a20"
 titre = "Connexion : mise en page de la maquette, puces, messages et flux invalides"
 mode = "A"
-tests = ["tests/host/a20/test_logon_layout.c", "tests/host/a20/test_logon_layout_mockup.c", "tests/host/a20/test_logon_layout_ring.c", "tests/host/a20/test_logon_text.c", "tests/host/a20/test_logon_flow_invalid.c"]
+tests = ["tests/host/a20/test_logon_layout.c", "tests/host/a20/test_logon_layout_mockup.c", "tests/host/a20/test_logon_layout_ring.c", "tests/host/a20/test_logon_text.c", "tests/host/a20/test_logon_flow_invalid.c", "tests/host/a20/render/test_render_logon.c", "tests/host/a20/render/test_render_logon_chips.c", "tests/host/a20/render/test_render_logon_glass.c", "tests/host/a20/render/test_render_logon_head.c", "tests/host/a20/render/test_render_logon_metrics.c", "tests/host/a20/render/test_render_logon_pw.c", "tests/host/a20/render/test_render_logon_wipe.c"]
+exigence = "L'écran de connexion reprend la maquette : horloge, puces, saisie du mot de passe, échec, extinction"
+technique = "test d'après un modèle (mesures de la maquette), transitions d'états, supposition d'erreur"
+element = "états du flux de connexion, mot de passe effacé, tampon de verre absent"
+cas = ["rendu logon: mesures de la maquette", "rendu logon: mot de passe efface apres E"]
 
 [[fonction]]
 id = "F103"
 sous_systeme = "a20"
 titre = "Bureau : grille d'icônes, zones, sélection au clavier, double-clic et fenêtre Bonjour"
 mode = "A"
-tests = ["tests/host/a20/test_desktop.c", "tests/host/a20/test_desktop_zone.c", "tests/host/a20/test_dblclick.c", "tests/host/a20/test_hello_layout.c"]
+tests = ["tests/host/a20/test_desktop.c", "tests/host/a20/test_desktop_zone.c", "tests/host/a20/test_dblclick.c", "tests/host/a20/test_hello_layout.c", "tests/host/a20/render/test_render_deskblur.c", "tests/host/a20/render/test_render_deskicon.c", "tests/host/a20/render/test_render_desklabel.c", "tests/host/a20/render/test_render_deskmodel.c", "tests/host/a20/render/test_render_deskplate.c", "tests/host/a20/render/test_render_desksel.c", "tests/host/a20/render/test_render_deskshadow.c", "tests/host/a20/render/test_render_desktop.c"]
 
 [[manuel]]
 id = "MT-01"
@@ -1071,3 +1099,196 @@ etapes = ["Démarrer sous QEMU, capturer la connexion, le bureau et le lanceur �
 attendu = "Aucun écart inattendu. Les écarts attendus sont ceux de la section Limites connues du README."
 statut = "A exécuter"
 duree = 40
+exigence = "Le bureau place ses icônes sur la grille, sélectionne au clavier et à la souris et ouvre Bonjour"
+technique = "partitions d'équivalence, valeurs limites, transitions d'états"
+element = "cellules de la grille, sélection, double-clic, taille de la fenêtre Bonjour"
+cas = ["bureau: cellules selon le modele", "selection: bornee et levee"]
+
+[[fonction]]
+id = "F104"
+sous_systeme = "a17"
+titre = "Écran de démarrage : marque, barre de progression et mise en page centrée"
+mode = "A"
+tests = ["tests/host/a17/test_boot_bar.c", "tests/host/a17/test_boot_layout.c", "tests/host/a17/test_boot_marks.c", "tests/host/a17/test_contrast_boot.c"]
+exigence = "L'écran de démarrage centre la marque, remplit la barre selon le pourcentage et garde son texte lisible"
+technique = "valeurs limites, partitions d'équivalence"
+element = "pourcentage de 0 à 100 et hors plage, segment borné, rectangles dégénérés, partitions de l'écran"
+cas = ["P8 barre : valeurs limites de pct", "P8 ecran de demarrage centre", "P8 embleme : carre central de la boite"]
+
+[[fonction]]
+id = "F105"
+sous_systeme = "a18"
+titre = "Serveur de fenêtres : propriété, quotas par client et échec d'allocation sans fuite"
+mode = "A"
+tests = ["tests/host/a18/test_srv_alloc.c", "tests/host/a18/test_srv_alloc_edge.c", "tests/host/a18/test_srv_owner.c", "tests/host/a18/test_srv_open.c"]
+exigence = "Un client ne touche que ses fenêtres, ses quotas sont tenus et un échec d'allocation libère tout"
+technique = "injection de panne (échec à chaque rang), valeurs limites, partitions d'équivalence"
+element = "quota par client et total, identifiants étrangers, rang de l'allocation qui échoue, dimensions limites de l'écran"
+cas = ["quota par client", "fermeture repetee sans double liberation", "echec d'allocation, partition par rang"]
+
+[[fonction]]
+id = "F106"
+sous_systeme = "a19"
+titre = "Contrôles : zones sales exactes et peinture bornée par les clips"
+mode = "A"
+tests = ["tests/host/a19/test_dirty.c", "tests/host/a19/test_dirty2.c", "tests/host/a19/test_paint.c", "tests/host/a19/test_nobg.c"]
+exigence = "Un contrôle ne redessine que ce qui change et ne peint jamais hors de son clip ni de la surface"
+technique = "partitions d'équivalence (événement, zone attendue), valeurs limites, table de décision (fond ou non)"
+element = "survol, focus, texte, déplacement, ajout et retrait, débordement de région"
+cas = ["aucune modification : zone vide", "peinture limitee a la zone sale", "panneau racine par defaut : fond de fene"]
+
+[[fonction]]
+id = "F107"
+sous_systeme = "a19"
+titre = "Contraste WCAG des contrôles (texte actif, désactivé, graphiques)"
+mode = "A"
+tests = ["tests/host/a19/test_contrast.c"]
+exigence = "Le texte actif atteint 4,5:1, le texte désactivé et les graphiques 3:1, sur les fonds de verre"
+technique = "valeurs limites, test d'après un modèle (formule de luminance WCAG)"
+element = "paires texte et fond, seuils 4,5:1 et 3:1"
+cas = ["texte actif : AA (4,5:1)", "texte desactive et graphiques : 3:1"]
+
+[[fonction]]
+id = "F108"
+sous_systeme = "a19"
+titre = "Étiquettes, progression, groupes et texte à mnémonique"
+mode = "A"
+tests = ["tests/host/a19/test_label.c", "tests/host/a19/test_text.c", "tests/host/a19/test_widgets.c", "tests/host/a19/test_edge_text.c"]
+exigence = "Le texte est tronqué à une frontière UTF-8, l'esperluette marque le mnémonique et la progression reste dans ses bornes"
+technique = "partitions d'équivalence, valeurs limites"
+element = "alignements, ellipse, retrait des &, valeurs de progression, copie de texte à la frontière"
+cas = ["retrait des & : partitions", "ellipse : jamais plus large que la boite", "progression : valeurs et zones"]
+
+[[fonction]]
+id = "F109"
+sous_systeme = "a20"
+titre = "Textes de la session : tampon, nettoyage UTF-8 et fuzz du nettoyage"
+mode = "A"
+tests = ["tests/host/a20/test_tbuf.c", "tests/host/a20/test_utf8.c", "tests/host/a20/test_utf8_clean.c", "tests/host/a20/test_utf8_fuzz.c"]
+exigence = "Une saisie ou un fichier de comptes ne produit jamais de séquence UTF-8 invalide ni de dépassement de tampon"
+technique = "partitions d'équivalence, valeurs limites, test aléatoire à graine fixe"
+element = "séquences valides et invalides, tampon de taille 0 et plein, 20 000 tours de nettoyage"
+cas = ["clean: limites du tampon", "tbuf: taille zero", "clean: fuzz 20000 tours"]
+
+[[fonction]]
+id = "F110"
+sous_systeme = "transverse"
+titre = "Intégrité du démarrage : Limine refuse un noyau ou un initrd altéré"
+mode = "A"
+tests = ["tests/qemu/int_hash_image.py"]
+exigence = "Une image dont le noyau ou l'initrd est modifié d'un octet ne démarre pas"
+technique = "supposition d'erreur, partitions d'équivalence (fichier altéré)"
+element = "noyau, initrd et configuration, BIOS et UEFI"
+
+[[fonction]]
+id = "F111"
+sous_systeme = "transverse"
+titre = "Entrée noyau : drapeau AC utilisateur effacé aux exceptions et IRQ, SMAP effectif"
+mode = "A"
+tests = ["tests/qemu/kentry_ac.py"]
+exigence = "Le noyau efface AC à chaque entrée d'exception ou d'IRQ venant du mode utilisateur, SMAP reste actif"
+technique = "supposition d'erreur, partitions d'équivalence (vecteurs d'entrée)"
+element = "vecteurs d'exception et d'IRQ depuis l'anneau 3, audit d'entrée du programme ring3test"
+
+[[fonction]]
+id = "F112"
+sous_systeme = "transverse"
+titre = "Matrice de configurations QEMU : démarrage, horloges et protections"
+mode = "A"
+tests = ["tests/qemu/matrice_configurations.py", "tests/qemu/matrice_demarrage.py", "tests/tools/test_matrice_qemu.py"]
+exigence = "Le noyau démarre et passe ses autotests sous chaque combinaison de processeur, de protections et d'horloge retenue"
+technique = "test combinatoire (chaque niveau joué, croisements à risque), partitions d'équivalence"
+element = "niveaux de chaque dimension (NX, SMEP, SMAP, UMIP, PCID, XSAVE, horloges), croisements à risque"
+cas = ["test_chaque_niveau_de_chaque_dimension_est_joue", "test_les_croisements_a_risque_sont_presents"]
+
+[[fonction]]
+id = "F113"
+sous_systeme = "transverse"
+titre = "ABI des appels système : numéros figés, jamais réattribués"
+mode = "A"
+tests = ["tests/tools/test_abi_syscalls.py", "tests/abi/syscalls.golden"]
+exigence = "Un numéro d'appel système ne change ni ne se réattribue ; un ajout se fait en fin de liste figée"
+technique = "test d'après un modèle (liste figée), partitions d'équivalence (actif, retiré)"
+element = "numéros de l'en-tête abi_syscall.h contre tests/abi/syscalls.golden"
+cas = ["test_numero_jamais_reattribue", "test_nouvel_appel_ajoute_a_la_liste_figee"]
+
+[[fonction]]
+id = "F114"
+sous_systeme = "a02"
+titre = "Verrou du gestionnaire de frames, contrôles d'état et autotests du module"
+mode = "A"
+tests = ["tests/host/a02/test_check.c", "tests/host/a02/test_lock.c", "tests/host/a02/test_lock_spin.c", "tests/host/a02/test_selftest.c", "tests/host/a02/test_selftest_fault.c", "tests/host/a02/test_selftest_hooks.c"]
+exigence = "Le gestionnaire de frames sérialise ses accès, vérifie ses invariants et ses autotests échouent proprement"
+technique = "partitions d'équivalence, valeurs limites, supposition d'erreur"
+element = "classes d'arguments et valeurs aux bornes de chaque test cité"
+
+[[fonction]]
+id = "F115"
+sous_systeme = "a07"
+titre = "Arguments de démarrage filtrés et limiteur du journal des fautes utilisateur"
+mode = "A"
+tests = ["tests/host/a07/test_abi_golden.c", "tests/host/a07/test_boot_args.c", "tests/host/a07/test_ratelimit.c"]
+exigence = "La ligne de commande du noyau est filtrée et bornée, et le journal de fautes ne se laisse pas inonder"
+technique = "partitions d'équivalence, valeurs limites, supposition d'erreur"
+element = "classes d'arguments et valeurs aux bornes de chaque test cité"
+
+[[fonction]]
+id = "F116"
+sous_systeme = "a09"
+titre = "Informations système (sysinfo) exposées au mode utilisateur"
+mode = "A"
+tests = ["tests/host/a09/test_sys_sysinfo.c", "tests/host/a09/test_sysinfo.c"]
+exigence = "Les informations système rendues au mode utilisateur sont exactes et bornées"
+technique = "partitions d'équivalence, valeurs limites, supposition d'erreur"
+element = "classes d'arguments et valeurs aux bornes de chaque test cité"
+
+[[fonction]]
+id = "F117"
+sous_systeme = "a10"
+titre = "Contrôleur PS/2 : topologie, initialisation, LED, IRQ et pannes du matériel"
+mode = "A"
+tests = ["tests/host/a10/test_ps2_boot.c", "tests/host/a10/test_ps2_devfaults.c", "tests/host/a10/test_ps2_faults.c", "tests/host/a10/test_ps2_irq.c", "tests/host/a10/test_ps2_irq2.c", "tests/host/a10/test_ps2_led.c", "tests/host/a10/test_ps2_led2.c", "tests/host/a10/test_ps2_misc.c", "tests/host/a10/test_ps2_topology.c"]
+exigence = "Le contrôleur PS/2 s'initialise malgré les pannes d'appareil et pilote LED et IRQ"
+technique = "partitions d'équivalence, valeurs limites, supposition d'erreur"
+element = "classes d'arguments et valeurs aux bornes de chaque test cité"
+
+[[fonction]]
+id = "F118"
+sous_systeme = "a10"
+titre = "File d'événements, lecteur et appels système d'entrée"
+mode = "A"
+tests = ["tests/host/a10/test_queue.c", "tests/host/a10/test_queue_full.c", "tests/host/a10/test_queue_threads.c", "tests/host/a10/test_reader.c", "tests/host/a10/test_reader_fail.c", "tests/host/a10/test_reader_wait.c", "tests/host/a10/test_sys_cfg.c", "tests/host/a10/test_sys_handles.c", "tests/host/a10/test_sys_open.c", "tests/host/a10/test_sys_read.c"]
+exigence = "Les événements d'entrée sont livrés dans l'ordre, sans perte silencieuse, via les appels système d'entrée"
+technique = "partitions d'équivalence, valeurs limites, supposition d'erreur"
+element = "classes d'arguments et valeurs aux bornes de chaque test cité"
+
+[[fonction]]
+id = "F119"
+sous_systeme = "a14"
+titre = "Appels système de libvelum : arguments, bornes, pointeurs nuls, journal"
+mode = "A"
+tests = ["tests/host/a14/test_log.c", "tests/host/a14/test_sys_args.c", "tests/host/a14/test_sys_bounds.c", "tests/host/a14/test_sys_file.c", "tests/host/a14/test_sys_inpmem.c", "tests/host/a14/test_sys_ipc.c", "tests/host/a14/test_sys_log.c", "tests/host/a14/test_sys_misc.c", "tests/host/a14/test_sys_nullptr.c", "tests/host/a14/test_sys_obj.c", "tests/host/a14/test_sys_proc.c", "tests/host/a14/test_sys_spawnv.c"]
+exigence = "Les enveloppes d'appels système refusent proprement arguments hors bornes et pointeurs nuls"
+technique = "partitions d'équivalence, valeurs limites, supposition d'erreur"
+element = "classes d'arguments et valeurs aux bornes de chaque test cité"
+
+[[fonction]]
+id = "F120"
+sous_systeme = "skel"
+titre = "Formatage du printf noyau (largeur, précision, étoile, NUL, garde)"
+mode = "A"
+tests = ["tests/host/skel/test_fmt.c", "tests/host/skel/test_fmt_alt.c", "tests/host/skel/test_fmt_etoile.c", "tests/host/skel/test_fmt_garde.c", "tests/host/skel/test_fmt_large.c", "tests/host/skel/test_fmt_nul.c"]
+exigence = "Le formateur du noyau respecte largeur, précision et taille du tampon sans dépassement"
+technique = "partitions d'équivalence, valeurs limites, supposition d'erreur"
+element = "classes d'arguments et valeurs aux bornes de chaque test cité"
+
+[[fonction]]
+id = "F121"
+sous_systeme = "a20"
+titre = "Couleurs et polices des applis : jetons du thème seulement, aucune couleur en dur"
+mode = "A"
+tests = ["tests/host/a20/test_typographie_couleurs.py"]
+exigence = "Les applis n'utilisent que les couleurs et polices du thème (uicolor), jamais une valeur écrite en dur"
+technique = "partitions d'équivalence (sources des applis), analyse statique des sources"
+element = "fichiers sources des applis, jetons définis par uicolor.h"
+cas = ["test_aucune_couleur_en_dur_hors_de_uicolor", "test_uicolor_ne_definit_que_des_jetons_du_theme"]

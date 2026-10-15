@@ -32,12 +32,17 @@ static void	strip_amp(const char *text, uint32_t *i, int32_t *mn, int32_t o)
 int32_t	ctl_text_strip(const char *text, char *out, int32_t *mn)
 {
 	uint32_t	i;
+	uint32_t	len;
+	uint32_t	next;
 	int32_t		o;
 
 	i = 0;
 	o = 0;
 	*mn = -1;
-	while (text && text[i] && o < CTL_TEXT_MAX - 1)
+	len = 0;
+	if (text)
+		len = (uint32_t)strlen(text);
+	while (i < len && o < CTL_TEXT_MAX - 1)
 	{
 		if (text[i] == '&' && text[i + 1] == '&')
 			i++;
@@ -46,9 +51,12 @@ int32_t	ctl_text_strip(const char *text, char *out, int32_t *mn)
 			strip_amp(text, &i, mn, o);
 			continue ;
 		}
-		out[o] = text[i];
-		o++;
-		i++;
+		next = ctl_u8_next(text, len, i);
+		if (o + (int32_t)(next - i) > CTL_TEXT_MAX - 1)
+			break ;
+		memcpy(out + o, text + i, next - i);
+		o += (int32_t)(next - i);
+		i = next;
 	}
 	out[o] = '\0';
 	return (o);

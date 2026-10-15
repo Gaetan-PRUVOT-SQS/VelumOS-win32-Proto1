@@ -76,6 +76,22 @@ static void	prepare_paths(void)
 	h_eq_i64("CS modifie : iretq", syscall_prepare_return(&r), IRET_PATH);
 }
 
+static void	star_selecteurs(void)
+{
+	uint64_t	base_sysret;
+	uint64_t	base_syscall;
+
+	base_sysret = SYSCALL_STAR >> 48;
+	base_syscall = (SYSCALL_STAR >> 32) & 0xffff;
+	h_eq_u64("SYSRET : SS = base + 8, RPL 3 compris", base_sysret + 8,
+		GDT_UDATA);
+	h_eq_u64("SYSRET 64 bits : CS = base + 16, RPL 3 compris",
+		base_sysret + 16, GDT_UCODE);
+	h_eq_u64("SYSCALL : CS = STAR[47:32]", base_syscall, GDT_KCODE);
+	h_eq_u64("SYSCALL : SS = CS + 8", base_syscall + 8, GDT_KDATA);
+	h_eq_u64("STAR : 32 bits bas nuls", SYSCALL_STAR & 0xffffffffull, 0);
+}
+
 int	main(void)
 {
 	h_begin("a07/retour_syscall");
@@ -83,5 +99,6 @@ int	main(void)
 	h_run("decision sysret", sysret_mcdc);
 	h_run("decision sysret, drapeaux", sysret_mcdc_flags);
 	h_run("chemin de retour", prepare_paths);
+	h_run("selecteurs derives de STAR", star_selecteurs);
 	return (h_end());
 }

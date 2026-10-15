@@ -1,7 +1,15 @@
 #include "limine.h"
 #include "limine_req.h"
+#include "boot_guard.h"
+#include "boot_int.h"
 #include "velum/boot.h"
+#include "velum/cpu.h"
+#include "velum/klog.h"
 #include "velum/libk.h"
+
+extern char	boot_stack_guard[];
+
+static bool	g_guard_armed;
 
 static uint64_t	to_phys(uint64_t addr, uint64_t hhdm)
 {
@@ -81,4 +89,27 @@ void	boot_fill_misc(t_bootinfo *bi)
 	fill_fb(bi);
 	fill_module(bi);
 	fill_firmware(bi);
+}
+
+int	boot_stack_guard_arm(void)
+{
+	uint64_t	va;
+	int			rc;
+
+	va = (uint64_t)boot_stack_guard;
+	rc = bg_unmap(boot_info()->hhdm, cpu_read_cr3(), va);
+	if (rc < 0)
+	{
+		klog_warn("boot: garde de la pile de boot impossible (%d)", rc);
+		return (rc);
+	}
+	cpu_invlpg(va);
+	g_guard_armed = true;
+	klog_info("boot: garde permanente de la pile de boot %#llx", va);
+	return (E_OK);
+}
+
+bool	boot_stack_guard_armed(void)
+{
+	return (g_guard_armed);
 }

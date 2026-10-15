@@ -3,6 +3,7 @@
 
 python3 tools/matrice_couverture.py            écrit tests/MATRICE.md et tests/MANUEL.md
 python3 tools/matrice_couverture.py --check    échoue si les fichiers écrits ne sont pas à jour
+python3 tools/matrice_couverture.py --orphelins  liste les fichiers de tests qu'aucune fonctionnalité ne cite
 """
 
 import re
@@ -18,6 +19,7 @@ MANUEL = RACINE / "tests" / "MANUEL.md"
 LIBELLES = {"A": "automatisé", "AM": "automatisé + complément manuel", "M": "manuel"}
 STATUTS = ("Réussi", "Échec", "Partiel", "Bloqué", "A exécuter")
 CHAMPS_EXECUTION = ("date", "moyen", "constat")
+CHAMPS_TRACABILITE = ("exigence", "technique", "element")
 
 
 class Erreur(Exception):
@@ -46,11 +48,25 @@ def charger():
         for ref in f.get("manuels", []):
             if ref not in connus:
                 raise Erreur(f"{f['id']} : test manuel inconnu {ref}")
+        verifier_tracabilite(f)
     citees = {r for f in fonctions for r in f.get("manuels", [])}
     orphelins = sorted(connus - citees)
     if orphelins:
         raise Erreur(f"tests manuels sans fonctionnalité : {orphelins}")
     return fonctions, manuels
+
+
+def verifier_tracabilite(f):
+    champs = [c for c in CHAMPS_TRACABILITE if f.get(c)]
+    if champs and len(champs) != len(CHAMPS_TRACABILITE):
+        manquants = [c for c in CHAMPS_TRACABILITE if c not in champs]
+        raise Erreur(f"{f['id']} : traçabilité incomplète, manque {manquants}")
+    if not f.get("cas"):
+        return
+    sources = "\n".join((RACINE / t).read_text(errors="replace") for t in f.get("tests", []))
+    for nom in f["cas"]:
+        if nom not in sources:
+            raise Erreur(f"{f['id']} : cas introuvable dans les tests cités : {nom!r}")
 
 
 def verifier_manuels(manuels):
@@ -149,6 +165,38 @@ def tableau(fonctions):
     return "\n".join(lignes)
 
 
+def tracabilite(fonctions):
+    lignes = [
+        "| ID | Exigence | Technique (29119-4) | Élément de couverture | Cas nommés |",
+        "|---|---|---|---|---|",
+    ]
+    for f in fonctions:
+        if not f.get("technique"):
+            continue
+        cas = "<br>".join(f"`{c}`" for c in f.get("cas", [])) or "voir fichiers"
+        lignes.append(
+            f"| {f['id']} | {f['exigence']} | {f['technique']} | {f['element']} | {cas} |"
+        )
+    return "\n".join(lignes)
+
+
+def tests_orphelins(fonctions):
+    cites = {t for f in fonctions for t in f.get("tests", [])}
+    racine_tests = RACINE / "tests"
+    trouves = set()
+    for chemin in racine_tests.rglob("*"):
+        relatif = chemin.relative_to(RACINE).as_posix()
+        if not chemin.is_file() or "__pycache__" in relatif:
+            continue
+        hote = relatif.startswith("tests/host/") and chemin.name.startswith("test_")
+        hote = hote and chemin.suffix in (".c", ".py")
+        qemu = relatif.startswith("tests/qemu/") and chemin.suffix == ".py"
+        outils = relatif.startswith("tests/tools/") and chemin.name.startswith("test_")
+        if hote or qemu or outils or relatif.startswith("tests/abi/"):
+            trouves.add(relatif)
+    return sorted(trouves - cites)
+
+
 def ecrire_matrice(fonctions, manuels):
     chiffres, inv = resume(fonctions, manuels)
     return f"""# Matrice de couverture fonctionnelle
@@ -184,6 +232,15 @@ Inventaire des cas automatisés : {inv["suites"]} fichiers de tests unitaires co
 ## Par sous-système
 
 {par_sous_systeme(fonctions)}
+
+## Traçabilité : exigence, technique, élément de couverture, cas
+
+Pour les fonctionnalités dont la source (`matrice.toml`) porte `exigence`, `technique` et `element`, le tableau relie
+l'exigence à la technique de 29119-4 qui la vérifie, à l'élément de couverture visé et aux noms de cas (`h_run` ou
+fonction `test_`) que le générateur retrouve dans les fichiers cités. Un nom de cas introuvable fait échouer la
+commande.
+
+{tracabilite(fonctions)}
 
 ## Matrice complète
 
@@ -270,6 +327,11 @@ def main(argv):
         MATRICE: ecrire_matrice(fonctions, manuels),
         MANUEL: ecrire_manuel(fonctions, manuels),
     }
+    if "--orphelins" in argv:
+        orphelins = tests_orphelins(fonctions)
+        print("\n".join(orphelins))
+        print(f"matrice : {len(orphelins)} fichiers de tests non cités", file=sys.stderr)
+        return 0
     if "--check" in argv:
         perimes = [p.name for p, t in sorties.items() if not p.exists() or p.read_text() != t]
         if perimes:

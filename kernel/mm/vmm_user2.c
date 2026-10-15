@@ -20,6 +20,8 @@ bool	user_range_ok(t_uptr addr, size_t n)
 
 	if (!n)
 		return (true);
+	if (n > UPTR_COPY_MAX)
+		return (false);
 	as = g_vmm.current;
 	if (!as)
 		return (false);
@@ -81,8 +83,8 @@ int	strncpy_from_user(char *dst, t_uptr src, size_t max)
 	as = g_vmm.current;
 	if (!as)
 		return (E_FAULT);
-	if (max > 0x7fffffff)
-		max = 0x7fffffff;
+	if (max > UPTR_COPY_MAX)
+		max = UPTR_COPY_MAX;
 	irq = vmm_lock(as);
 	rc = ustr_copy(as, dst, src, max);
 	vmm_unlock(as, irq);

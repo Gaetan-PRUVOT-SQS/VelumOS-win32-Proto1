@@ -11,6 +11,7 @@
 # define PROBE_USER_MIN 0x1000ull
 # define PROBE_USER_END 0x0000800000000000ull
 # define AUDIT_LOG_MAX 8
+/* SDM vol.2 CPUID feuille 07H sous-feuille 0 EDX ; vol.4 table 2-2 (non relu en session) */
 # define MSR_ARCH_CAPABILITIES 0x10a
 # define CPUID7_EDX_MD_CLEAR 10
 # define CPUID7_EDX_SPEC_CTRL 26
@@ -18,10 +19,24 @@
 # define CPUID7_EDX_L1D_FLUSH 28
 # define CPUID7_EDX_ARCH_CAP 29
 # define CPUID7_EDX_SSBD 31
+/* APM vol.3 annexe E, CPUID Fn8000_0008 EBX (non relu en session) */
 # define CPUIDE8_EBX_IBPB 12
 # define CPUIDE8_EBX_IBRS 14
 # define CPUIDE8_EBX_STIBP 15
 # define CPUIDE8_EBX_SSBD 24
+# define CPUIDE8_EBX_AMD_SSB_NO 26 /* non vérifié */
+/* SDM vol.2 CPUID 01H ECX 17 PCID, EDX 28 HTT ; 07H EBX 10 INVPCID, 11 RTM */
+# define CPUID1_ECX_PCID 17
+# define CPUID1_EDX_HTT 28
+# define CPUID7_EBX_INVPCID 10
+# define CPUID7_EBX_RTM 11
+/* SDM vol.4 table 2-2 : IA32_SPEC_CTRL 48H bits 0 IBRS 1 STIBP 2 SSBD, IA32_PRED_CMD 49H bit 0 IBPB */
+# define MSR_SPEC_CTRL 0x48
+# define MSR_PRED_CMD 0x49
+# define SPEC_CTRL_IBRS 0x1ull
+# define SPEC_CTRL_STIBP 0x2ull
+# define SPEC_CTRL_SSBD 0x4ull
+# define PRED_CMD_IBPB 0x1ull
 
 typedef uint64_t	(*t_msrreadfn)(uint32_t msr);
 

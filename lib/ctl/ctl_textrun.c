@@ -32,7 +32,14 @@ void	ctl_run_fit(t_textrun *run, const t_ctltext *tx)
 	room = tx->box.w;
 	run->ellipsis = (tx->flags & CTL_ELLIPSIS) != 0;
 	if (run->ellipsis)
+	{
 		ell = font_text_width(run->font, "\xe2\x80\xa6", 3);
+		if (ell > room)
+		{
+			run->ellipsis = false;
+			ell = 0;
+		}
+	}
 	room -= ell;
 	if (room < 0)
 		room = 0;

@@ -12,6 +12,7 @@
 # define CTL_FLAGS_VISUAL 0xffb
 # define CTL_COORD_MAX 1048576
 # define CTL_BOX 13
+# define CTL_RADIO_BOX 14
 # define CTL_GAP 4
 # define CTL_PAD 3
 # define CTL_ROW_PAD 2
@@ -322,6 +323,7 @@ bool			ctl_rad_key(t_ctlroot *r, t_ctl *c, const t_inpevent *ev);
 void			ctl_refs_check(t_ctlroot *r);
 void			ctl_reap(t_ctlroot *r);
 void			ctl_focus_ring(t_surface *s, t_rect r);
+void			ctl_radio_draw(t_surface *s, t_point p, t_lunastate st, bool on);
 void			ctl_focus_ring_row(t_surface *s, t_rect r, bool sel);
 void			ctl_sb_arrow(t_surface *s, t_rect r, int dir, t_color col);
 int32_t			ctl_sb_axis(bool vertical, t_point p);

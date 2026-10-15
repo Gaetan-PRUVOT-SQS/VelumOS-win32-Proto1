@@ -1,6 +1,7 @@
 #ifndef BOOT_H
 # define BOOT_H
 
+# include <stdbool.h>
 # include <stdint.h>
 
 # define BOOT_MAX_RANGES 128
@@ -69,5 +70,7 @@ t_bootinfo			*boot_info_rw(void);
 int					boot_cmdline_has(const char *word);
 const char			*boot_cmdline_get(const char *key);
 const char			*boot_build_id(void);
+int					boot_stack_guard_arm(void);
+bool				boot_stack_guard_armed(void);
 
 #endif

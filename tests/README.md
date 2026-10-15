@@ -15,9 +15,12 @@ tests/
     aNN/             un dossier par sous-système : test_<élément>.c et fake_*.c
   qemu/            scénarios système, chacun démarre une machine QEMU
     aNN_<sujet>.py   scénarios d'un sous-système
-    int_*.py         scénarios d'intégration (session, préemption, captures)
+    int_*.py         scénarios d'intégration (session, préemption, captures, intégrité de l'image)
+    kentry_ac.py     entrée noyau : AC effacé, SMAP effectif (ring3test entryaudit)
+    matrice_*.py     matrice de configurations QEMU (démarrage, horloges, protections)
     skel_boot.py     démarrage du noyau complet et autotests
-  tools/           tests des outils Python (image disque)
+  tools/           tests des outils Python (image disque, ABI, dépendances, matrice QEMU, reproductibilité, scan)
+  abi/             liste figée des numéros d'appels système (syscalls.golden), relue par tests/tools/test_abi_syscalls.py
 ```
 
 Les sous-systèmes `aNN` sont ceux de la table du README (a01 processeur, a02 mémoire physique, et ainsi de suite).
@@ -37,8 +40,8 @@ Un fragment `mk/lot-aNN.mk` déclare pour chacun ses sources compilées sur l'h�
 
 | Fichier | Rôle |
 |---------|------|
-| `matrice.toml` | source des données : fonctionnalités vérifiables (mode A, AM ou M, tests qui les couvrent) et cas manuels |
-| `MATRICE.md` | matrice complète et taux de couverture, généré |
+| `matrice.toml` | source des données : fonctionnalités vérifiables (mode A, AM ou M, tests qui les couvrent, et pour les plus récentes exigence, technique, élément de couverture et noms de cas) et cas manuels |
+| `MATRICE.md` | matrice complète, tableau de traçabilité et taux de couverture, généré |
 | `MANUEL.md` | plan de tests manuels (étapes, résultat attendu, statut), généré |
 
 Les cas manuels se jouent avec deux outils du dépôt. `tools/manuel.py` garde une machine QEMU vivante entre deux
@@ -57,6 +60,18 @@ python3 tools/manuel.py arreter s1
 `make matrice` régénère les deux rapports et échoue si un test cité n'existe pas ; `make matrice-check` échoue si
 les rapports ne sont pas à jour. Pour ajouter une fonctionnalité : une entrée `[[fonction]]` avec son mode et ses
 tests, puis `make matrice`. Une fonctionnalité en mode AM ou M doit citer au moins un cas manuel.
+
+Champs de traçabilité d'une entrée (les trois premiers vont ensemble, le générateur refuse une entrée incomplète) :
+
+| Champ | Contenu |
+|-------|---------|
+| `exigence` | ce que le système doit faire, en une phrase vérifiable |
+| `technique` | technique de 29119-4 employée (partitions, valeurs limites, table de décision, transitions d'états, métamorphique, combinatoire, injection de panne, supposition d'erreur, aléatoire à graine) |
+| `element` | élément de couverture visé (classes, bornes, états, rangs d'échec) |
+| `cas` | noms de cas (texte d'un `h_run` ou nom d'une fonction `test_`) ; chacun doit apparaître dans un fichier cité par `tests` |
+
+`python3 tools/matrice_couverture.py --orphelins` liste les fichiers de tests (`tests/host`, `tests/qemu`, `tests/tools`,
+`tests/abi`) qu'aucune entrée ne cite : à lancer après avoir ajouté un test, pour le rattacher à une fonctionnalité.
 
 ## Tests unitaires hôte
 
@@ -101,10 +116,10 @@ du code.
 | Lot | Ce qu'on y vérifie | Fichiers typiques |
 |-----|--------------------|-------------------|
 | a16 | génération reproductible des bitmaps (Instrument Sans, JetBrains Mono), jeu de caractères, budget de 80 Kio | `test_genfont.py`, `test_font_charset.c`, `test_font_cover.c`, `test_font_budget.c` |
-| a17 | verre (flou, repli opaque, bornes, coins), palette clair et sombre, contrastes, contrôles, lanceur, fond voile, métriques du cadre | `test_glass*.c`, `test_glass_robust*.c`, `test_colors_ext.c`, `test_ctrl_*.c`, `test_launcher*.c`, `test_geo_*.c`, `test_hit_*.c` |
-| a18 | verre dans le serveur : bandes sales, équivalence incrémental et complet, échec d'allocation du tampon de flou | `test_core_glass*.c`, `test_srv_glass*.c` |
-| a19 | contrôles sur fond de verre : encre des flèches, anneau de focus, police | `test_glass*.c`, `test_ring*.c` |
-| a20 | connexion, bureau, dock, fenêtre Bonjour, contrastes sur fonds variables | `test_logon_layout*.c`, `test_desktop*.c`, `test_taskbar*.c`, `test_hello_layout.c`, `test_contrast*.c` |
+| a17 | verre (flou, repli opaque, bornes, coins, fuzz), palette clair et sombre, contrastes, contrôles, lanceur, écran de démarrage, fond voile, métriques du cadre | `test_glass*.c`, `test_glass_robust*.c`, `test_colors_ext.c`, `test_ctrl_*.c`, `test_launcher*.c`, `test_boot_*.c`, `test_theme_*.c`, `test_geo_*.c`, `test_hit_*.c` |
+| a18 | serveur : verre (bandes sales, équivalence incrémental et complet, échec d'allocation du tampon de flou), propriété et quotas, clavier, souris, sections | `test_core_glass*.c`, `test_srv_glass*.c`, `test_srv_alloc*.c`, `test_srv_owner.c`, `test_srv_keys.c`, `test_srv_mouse.c` |
+| a19 | contrôles : sur fond de verre (encre des flèches, anneau de focus, police), zones sales, menus, barres de défilement, arbre, contraste WCAG, arguments nuls | `test_glass*.c`, `test_ring*.c`, `test_dirty*.c`, `test_menu_*.c`, `test_scroll*.c`, `test_tree*.c`, `test_contrast.c`, `test_null.c` |
+| a20 | connexion, bureau, dock, menu, dialogues, fenêtre Bonjour, comptes, contrastes sur fonds variables, rendus par zone | `test_logon_layout*.c`, `test_desktop*.c`, `test_taskbar*.c`, `test_hello_layout.c`, `test_contrast*.c`, `render/test_render_*.c`, `test_acc_*.c`, `test_utf8_fuzz.c` |
 
 Particularités :
 
@@ -118,6 +133,9 @@ Particularités :
   composition complète (`test_core_glass_eq.c`), y compris quand le verre élargit le rectangle à redessiner.
 - Les palettes claire et sombre sont toutes deux testées, alors qu'aucune appli ne bascule le thème : les tests sont le
   seul chemin qui exerce le sombre (voir Limites connues du README).
+- Les rendus par zone de a20 (`render/test_render_*.c`) rejouent le bureau, la connexion, le dock, le menu et les
+  dialogues sur une surface en mémoire et comparent des pixels à des valeurs de la maquette, clair et sombre.
+- `a17/mesure_verre.c` et `a17/bench_glass.c` sont des mesures, pas des tests : la matrice ne les cite pas.
 - Lancer un lot : `make -j3 B=build/<nom> host-a17` (puis a18, a19, a20). Les scénarios QEMU `a20_desktop` et
   `a20_souris` couvrent la session, pas le rendu du thème.
 
@@ -135,6 +153,13 @@ def run(vm):
     vm.attendre(r"SPIN PASS", delai=30)
     vm.attendre(r"KILL PASS", delai=30)
 ```
+
+Scénarios récents hors lots : `int_hash_image` (Limine refuse un noyau ou un initrd altéré d'un octet), `kentry_ac`
+(AC effacé à l'entrée des exceptions et des IRQ, SMAP effectif), `a02_boot` (métadonnées de la mémoire physique
+recalculées à la main), `matrice_demarrage` (un démarrage par configuration d'une matrice de combinaisons de processeur,
+de protections et d'horloge, générée par `matrice_configurations.py` et testée par `tests/tools/test_matrice_qemu.py`).
+Les scénarios `a01_fault_*` et `a02_fault_*` jouent une faute volontaire (`fault=`, `pmm_fault=`) et vérifient
+l'exception, les registres et l'écran d'arrêt.
 
 Valeurs optionnelles : `FIRMWARES` (par défaut `("bios", "uefi")`), `MEMOIRE`, `SMP`, `QEMU_EXTRA`.
 Le lanceur `tools/run_scenarios.py` construit une image par ligne de commande distincte, joue chaque scénario dans chaque
@@ -202,6 +227,7 @@ Un test qui échoue une fois sur dix n'est pas toléré, il est analysé. Les ca
 
 ```
 make test-tools                       outils Python (pytest)
+make matrice-check                    matrice à jour et tests cités présents
 make host-a02                         un sous-système
 make -j8 -k test-host                 tous les tests unitaires
 make test-qemu                        tous les scénarios, BIOS et UEFI

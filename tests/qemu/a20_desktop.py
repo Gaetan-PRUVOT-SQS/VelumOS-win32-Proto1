@@ -11,7 +11,21 @@ HAUTEUR_DOCK = 56
 DOCK = (MARGE_DOCK, HAUTEUR - MARGE_DOCK - HAUTEUR_DOCK, LARGEUR - 2 * MARGE_DOCK, HAUTEUR_DOCK)
 ORBE = (DOCK[0] + 8, DOCK[1] + (HAUTEUR_DOCK - 42) // 2, 42, 42)
 BANDE_SOUS_DOCK = (0, HAUTEUR - MARGE_DOCK + 1, LARGEUR, MARGE_DOCK - 1)
-LANCEUR = (12, HAUTEUR - 80 - 289, 540, 289)
+LARGEUR_LANCEUR = 540
+HAUTEUR_LANCEUR = 525
+LANCEUR = (12, HAUTEUR - 80 - HAUTEUR_LANCEUR, LARGEUR_LANCEUR, HAUTEUR_LANCEUR)
+RECHERCHE = (LANCEUR[0] + 18 + 410, LANCEUR[1] + 18 + 8, 80, 32)
+CELLULE_L = 90
+CELLULE_H = 81
+CELLULE_ECART = 18
+CELLULES = [(24, 24 + i * (CELLULE_H + CELLULE_ECART), CELLULE_L, CELLULE_H) for i in range(4)]
+INTERVALLES = [
+    (24, 24 + i * (CELLULE_H + CELLULE_ECART) + CELLULE_H, CELLULE_L, CELLULE_ECART)
+    for i in range(3)
+]
+PART_CELLULE_MODIFIEE_MINI = 0.08
+PART_INTERVALLE_MODIFIEE_MAXI = 0.15
+LUMINANCE_RECHERCHE_MINI = 200
 HORS_LANCEUR = (
     LANCEUR[0] + LANCEUR[2] + 8,
     0,
@@ -71,11 +85,37 @@ def verifier_lanceur(menu, bureau):
     surface = LANCEUR[2] * LANCEUR[3]
     changes = modifies(menu, bureau, LANCEUR)
     assert changes > PART_LANCEUR_MODIFIEE_MINI * surface, (
-        f"panneau de 540 x 289 attendu ({changes} pixels sur {surface})"
+        f"panneau de 540 x 525 attendu ({changes} pixels sur {surface})"
     )
     dehors = modifies(menu, bureau, HORS_LANCEUR)
     assert dehors < PIXELS_HORS_ZONE_MAXI, (
         f"rien à droite ni au-dessus du lanceur ({dehors} pixels)"
+    )
+
+
+def verifier_cellules_du_bureau(bureau, connexion):
+    for numero, cellule in enumerate(CELLULES):
+        surface = cellule[2] * cellule[3]
+        changes = modifies(bureau, connexion, cellule)
+        assert changes > PART_CELLULE_MODIFIEE_MINI * surface, (
+            f"cellule {numero + 1} du bureau (90 x 81) vide ({changes} pixels sur {surface})"
+        )
+    for numero, intervalle in enumerate(INTERVALLES):
+        surface = intervalle[2] * intervalle[3]
+        changes = modifies(bureau, connexion, intervalle)
+        assert changes < PART_INTERVALLE_MODIFIEE_MAXI * surface, (
+            f"écart de 18 px sous la cellule {numero + 1} occupé ({changes} pixels sur {surface})"
+        )
+
+
+def verifier_recherche(menu):
+    x, y, largeur, hauteur = RECHERCHE
+    total = sum(
+        luminance(menu.pixel(i, j)) for j in range(y, y + hauteur) for i in range(x, x + largeur)
+    )
+    moyenne = total // (largeur * hauteur)
+    assert moyenne > LUMINANCE_RECHERCHE_MINI, (
+        f"champ de recherche de 48 px en blanc 72 % attendu (luminance {moyenne})"
     )
 
 
@@ -97,6 +137,7 @@ def run(vm):
     vm.attendre(r"shell: bureau prêt", delai=60)
     bureau = vm.capture_stable(nom="bureau.ppm")
     verifier_dock(bureau, ecran_connexion)
+    verifier_cellules_du_bureau(bureau, ecran_connexion)
 
     vm.touche("meta_l")
     vm.capture_quand(
@@ -104,6 +145,7 @@ def run(vm):
     )
     menu = vm.capture_stable(nom="menu.ppm")
     verifier_lanceur(menu, bureau)
+    verifier_recherche(menu)
     vm.touche("esc")
     ferme = vm.capture_quand(
         lambda i: modifies(i, bureau, LANCEUR) < PIXELS_MENU_FERME_MAXI, nom="menu_ferme.ppm"

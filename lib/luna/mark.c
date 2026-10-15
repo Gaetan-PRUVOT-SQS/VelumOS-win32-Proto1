@@ -36,10 +36,17 @@ int32_t	lp_wordmark_w(int32_t h)
 	return (mk_span(cells, h) + 9 * h / 64 + 1);
 }
 
+static int32_t	mk_scale(int32_t unit)
+{
+	return (lp_max(unit * 55 / 64 - 2, 1));
+}
+
 static t_point	mk_pt(const t_lmk *m, const uint8_t *p)
 {
-	return (lp_pt(m->org.x + p[0] * m->unit * 55 / 64,
-			m->org.y + p[1] * m->unit * 55 / 64));
+	int32_t	scale;
+
+	scale = mk_scale(m->unit);
+	return (lp_pt(m->org.x + p[0] * scale, m->org.y + p[1] * scale));
 }
 
 static void	letter_draw(t_surface *s, const t_lglyph *g, const t_lmk *m)
@@ -78,7 +85,7 @@ void	lp_wordmark(t_surface *s, t_rect r, t_color c)
 		return ;
 	m.unit = r.h;
 	m.c = c;
-	m.org = lp_pt(r.x * 16 + 9 * r.h / 8, r.y * 16 + 9 * r.h / 8);
+	m.org = lp_pt(r.x * 16 + 9 * r.h / 8 + 16, r.y * 16 + 9 * r.h / 8 + 16);
 	i = 0;
 	while (i < LP_LETTERS)
 	{

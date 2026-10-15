@@ -55,6 +55,7 @@ int	cpu_boot_init(void)
 	cpu_fpu_boot(&g_boot.raw);
 	cpu_fault_option();
 	cpu_log();
+	cpu_vuln_log();
 	cpu_hard_boot();
 	return (0);
 }

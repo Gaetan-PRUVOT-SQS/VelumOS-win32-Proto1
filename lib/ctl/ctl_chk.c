@@ -20,17 +20,21 @@ void	ctl_chk_paint(t_ctlroot *r, t_ctl *c)
 	t_point		p;
 	t_ctltext	tx;
 	bool		on;
+	int32_t		box;
 
 	on = (c->flags & CTL_CHECKED) != 0;
-	p.x = c->rect.x;
-	p.y = c->rect.y + (c->rect.h - CTL_BOX) / 2;
+	box = CTL_BOX;
 	if (c->type == CT_RADIO)
-		luna_radio(r->surface, p, ctl_lstate(c), on);
+		box = CTL_RADIO_BOX;
+	p.x = c->rect.x;
+	p.y = c->rect.y + (c->rect.h - box) / 2;
+	if (c->type == CT_RADIO)
+		ctl_radio_draw(r->surface, p, ctl_lstate(c), on);
 	else
 		luna_checkbox(r->surface, p, ctl_lstate(c), on);
 	ctl_text_init(&tx, c);
-	tx.box.x += CTL_BOX + CTL_GAP;
-	tx.box.w -= CTL_BOX + CTL_GAP;
+	tx.box.x += box + CTL_GAP;
+	tx.box.w -= box + CTL_GAP;
 	if (tx.box.w < 0)
 		tx.box.w = 0;
 	ctl_text_draw(r->surface, &tx);
