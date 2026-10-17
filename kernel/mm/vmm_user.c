@@ -61,6 +61,8 @@ int	vmm_user_xfer(const t_ucopy *c)
 
 	if (!c->n)
 		return (0);
+	if (c->n > UPTR_COPY_MAX)
+		return (UPTR_E2BIG);
 	as = g_vmm.current;
 	if (!as || !c->kbuf)
 		return (E_FAULT);

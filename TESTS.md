@@ -88,6 +88,10 @@ Les seuls aléas sont des graines affichées par les tests (listées au point 5)
 - Supposition d'erreur : pointeurs noyau passés comme pointeurs utilisateur, handle fermé deux fois, nom de port
   invalide, `W|X`, longueur nulle, `%.3s` sur chaîne non terminée.
 - Couverture gcov (lignes, branches, conditions) sur le code pur, et test de mutation sur les lots les plus à risque.
+- Test combinatoire : matrice de configurations QEMU (`matrice_configurations.py`, `matrice_demarrage.py`), chaque niveau
+  de chaque dimension joué au moins une fois, croisements à risque présents.
+- Chaque fonctionnalité récente de `tests/matrice.toml` porte son exigence, sa technique de 29119-4, son élément de
+  couverture et des noms de cas que le générateur retrouve dans les fichiers cités (voir 4.9).
 
 ## 4. Résultats de la campagne
 
@@ -127,11 +131,11 @@ ce qui n'a pas tourné.
 | a13 affichage | 37 | 4 | fuzz de 20 000 appels (graine 20261005), géométrie hostile, mutation (8 tuées sur 12) | 99,4 % des 880 lignes, 87,4 % des 546 branches | 2 mutants survivants renforcés mais non rejoués, chemin DISPI par ports jamais exécuté |
 | a14 libvelum | 63 | 1 | allocateur (churn, double libération), pile de départ, 68 vérifications de `vtest` dans QEMU | pile de départ et RELRO 100 %, allocateur 505 sur 526 lignes, libc pure 100 % des lignes | `crt0.S`, `guard.S`, `thread.S` seulement en QEMU |
 | a15 gfx | 30 | 0 | mélange exhaustif 16,7 millions de triplets, 1 million d'appels fuzz, régions contre modèle bitmap | non mesurée | `cov.sh`, bancs de performance |
-| a16 polices | 23 | 1 | 10 365 120 séquences UTF-8 recoupées avec CPython sans écart, mutation (19 mutants tués sur 22 au premier passage, les 3 survivants tués à la repasse ciblée), génération reproductible | 100 % des lignes sauf l'autotest (92,7 %) | repasse complète des mutants sur l'arbre final interrompue |
-| a17 thème verre | 30 | 0 | partition complète de `luna_hit_test` sur trois tailles, verre (bornes, repli, robustesse), palette clair et sombre, lanceur, galeries relues (voir 4.8) | non mesurée | couverture et mutation du verre, comparaison à la maquette (MT-25) |
-| a18 winsrv | 22 | 0 | 1 000 opérations aléatoires, 100 000 messages, composition incrémentale identique à la complète | non mesurée | scénario QEMU propre, `lib/wm` contre le serveur |
-| a19 ctl | 54 | 0 | chaque allocation échoue une fois (348), édition UTF-8 en fuzz, contraste WCAG (17:1, 5,25:1, 3,9:1), contrôles sur verre | non mesurée | comparaison à la maquette (MT-25) |
-| a20 session | 42 | 2 | PBKDF2 contre `hashlib`, mise en page de la connexion, du bureau et de Bonjour d'après la maquette, contrastes sur fonds variables | non mesurée | rendu QEMU du thème verre non rejoué |
+| a16 polices | 24 | 1 | 10 365 120 séquences UTF-8 recoupées avec CPython sans écart, mutation (19 mutants tués sur 22 au premier passage, les 3 survivants tués à la repasse ciblée), génération reproductible | 100 % des lignes sauf l'autotest (92,7 %) | repasse complète des mutants sur l'arbre final interrompue |
+| a17 thème verre | 52 | 0 | partition complète de `luna_hit_test` sur trois tailles, verre (bornes, repli, robustesse), palette clair et sombre, lanceur, galeries relues (voir 4.8) | non mesurée | couverture et mutation du verre, comparaison à la maquette (MT-25) |
+| a18 winsrv | 28 | 0 | 1 000 opérations aléatoires, 100 000 messages, composition incrémentale identique à la complète | non mesurée | scénario QEMU propre, `lib/wm` contre le serveur |
+| a19 ctl | 58 | 0 | chaque allocation échoue une fois (348), édition UTF-8 en fuzz, contraste WCAG (17:1, 5,25:1, 3,9:1), contrôles sur verre | non mesurée | comparaison à la maquette (MT-25) |
+| a20 session | 74 | 2 | PBKDF2 contre `hashlib`, mise en page de la connexion, du bureau et de Bonjour d'après la maquette, contrastes sur fonds variables | non mesurée | rendu QEMU du thème verre non rejoué |
 | Intégration | 0 | 3 | session complète, préemption, kill | sans objet | voir point 6 |
 
 ### 4.3 Mesures relevées pendant la campagne (QEMU sous KVM, BIOS)
@@ -161,20 +165,20 @@ ce qui n'a pas tourné.
 
 ### 4.5 Répartition automatisé et manuel
 
-La couverture est mesurée sur les fonctionnalités vérifiables du système (103, regroupées par sous-système), chacune avec
+La couverture est mesurée sur les fonctionnalités vérifiables du système (121, regroupées par sous-système), chacune avec
 un mode de vérification et la liste des tests qui la couvrent. Les données sont dans [`tests/matrice.toml`](tests/matrice.toml),
 le script `tools/matrice_couverture.py` vérifie que chaque test cité existe et calcule les taux, et il génère
 [`tests/MATRICE.md`](tests/MATRICE.md) (matrice complète) et [`tests/MANUEL.md`](tests/MANUEL.md) (plan de tests manuels).
 
 | Mode | Sens | Fonctionnalités | Part |
 |------|------|-----------------|------|
-| A | automatisé, oracle automatique | 85 | 82,5 % |
-| AM | logique automatisée, complément manuel (visuel, ergonomie, vrai clavier) | 11 | 10,7 % |
-| M | manuel seulement | 7 | 6,8 % |
+| A | automatisé, oracle automatique | 103 | 85,1 % |
+| AM | logique automatisée, complément manuel (visuel, ergonomie, vrai clavier) | 11 | 9,1 % |
+| M | manuel seulement | 7 | 5,8 % |
 
-Couverture automatisée (A et AM) : **93,2 %**. Couverture manuelle seule : **6,8 %**. Au moins un test manuel
-est nécessaire pour 17,5 % des fonctionnalités. Par nombre de cas : 2 185 cas automatisés (2 035 cas unitaires nommés,
-50 scénarios QEMU, 100 tests Python) contre 22 cas manuels, soit 99,0 % ; ce taux est plus élevé parce que les cas
+Couverture automatisée (A et AM) : **94,2 %**. Couverture manuelle seule : **5,8 %**. Au moins un test manuel
+est nécessaire pour 14,9 % des fonctionnalités. Par nombre de cas : 2 320 cas automatisés au 15 octobre (2 089 cas unitaires nommés,
+59 scénarios QEMU, 172 tests Python) contre 22 cas manuels, soit 99,1 % ; ce taux est plus élevé parce que les cas
 automatisés sont plus fins, le taux fonctionnel est la mesure à retenir.
 
 Les 7 fonctionnalités en mode M sont : le redémarrage ACPI, la performance du dessin (bancs jamais lancés), la netteté
@@ -262,7 +266,7 @@ n'a été lu (elle n'est pas installée ici).
 ### 4.8 Thème verre, lots a16 à a20 (10 octobre)
 
 Après la campagne du 5 et 6 octobre, l'interface est passée du premier thème (style Windows XP) à un thème « verre »
-clair et sombre. Les lots a16 à a20 ont été réécrits ou étendus ; les fonctionnalités F95 à F103 et le cas manuel
+clair et sombre. Les lots a16 à a20 ont été réécrits ou étendus ; les fonctionnalités F95 à F109, F121 et le cas manuel
 MT-25 de la [matrice](tests/MATRICE.md) les couvrent. Le plan est fondé sur les risques : une régression de géométrie
 casse le hit-test (risque de clic perdu), un flou mal borné écrit hors de la surface (risque mémoire), un verre mal
 élargi donne une image différente entre composition incrémentale et complète (risque visuel silencieux).
@@ -290,6 +294,33 @@ Ce qui n'est pas fait ou pas démontré pour ce thème :
 - Le thème sombre n'est exercé que par les tests : aucune appli ne le sélectionne.
 - Limites visuelles connues (ombres de fenêtres, flou des fenêtres sous le dock, client opaque, écrans non intégrés) :
   README, section Limites connues.
+
+### 4.9 Traçabilité mise à jour (15 octobre)
+
+La matrice passe de 103 à 121 fonctionnalités. Elle suit maintenant les lots a16 à a20 jusqu'au dernier fichier de test
+et les scénarios récents hors lots :
+
+| Ajout | Fonctionnalités | Tests rattachés |
+|-------|-----------------|-----------------|
+| Écran de démarrage (barre, marque, mise en page) | F104 | `test_boot_bar.c`, `test_boot_layout.c`, `test_boot_marks.c` |
+| Serveur de fenêtres : propriété, quotas, échec d'allocation | F105 | `test_srv_alloc*.c`, `test_srv_owner.c`, `test_srv_open.c` |
+| Contrôles : zones sales, contraste, texte et progression | F106 à F108 | `test_dirty*.c`, `test_paint.c`, `test_contrast.c`, `test_label.c` |
+| Textes de la session et couleurs des applis | F109, F121 | `test_utf8_fuzz.c`, `test_tbuf.c`, `test_typographie_couleurs.py` |
+| Intégrité du démarrage, entrée noyau (AC, SMAP) | F110, F111 | `int_hash_image.py`, `kentry_ac.py` |
+| Matrice de configurations QEMU | F112 | `matrice_configurations.py`, `matrice_demarrage.py`, `test_matrice_qemu.py` |
+| ABI des appels système figée | F113 | `test_abi_syscalls.py`, `tests/abi/syscalls.golden` |
+| Rendu de la connexion, du bureau, du dock, du menu et des dialogues | F72 à F75, F102, F103 | `tests/host/a20/render/test_render_*.c` |
+| Compléments des lots a02 à a15 et d03 à d12 | F05 à F54, F90, F92, F114 à F120 | fichiers qui n'étaient cités nulle part |
+
+Les entrées F95 à F113 et F121 portent les champs `exigence`, `technique` et `element`, et `cas` quand le nom d'un cas
+est cité. `tools/matrice_couverture.py` vérifie que chaque nom de cas existe dans un des fichiers cités, refuse une
+traçabilité incomplète (technique sans élément de couverture, par exemple) et affiche les fichiers non cités avec
+`--orphelins`. Le tableau de traçabilité est dans [`tests/MATRICE.md`](tests/MATRICE.md).
+
+Ce que cette mise à jour ne démontre pas : elle relie des tests à des exigences, elle ne les rejoue pas. Les résultats
+du 10 octobre (point 4.8) restent ceux de la dernière exécution connue. Les champs de traçabilité des lots a01 à a15
+et d00 à d12 ne sont pas remplis (rattachement par fichier seulement), et des tests ajoutés pendant la reprise du
+15 octobre ne sont pas encore cités : voir la sortie de `--orphelins`.
 
 ## 5. Registre des incidents
 
@@ -399,6 +430,8 @@ make -j8 -k test-host                         suites hôte (la première fois pl
 make B=build/aNN lot LOT=aNN                  un lot seul
 make hdrcheck                                 autonomie des en-têtes
 make matrice                                  recalcule les taux de couverture automatisée et manuelle
+make matrice-check                            échoue si MATRICE.md ou MANUEL.md sont périmés ou si un test cité manque
+python3 tools/matrice_couverture.py --orphelins   fichiers de tests qu'aucune fonctionnalité ne cite
 make scan                                     contrôle statique de sécurité
 ruff check tools tests && ruff format --check tools tests
 ```

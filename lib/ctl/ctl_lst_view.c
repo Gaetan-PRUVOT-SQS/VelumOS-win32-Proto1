@@ -9,7 +9,7 @@ void	ctl_lst_geom(const t_ctl *c, t_lstgeom *g)
 
 	l = c->priv;
 	luna_metrics(&m);
-	f = ctl_font(0);
+	f = ctl_font_of(c);
 	g->rowh = 1;
 	if (f && f->height > 0)
 		g->rowh = f->height + 2 * CTL_ROW_PAD;

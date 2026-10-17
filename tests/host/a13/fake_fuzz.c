@@ -1,5 +1,6 @@
 #include "kfix.h"
 #include "velum/err.h"
+#include "velum/uptr.h"
 #include "velum/vmm.h"
 
 bool	fx_rc_ok(int64_t rc)
@@ -7,7 +8,8 @@ bool	fx_rc_ok(int64_t rc)
 	if (rc >= 0)
 		return (true);
 	return (rc == E_PERM || rc == E_FAULT || rc == E_INVAL || rc == E_NODEV
-		|| rc == E_NOMEM || rc == E_NOTSUP || rc == E_IO || rc == E_NOSPC);
+		|| rc == E_NOMEM || rc == E_NOTSUP || rc == E_IO || rc == E_NOSPC
+		|| rc == UPTR_E2BIG);
 }
 
 static uint64_t	pick_arg(uint64_t *seed, void *buf)
@@ -32,13 +34,37 @@ static uint64_t	pick_arg(uint64_t *seed, void *buf)
 	return (USER_TOP - 4096 * ((r >> 8) % 1024));
 }
 
+static uint32_t	pick_num(uint64_t *seed)
+{
+	uint64_t	r;
+
+	r = kfix_rnd(seed);
+	if ((r & 3) == 0)
+		return ((uint32_t)(r >> 8) | 0x100u);
+	if ((r & 3) == 1)
+		return ((uint32_t)((r >> 8) % 256));
+	return (SYS_DISPLAY_INFO + (uint32_t)((r >> 8) % 5));
+}
+
+static int	rc_violates(uint32_t num, int64_t rc)
+{
+	bool	registered;
+
+	registered = num < 256 && g_fp.sys[num] != NULL;
+	if (!registered)
+		return (rc != E_NOSYS);
+	if (rc == E_NOSYS)
+		return (1);
+	return (!fx_rc_ok(rc));
+}
+
 int	fx_fuzz_one(uint64_t *seed, uint8_t *buf)
 {
 	uint64_t	a[3];
 	uint32_t	num;
 	int64_t		rc;
 
-	num = 0x60 + (uint32_t)(kfix_rnd(seed) % 6);
+	num = pick_num(seed);
 	a[0] = pick_arg(seed, buf);
 	a[1] = pick_arg(seed, buf);
 	a[2] = pick_arg(seed, buf);
@@ -51,7 +77,7 @@ int	fx_fuzz_one(uint64_t *seed, uint8_t *buf)
 		return (1);
 	if (num == SYS_DISPLAY_MAP && rc >= 0 && rc < (int64_t)USER_MIN)
 		return (1);
-	return (!fx_rc_ok(rc) && num != 0x65);
+	return (rc_violates(num, rc));
 }
 
 uint32_t	fx_canary(const uint8_t *p, size_t n)

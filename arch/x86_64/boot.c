@@ -3,6 +3,7 @@
 #include "boot_int.h"
 #include "velum/boot.h"
 #include "velum/err.h"
+#include "velum/klog.h"
 #include "velum/libk.h"
 
 int	boot_collect(void)
@@ -23,5 +24,6 @@ int	boot_collect(void)
 	if (boot_fill_memmap(bi) < 0)
 		return (E_PROTO);
 	boot_fill_misc(bi);
+	klog_info("boot: canari noyau, source %s", boot_guard_source());
 	return (E_OK);
 }

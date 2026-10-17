@@ -114,5 +114,7 @@ uint64_t		cpu_fpu_area_size(void);
 int				cpu_backtrace(uint64_t rbp, uint64_t *pcs, int max);
 int				cpu_selftest(void);
 void			cpu_stack_report(const t_regs *regs, uint64_t cr2);
+void			cpu_spec_user_return(void);
+bool			cpu_spec_verw_active(void);
 
 #endif

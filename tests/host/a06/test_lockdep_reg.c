@@ -84,7 +84,8 @@ static void	table_pleine(void)
 		i++;
 	}
 	h_eq_i64("table pleine", rc, E_NOSPC);
-	h_eq_i64("places restantes remplies", ok, RANK_SLOTS - 7);
+	h_eq_i64("places restantes remplies", ok,
+		RANK_SLOTS - RANK_BUILTIN - 2);
 }
 
 int	main(void)

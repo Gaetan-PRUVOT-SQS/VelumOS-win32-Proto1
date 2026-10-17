@@ -34,6 +34,7 @@ _Noreturn void	kmain(void)
 		panic("boot: collecte des informations impossible");
 	boot_banner();
 	initcalls_run();
+	boot_stack_guard_arm();
 	klog_info("VelumOS boot ok");
 	fails = 0;
 	if (boot_cmdline_has("selftest"))

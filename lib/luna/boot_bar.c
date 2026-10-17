@@ -62,6 +62,6 @@ void	lp_boot_bar(t_surface *s, const t_rect *r, uint32_t pct, uint32_t tick)
 	track = (pal->ink & 0x00ffffffU) | 0x24000000U;
 	bar_pill(s, *r, track, track);
 	f = bar_span(r, pct, tick);
-	bar_pill(s, f, pal->accent_hi, pal->accent);
+	bar_pill(s, f, pal->accent, pal->accent);
 	bar_shine(s, f, lp_mix(pal->accent_hi, LC_WHITE, 128));
 }

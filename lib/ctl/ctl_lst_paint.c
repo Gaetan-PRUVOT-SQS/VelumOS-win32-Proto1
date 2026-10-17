@@ -23,6 +23,8 @@ static void	draw_item(t_ctlroot *r, const t_ctl *c, int32_t idx)
 	tx.enabled = true;
 	tx.mnemonic = false;
 	tx.font = NULL;
+	if (c->font)
+		tx.font = ctl_font_of(c);
 	tx.color = ctl_color_text(ctl_enabled(c));
 	if (sel)
 	{
