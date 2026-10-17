@@ -27,7 +27,7 @@ Les cas manuels sont décrits dans [`MANUEL.md`](MANUEL.md).
 | dont automatisée avec complément manuel (AM) | 9,1 % (11) |
 | Couverture manuelle seule (M) | **5,8 %** (7 sur 121) |
 | Fonctionnalités qui demandent au moins un test manuel (AM + M) | 14,9 % (18) |
-| Cas de test automatisés (cas unitaires, scénarios QEMU, tests Python) | 2320 |
+| Cas de test automatisés (cas unitaires, scénarios QEMU, tests Python) | 2343 |
 | Cas de test manuels | 22 |
 | Cas manuels joués | 19 sur 22 (15 réussi, 4 partiel) |
 | Taux d'automatisation par nombre de cas | 99,1 % |
@@ -36,8 +36,8 @@ Lecture : le taux par nombre de cas est très supérieur au taux fonctionnel par
 (une valeur limite, une partition) alors que les cas manuels sont des sessions complètes. Le taux fonctionnel est
 la mesure à retenir.
 
-Inventaire des cas automatisés : 743 fichiers de tests unitaires contenant 2089 cas nommés
-(`h_run`), 59 scénarios QEMU et 172 tests Python.
+Inventaire des cas automatisés : 743 fichiers de tests unitaires contenant 2109 cas nommés
+(`h_run`), 59 scénarios QEMU et 175 tests Python.
 
 ## Par sous-système
 

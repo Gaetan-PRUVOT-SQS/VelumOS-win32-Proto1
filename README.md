@@ -16,9 +16,17 @@ Le dépôt documente aussi sa campagne de tests, de l'unité à la machine virtu
 [Campagne de tests](#campagne-de-tests), [`TESTS.md`](TESTS.md) et [`tests/README.md`](tests/README.md).
 Pressé ? Le [guide de lecture en cinq minutes](GUIDE-DE-LECTURE.md) indique trois fichiers à ouvrir.
 
-Les captures de ce dépôt (`assets/`) montrent encore l'ancien thème et ne sont plus affichées ici. De nouvelles
-captures du thème verre seront prises sous QEMU une fois toutes les applis passées au nouveau style : voir
-[Limites connues](#limites-connues).
+Les captures ci-dessous ont été prises le 17 octobre 2026 sous QEMU avec KVM (profil `debug`, 1024 x 768). Elles
+montrent le thème verre clair tel que le système le dessine aujourd'hui, sans retouche.
+
+| | |
+|---|---|
+| ![Écran de démarrage](assets/demarrage.png) | ![Écran de connexion](assets/connexion.png) |
+| Démarrage | Connexion |
+| ![Bureau](assets/bureau.png) | ![Fenêtre Bonjour](assets/fenetre-bonjour.png) |
+| Bureau et dock | Fenêtre Bonjour |
+| ![Lanceur](assets/menu-demarrer.png) | ![Appli APK](assets/appli-apk.png) |
+| Lanceur | Appli au format APK |
 
 Windows et Windows XP sont des marques de Microsoft Corporation. VelumOS n'est ni affilié à Microsoft
 ni approuvé par elle, et il n'exécute pas de programmes Windows.
@@ -42,7 +50,25 @@ ni approuvé par elle, et il n'exécute pas de programmes Windows.
 
 C'est un prototype. La première tranche fonctionnelle est complète : un noyau durci, des processus
 isolés en anneau 3, un serveur de fenêtres et une session de bureau qui démarrent sous QEMU en BIOS
-et en UEFI. Rien n'a été essayé sur une vraie machine.
+et en UEFI. Le 17 octobre 2026, l'image construite de zéro a démarré sous QEMU avec KVM sur un processeur AMD
+jusqu'au bureau, au lanceur et à l'appli APK d'exemple (captures plus haut). Rien n'a été essayé sur une vraie
+machine.
+
+Relevé des reprises des 15 et 16 octobre 2026 (tests hôte lancés tels quels, sans s'arrêter au premier échec) :
+773 binaires de test, 767 passent et 6 échouent, tous dans le thème verre ; les 24 scénarios QEMU de fautes du noyau
+(`a01_fault_*`) passent en BIOS et en UEFI. Les six tests rouges sont des défauts réels, pas des tests à corriger :
+
+| Test | Défaut |
+|------|--------|
+| `a17/ctrl_maquette` | 16 écarts à la maquette sur les radios et la barre de progression |
+| `a17/theme_contrast` | accent sur panneau en thème clair sous le seuil WCAG AA |
+| `a17/frame_robust` | dépassement d'entier signé dans `lib/luna/frame_glyph.c` pour une coordonnée extrême |
+| `a17/glass_perf` | le coût du liseré du verre n'est pas borné par la zone visible |
+| `a20/render-deskicon` | bord gauche de l'icône de bureau |
+| `a20/render-desklabel` | largeur des étiquettes du bureau |
+
+Un lot de tests hôte s'arrête au premier test rouge. Le relevé « tout vert » du 10 octobre pour les lots a17 à a20
+cachait ces échecs : il n'est plus repris dans ce dépôt.
 
 Ce qui fonctionne :
 
@@ -61,7 +87,9 @@ Ce qui fonctionne :
 - écran de connexion avec mot de passe haché, bureau, dock avec zone de notification, lanceur, extinction ;
 - applis au format APK, pour un sous-ensemble : signature vérifiée, bytecode interprété par une machine
   virtuelle maison, une activité avec texte et boutons dans une fenêtre du bureau (voir
-  [Applis au format APK](#applis-au-format-apk)).
+  [Applis au format APK](#applis-au-format-apk)) ;
+- sur un processeur AMD sous KVM : retour d'appel système par `sysret` correct (la valeur de `STAR` donnait un
+  sélecteur de pile de RPL 0 sur AMD, d'où le plantage du 8 octobre).
 
 Ce qui manque est détaillé dans [Limites connues](#limites-connues).
 
@@ -69,16 +97,16 @@ En chiffres (C, en-têtes et assembleur) :
 
 | Partie | Lignes | Fichiers |
 |--------|--------|----------|
-| noyau portable (`kernel/`) | 21 400 | 328 |
-| code propre à l'architecture (`arch/`) | 4 900 | 75 |
+| noyau portable (`kernel/`) | 21 800 | 330 |
+| code propre à l'architecture (`arch/`) | 6 300 | 83 |
 | pilotes (`drivers/`) | 6 200 | 103 |
 | systèmes de fichiers (`fs/`) | 5 500 | 71 |
-| bibliothèques partagées (`lib/` : dessin, polices, thème, fenêtres, contrôles, crypto, et les neuf de la couche APK pour 10 800 lignes) | 25 000 | 361 |
-| libc et applis utilisateur (`user/`) | 13 800 | 270 |
-| en-têtes publics (`include/`) | 3 500 | 53 |
-| tests unitaires (`tests/host/`) | 78 700 | 1 158 |
+| bibliothèques partagées (`lib/` : dessin, polices, thème, fenêtres, contrôles, crypto, et les neuf de la couche APK pour 10 800 lignes) | 29 800 | 404 |
+| libc et applis utilisateur (`user/`) | 15 200 | 291 |
+| en-têtes publics (`include/`) | 3 800 | 57 |
+| tests unitaires (`tests/host/`) | 91 500 | 1 291 |
 
-Python (outils et scénarios système) : 8 900 lignes, dont 1 900 pour l'assembleur DEX et la fabrication d'APK.
+Python (outils et scénarios système) : 7 900 lignes, dont 2 100 pour l'assembleur DEX et la fabrication d'APK.
 
 ## Campagne de tests
 
@@ -90,39 +118,39 @@ dans [`TESTS.md`](TESTS.md). Le code de test et sa façon de s'écrire sont déc
 
 ### En bref
 
-| Mesure (6 octobre 2026) | Résultat |
+| Mesure | Résultat |
 |-------------------------|----------|
 | Niveaux de test | 4 : unitaire sur l'hôte, autotests du noyau, scénarios système QEMU, contrôles statiques |
-| Couverture fonctionnelle automatisée | **93,2 %** des 103 fonctionnalités vérifiables (82,5 % entièrement automatisées, 10,7 % avec un complément manuel) |
-| Couverture manuelle seule | **6,8 %** (7 fonctionnalités), plus 22 cas de test manuels décrits dans [`tests/MANUEL.md`](tests/MANUEL.md) |
+| Couverture fonctionnelle automatisée (matrice recalculée le 17 octobre) | **94,2 %** des 121 fonctionnalités vérifiables (85,1 % entièrement automatisées, 9,1 % avec un complément manuel) |
+| Couverture manuelle seule | **5,8 %** (7 fonctionnalités), plus 22 cas de test manuels décrits dans [`tests/MANUEL.md`](tests/MANUEL.md) |
 | Cas manuels joués (sous QEMU/KVM, ancien thème) | 19 sur 22 : 15 réussis, 4 partiels ; MT-25 (thème verre) à exécuter |
-| Tests unitaires | 669 exécutions de suites, 13,26 millions de vérifications, 0 échec (ASan et UBSan) |
-| Scénarios système | 92 exécutions sur 92 (50 scénarios, BIOS et UEFI) au 6 octobre, ancien thème, non rejoués depuis |
-| Lot du thème verre (a17 à a20), relevé du 10 octobre | 165 suites, 372 283 vérifications, 0 échec ; a16 vert, `test-host` code 0, `make all` code 0 (détail dans [`TESTS.md`](TESTS.md), 4.8) |
+| Tests unitaires (6 octobre) | 669 exécutions de suites, 13,26 millions de vérifications, 0 échec (ASan et UBSan) ; avant le thème verre |
+| Scénarios système | 92 exécutions sur 92 (50 scénarios, BIOS et UEFI) au 6 octobre, ancien thème. Rejoués depuis : seulement les 24 scénarios `a01_fault_*` (16 octobre). `make test-qemu` complet et les scénarios de captures sont à relancer |
+| Tests hôte, relevé du 16 octobre | 773 binaires : 767 passent, 6 échouent (lots a17 et a20, liste dans [État du projet](#état-du-projet)) ; le relevé vert du 10 octobre pour a17 à a20 était faux, il s'arrêtait au premier échec |
 | Autotests du noyau | 17 sur 17 |
 | Intégration continue | GitHub Actions : compilation avec le `gcc` du système, 10 lots de tests hôte, 6 scénarios QEMU sans KVM (voir [`tests/README.md`](tests/README.md)) |
 | Défauts trouvés et corrigés | 46 : 29 dans le produit (6 de gravité haute, 11 moyenne, 12 basse) et 17 dans l'infrastructure de test |
-| Défauts ouverts | aucun au registre du 6 octobre ; les 4 défauts trouvés par les cas manuels sont corrigés, chacun avec son test de régression. Un panic sous KVM constaté le 8 octobre est décrit dans [Limites connues](#limites-connues) |
+| Défauts ouverts | les 6 tests rouges ci-dessus et les points de sécurité de [Limites connues](#limites-connues). Le registre du 6 octobre (46 défauts) n'est pas mis à jour pour la reprise du 15 octobre |
 | Couverture mesurée avec gcov | de 95 % à 100 % des lignes sur les sous-systèmes mesurés (a01, a02, a03, a08, a11, a13, a16) |
 | Test de mutation | mémoire physique (41 mutants définis, 31 joués), affichage (12), polices (22) |
-| Contrôles statiques | en-têtes autonomes, contrôle de fonctions dangereuses, ruff, shellcheck : 0 erreur |
+| Contrôles statiques (rejoués le 17 octobre : en-têtes et scan) | en-têtes autonomes, contrôle de fonctions dangereuses et secrets : 0 alerte ; ruff et shellcheck : 0 erreur au 10 octobre |
 
 ### Automatisé et manuel
 
 Le principe : tout ce qui a un oracle automatique est automatisé, et seul ce qui demande un jugement humain, un
 vrai périphérique ou une durée longue reste manuel. La mesure est faite sur les fonctionnalités vérifiables du système
-(103, regroupées par sous-système), pas sur le nombre de tests : chaque fonctionnalité a un mode de vérification et la
+(121, regroupées par sous-système), pas sur le nombre de tests : chaque fonctionnalité a un mode de vérification et la
 liste des tests qui la couvrent.
 
 | Mode | Fonctionnalités | Part |
 |------|-----------------|------|
-| A : automatisé | 85 | 82,5 % |
-| AM : automatisé, avec un complément manuel (aspect visuel, ergonomie, vrai clavier) | 11 | 10,7 % |
-| M : manuel seulement | 7 | 6,8 % |
+| A : automatisé | 103 | 85,1 % |
+| AM : automatisé, avec un complément manuel (aspect visuel, ergonomie, vrai clavier) | 11 | 9,1 % |
+| M : manuel seulement | 7 | 5,8 % |
 
-La couverture automatisée est donc de 93,2 % (A et AM), et 17,5 % des fonctionnalités appellent au moins un test
-manuel. Par nombre de cas, 2 185 cas sont automatisés (cas unitaires nommés, scénarios QEMU, tests Python) contre 22
-manuels, soit 99,0 % : ce second taux est beaucoup plus élevé parce que les cas automatisés sont fins, c'est le taux
+La couverture automatisée est donc de 94,2 % (A et AM), et 14,9 % des fonctionnalités appellent au moins un test
+manuel. Par nombre de cas, 2 343 cas sont automatisés (cas unitaires nommés, scénarios QEMU, tests Python) contre 22
+manuels, soit 99,1 % : ce second taux est beaucoup plus élevé parce que les cas automatisés sont fins, c'est le taux
 fonctionnel qu'il faut retenir.
 
 Ce qui reste en manuel : fidélité visuelle à la maquette du thème verre, netteté des polices, manipulation des fenêtres à la souris,
@@ -241,7 +269,8 @@ make ci                 ce que fait l'intégration continue (gcc du système, se
 make hdrcheck scan      contrôles statiques
 ```
 
-Les captures de ce fichier sont produites par `tests/qemu/int_captures.py` et `tests/qemu/int_demarrage.py`.
+Les captures de ce fichier ont été prises avec `tools/manuel.py` (`VELUM_BUILD=build/<ID> python3 tools/manuel.py demarrer NOM`,
+puis `cliquer` et `capture`). Les scénarios `tests/qemu/int_captures.py` et `int_demarrage.py` les comparent à la maquette.
 
 ## Démarrage rapide
 
@@ -475,7 +504,7 @@ ne fournit pas.
 
 Ce qui tourne aujourd'hui : une `Activity`, des `TextView`, `Button` et `LinearLayout` construits par le
 code, un clic, des chaînes (`String`, `StringBuilder`), des exceptions, `android.util.Log`. L'appli
-d'exemple `user/apk/bonjour` est dans l'image, au menu Démarrer sous « Tous les programmes ».
+d'exemple `user/apk/bonjour` est dans l'image, parmi les applis épinglées du lanceur.
 
 ```
 fichier .apk
@@ -499,7 +528,7 @@ Les règles de sécurité, chacune tenue par un test :
 - tas, pile d'appels et nombre d'instructions par événement sont plafonnés ;
 - le processus de l'appli n'a aucun privilège : ni fichiers, ni réseau, ni lancement d'autres programmes.
 
-Pour essayer : « Bonjour APK » dans le menu Démarrer, ou « Exécuter » avec le chemin d'un fichier `.apk`.
+Pour essayer : « Bonjour APK » dans le lanceur, ou « Exécuter » avec le chemin d'un fichier `.apk`.
 `apkinst <fichier>` installe un APK sous `/data/apps` (même signataire exigé pour une mise à jour).
 Les fichiers d'essai sont fabriqués par deux outils de l'hôte, `tools/dexasm.py` (assembleur DEX) et
 `tools/mkapk.py` (manifeste, ressources, archive, signature), parce que la chaîne officielle n'est pas
@@ -546,7 +575,7 @@ tools/          image disque, scénarios QEMU, génération des polices, chaîne
                 assembleur DEX et fabrication d'APK
 tests/          host/ (tests unitaires par sous-système), qemu/ (scénarios système)
 third_party/    en-tête du protocole Limine et polices sources
-assets/         captures d'écran du README
+assets/         captures d'écran du README (thème verre, 17 octobre 2026)
 ```
 
 Chaque sous-système a son fragment `mk/lot-aNN.mk` (sources, tests, applis) et s'isole avec
@@ -587,11 +616,15 @@ jamais en retirer ni en changer le sens sans changer la version de l'ABI.
 - Un seul processeur : le démarrage des autres cœurs n'est pas écrit, les verrous sont prévus pour le SMP
   mais jamais éprouvés à plusieurs cœurs.
 - Aucun essai sur du vrai matériel : tout tourne sous QEMU (q35 et pc, avec ou sans HPET).
-- Panic sous KVM, constaté le 8 octobre 2026 (QEMU 10.2.2, hôte AMD Ryzen 7 7730U, profil `debug`) : le noyau
-  démarre, mais dès que `winsrv` et `logon` sont lancés il s'arrête sur une double faute (`#DF`, pile noyau
-  épuisée dans `trap_dispatch`). Les scénarios de démarrage passent, ceux qui ouvrent le bureau (`a20_desktop`,
-  `int_captures`) échouent. Sans KVM (`make ci`, `tools/manuel.py demarrer NOM --lent`) le bureau démarre et les
-  deux dernières captures ci-dessus en viennent. Cause non élucidée, pas encore au registre des défauts.
+- Le panic sous KVM du 8 octobre 2026 (double faute au lancement de `winsrv` et `logon`, hôte AMD) est corrigé :
+  `STAR[63:48]` valait 0x10, donc `sysret` chargeait un sélecteur de pile de RPL 0 sur AMD (test `a07/retour_syscall`).
+  Le bureau démarre sous KVM (captures du 17 octobre). `make test-qemu` complet n'a pas été rejoué depuis.
+- Six tests hôte rouges dans le thème verre (liste dans [État du projet](#état-du-projet)).
+- Points de sécurité ouverts, relevés par la relecture du 16 octobre : `apkrun` ne recoupe pas le signataire d'une appli
+  avec le registre au lancement ; les piles de fils contournent `mem_limit` (jusqu'à 512 Mio) ; `read` et `write` de
+  plus de 1 Mio renvoient `E_FAULT` ; la mise à jour d'un paquet n'est pas atomique si l'écriture du registre échoue.
+- Mitigations d'exécution spéculative : la politique est calculée et annoncée au démarrage, mais rien n'est appliqué
+  (pas d'écriture de MSR, pas de KPTI).
 - Pas d'USB (le clavier et la souris sont en PS/2), pas de réseau, pas de NVMe ni d'AHCI, un seul adaptateur
   graphique à mode réglable (Bochs/QEMU).
 - Pas de compatibilité avec les programmes Windows.
@@ -615,7 +648,8 @@ jamais en retirer ni en changer le sens sans changer la version de l'ABI.
     dock, le lanceur, les libellés du bureau et les contrôles dessinent encore en Open Sans, et JetBrains Mono est
     générée mais aucun code ne l'utilise ;
   - les polices sont des bitmaps 1 bit, donc moins fines que celles de la maquette ;
-  - les captures du dépôt et le cas manuel MT-25 (fidélité à la maquette) ne sont pas refaits sur le thème verre.
+  - les captures du dépôt ont été refaites le 17 octobre, mais le cas manuel MT-25 (fidélité à la maquette) n'est
+    toujours pas rejoué.
 - Quelques sous-systèmes n'ont pas leurs mesures de couverture ni leurs bancs de performance.
 
 ## Composants tiers et licence

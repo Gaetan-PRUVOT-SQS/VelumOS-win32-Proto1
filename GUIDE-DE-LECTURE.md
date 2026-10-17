@@ -17,7 +17,7 @@ dit la technique de test utilisée : exigence, supposition d'erreur, injection d
 
 ## 2. La traçabilité (1 minute) : `tests/MATRICE.md`
 
-103 fonctionnalités, chacune avec son mode de vérification (A automatisé, AM automatisé avec complément manuel, M manuel),
+121 fonctionnalités, chacune avec son mode de vérification (A automatisé, AM automatisé avec complément manuel, M manuel),
 les tests qui la couvrent et les cas manuels associés. C'est de là que sort le taux de couverture fonctionnelle du README.
 Le fichier est généré par `tools/matrice_couverture.py` depuis `tests/matrice.toml`, qui refuse un test cité qui
 n'existe pas.

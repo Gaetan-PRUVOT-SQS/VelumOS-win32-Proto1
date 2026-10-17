@@ -280,9 +280,12 @@ casse le hit-test (risque de clic perdu), un flou mal borné écrit hors de la s
 | Texte illisible sur fond de verre | contraste WCAG calculé sur fonds variables, clair et sombre | `test_contrast*.c`, `test_colors_ext.c` |
 | Police générée différente d'une exécution à l'autre | génération reproductible, empreintes, budget de taille | `test_genfont.py`, `test_font_budget.c` |
 
-Résultat relevé au point de départ de la reprise du 10 octobre (`make host-a17 host-a18 host-a19 host-a20`) : 165 suites,
-372 283 vérifications, 0 échec ; `host-a16` vert, `test-host` code 0, `make all` code 0 (image de 67 Mio). Ce relevé
-vient de la passe de reprise, il n'a pas été rejoué pour cette mise à jour de la documentation.
+Le relevé du 10 octobre (165 suites, 0 échec pour a17 à a20) était faux : un lot s'arrête au premier test rouge
+(`|| exit 1` dans `mk/host.mk`) et les échecs suivants n'étaient pas vus. Relevé du 16 octobre, tous les binaires lancés
+un à un : 773 binaires de test hôte, 767 passent, 6 échouent (`a17/ctrl_maquette`, `a17/theme_contrast`,
+`a17/frame_robust`, `a17/glass_perf`, `a20/render-deskicon`, `a20/render-desklabel`). `make hdrcheck` et `make scan`
+rendent 0 alerte le 17 octobre. Les 24 scénarios QEMU `a01_fault_*` passent en BIOS et en UEFI ; le démarrage sous KVM
+jusqu'au bureau a été vérifié à la main le 17 octobre.
 
 Ce qui n'est pas fait ou pas démontré pour ce thème :
 
