@@ -16,6 +16,8 @@ static int	r3_noperm(void)
 
 int	r3_child_main(const char *mode)
 {
+	int	code;
+
 	if (!strcmp(mode, "null"))
 		r3_do_null();
 	if (!strcmp(mode, "div0"))
@@ -30,6 +32,9 @@ int	r3_child_main(const char *mode)
 		return (42);
 	if (!strcmp(mode, "noperm"))
 		return (r3_noperm());
+	code = r3_entry_child(mode);
+	if (code != R3_NO_MODE)
+		return (code);
 	while (!strcmp(mode, "dort"))
 		r3_sys(SYS_SLEEP, R3_NAP_NS, 0, 0);
 	return (99);
@@ -51,6 +56,7 @@ int	main(int argc, char **argv)
 	r3_suite_obj(&t);
 	r3_suite_child(&t);
 	r3_suite_thread(&t);
+	r3_suite_entry(&t);
 	v_logf(V_LOG_INFO, "RING3TEST %d vérifications, %d ignorées", t.ok,
 		t.skip);
 	if (t.ko == 0)

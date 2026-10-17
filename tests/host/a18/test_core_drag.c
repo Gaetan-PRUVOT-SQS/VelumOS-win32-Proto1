@@ -1,5 +1,6 @@
 #include "harness.h"
 #include "help.h"
+#include "velum/theme.h"
 
 static t_wtable	g_t;
 
@@ -50,7 +51,7 @@ static void	limits(void)
 	r = drag(HT_LEFT, 1000, 0);
 	h_true(r.x + r.w == 600 && r.w == WS_MINTRACK_W, "mini, droite fixe");
 	r = drag(HT_BOTTOM, 0, -1000);
-	h_true(r.y == 200 && r.h == 34, "hauteur mini");
+	h_true(r.y == 200 && r.h == VT_CAPTION_H, "hauteur mini = barre de titre");
 	r = drag(HT_TOP, 0, -1000);
 	h_true(r.y == 0 && r.y + r.h == 500, "haut borne a la zone de travail");
 	r = drag(HT_BOTTOMRIGHT, 5000, 5000);
@@ -62,7 +63,8 @@ static void	limits(void)
 	r = drag(HT_CAPTION, -5000, -5000);
 	h_true(r.x == -(400 - WS_DRAG_KEEP) && r.y == 0, "deplacement borne");
 	r = drag(HT_CAPTION, 5000, 5000);
-	h_true(r.x == 1024 - WS_DRAG_KEEP && r.y == 708, "legende accessible");
+	h_true(r.x == 1024 - WS_DRAG_KEEP
+		&& r.y == g_t.work.y + g_t.work.h - VT_CAPTION_H, "legende accessible");
 }
 
 static void	cursors(void)

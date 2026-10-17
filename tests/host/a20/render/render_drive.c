@@ -9,11 +9,11 @@ void	render_shot(const char *name)
 	t_surface	screen;
 	char		path[128];
 
-	mkdir("build/a20/render", 0755);
+	mkdir(A20_RENDER, 0755);
 	gfx_surface_init(&screen, calloc(SCREEN_W * SCREEN_H, 4), SCREEN_W,
 		SCREEN_H);
 	fwm_compose(&screen);
-	snprintf(path, sizeof(path), "build/a20/render/%s.ppm", name);
+	snprintf(path, sizeof(path), A20_RENDER "/%s.ppm", name);
 	ppm_write(&screen, path);
 	free(screen.px);
 }

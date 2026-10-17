@@ -6,14 +6,14 @@ static void	zone_sysmenu(t_lgeo *g)
 	int32_t				ic;
 
 	d = lm_detail();
-	ic = lm_metrics()->icon_small;
+	ic = d->caption_icon;
 	g->sysmenu = lp_rect(g->outer.x, g->outer.y, 0, 0);
 	g->icon = g->sysmenu;
 	if (!(g->flags & LG_SYSMENU) || (g->flags & LG_TOOL))
 		return ;
 	g->sysmenu = lp_isect(lp_rect(g->caption.x, g->caption.y, d->sysmenu_w,
 				g->caption.h), g->caption);
-	g->icon = lp_rect(g->caption.x + (d->sysmenu_w - ic) / 2,
+	g->icon = lp_rect(g->caption.x + d->icon_left,
 			g->outer.y + (g->cap_end - ic) / 2, ic, ic);
 	if (!lg_inside(g->icon, g->sysmenu))
 		g->icon = lp_rect(g->outer.x, g->outer.y, 0, 0);

@@ -15,8 +15,8 @@ int	hello_open(t_hello *app)
 	r = ui_connect(&info);
 	if (r < 0)
 		return (r);
-	ui_request(&rq, rect_make(160, 120, HELLO_W, HELLO_H_PX), WS_DEFAULT,
-		HELLO_TITLE);
+	ui_request(&rq, rect_make(HELLO_X, HELLO_Y, HELLO_W, HELLO_H_PX),
+		WS_DEFAULT, HELLO_TITLE);
 	r = uiwin_open(&app->ui, &rq, hello_on_command);
 	if (r < 0)
 		return (r);

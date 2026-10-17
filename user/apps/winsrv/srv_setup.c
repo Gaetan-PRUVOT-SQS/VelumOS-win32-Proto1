@@ -49,6 +49,7 @@ static int	open_screen(t_wsrv *s)
 	gfx_surface_init(&s->back, back, (int32_t)di.width, (int32_t)di.height);
 	gfx_surface_init(&s->fb, fb, (int32_t)di.width, (int32_t)di.height);
 	s->fb.stride = (int32_t)(di.pitch / 4);
+	ws_glass_open(s);
 	return (0);
 }
 
@@ -93,6 +94,7 @@ void	ws_close_all(t_wsrv *s)
 		ws_sys_close(s->listener);
 	if (s->input != 0)
 		ws_sys_close(s->input);
+	ws_glass_close(s);
 	if (s->back.px != NULL)
 		ws_sys_free(s->back.px, (uint64_t)s->back.w * s->back.h * 4);
 	s->back.px = NULL;

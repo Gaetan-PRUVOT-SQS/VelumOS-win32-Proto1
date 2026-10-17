@@ -9,7 +9,7 @@
 static void	layout_balayage_tailles_et_nombres(void)
 {
 	static const int32_t	sizes[][2] = {{640, 480}, {800, 600}, {1024, 768},
-	{1280, 1024}, {1920, 1080}, {4096, 2160}};
+	{1280, 800}, {1280, 1024}, {1920, 1080}, {4096, 2160}};
 	t_logonlayout			o;
 	uint32_t				s;
 	uint32_t				c;
@@ -21,6 +21,7 @@ static void	layout_balayage_tailles_et_nombres(void)
 		while (c <= 17)
 		{
 			h_true(logon_layout(sizes[s][0], sizes[s][1], c, &o) >= 0, "ok");
+			h_eq_i64("carte de 380", o.card.w, 380);
 			check_tiles(&o, lay_rect(0, 0, sizes[s][0], sizes[s][1]));
 			check_rest(&o, lay_rect(0, 0, sizes[s][0], sizes[s][1]));
 			c++;
@@ -38,7 +39,7 @@ static void	layout_nombre_de_tuiles_affichees(void)
 	h_eq_i64("six tiennent en 1024x768", logon_layout(1024, 768, 6, &o), 6);
 	h_eq_i64("plafond a six", logon_layout(1024, 768, 16, &o), 6);
 	h_eq_i64("deux tiennent en 640x480", logon_layout(640, 480, 2, &o), 2);
-	h_eq_i64("plafond par la hauteur", logon_layout(640, 480, 6, &o), 2);
+	h_eq_i64("plafond par la hauteur", logon_layout(640, 480, 6, &o), 3);
 }
 
 static void	layout_refus_sous_le_minimum(void)

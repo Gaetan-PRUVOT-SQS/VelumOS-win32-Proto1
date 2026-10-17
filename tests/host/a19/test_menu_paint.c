@@ -41,8 +41,8 @@ static void	texts(void)
 	fake_keys(&u.r, VK_DOWN, 0, 1);
 	fake_log_clear();
 	ctl_paint(&u.r);
-	h_eq_i64("element actif : texte blanc", fake_log_get(2)->a,
-		(int)0xffffffff);
+	h_eq_i64("element actif : encre du theme", fake_log_get(2)->a,
+		(int)luna_color_text());
 	fake_done(&u);
 }
 
@@ -76,7 +76,7 @@ int	main(void)
 {
 	h_begin("a19/menu_paint");
 	h_run("panneaux et element actif", panels_and_hot);
-	h_run("libelles, ombre du desactive, texte blanc", texts);
+	h_run("libelles, ombre du desactive, encre au survol", texts);
 	h_run("coche, fleche, separateur", marks);
 	return (h_end());
 }

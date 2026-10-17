@@ -48,5 +48,6 @@ void	sh_shutdown(t_shell *sh)
 	wmc_destroy(&sh->bar);
 	wmc_destroy(&sh->desk);
 	free(sh->wall_px);
+	sh_glass_free(sh);
 	wmc_disconnect();
 }

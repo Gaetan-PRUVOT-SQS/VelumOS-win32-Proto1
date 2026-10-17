@@ -13,10 +13,53 @@ from PIL import features
 
 ROOT = Path(__file__).resolve().parent.parent
 SPECS = (
-    FontSpec("ui", "OpenSans-Regular.ttf", 11, 12, 3),
-    FontSpec("ui_bold", "OpenSans-ExtraBold.ttf", 11, 12, 3),
-    FontSpec("title", "OpenSans-Bold.ttf", 13, 13, 3),
-    FontSpec("mono", "NotoSansMono-Variable.ttf", 13, 13, 3, fixed_advance=8, weight=400),
+    FontSpec("ui", "OpenSans-Regular.ttf", 11, 12, 3, charset="french"),
+    FontSpec("ui_bold", "OpenSans-ExtraBold.ttf", 11, 12, 3, charset="french"),
+    FontSpec("title", "OpenSans-Bold.ttf", 13, 13, 3, charset="french"),
+    FontSpec(
+        "mono",
+        "NotoSansMono-Variable.ttf",
+        13,
+        13,
+        3,
+        fixed_advance=8,
+        weight=400,
+        charset="french",
+    ),
+    FontSpec("ins_11", "InstrumentSans-Variable.ttf", 11, 11, 3, weight=400, charset="french"),
+    FontSpec("ins_12", "InstrumentSans-Variable.ttf", 12, 11, 3, weight=400, charset="french"),
+    FontSpec("ins_semi_12", "InstrumentSans-Variable.ttf", 12, 11, 3, weight=600, charset="french"),
+    FontSpec("ins_13", "InstrumentSans-Variable.ttf", 13, 14, 3, weight=400, charset="french"),
+    FontSpec("ins_semi_13", "InstrumentSans-Variable.ttf", 13, 14, 3, weight=600, charset="french"),
+    FontSpec("ins_bold_13", "InstrumentSans-Variable.ttf", 13, 14, 3, weight=700, charset="french"),
+    FontSpec("ins_14", "InstrumentSans-Variable.ttf", 14, 14, 3, weight=400, charset="french"),
+    FontSpec("ins_semi_14", "InstrumentSans-Variable.ttf", 14, 14, 3, weight=600, charset="french"),
+    FontSpec("ins_bold_14", "InstrumentSans-Variable.ttf", 14, 14, 3, weight=700, charset="french"),
+    FontSpec("ins_15", "InstrumentSans-Variable.ttf", 15, 15, 3, weight=400, charset="french"),
+    FontSpec("ins_22", "InstrumentSans-Variable.ttf", 22, 22, 5, weight=400, charset="french"),
+    FontSpec("ins_semi_22", "InstrumentSans-Variable.ttf", 22, 22, 5, weight=600, charset="french"),
+    FontSpec(
+        "ins_bold_24", "InstrumentSans-Variable.ttf", 24, 24, 5, weight=700, charset="display"
+    ),
+    FontSpec(
+        "ins_bold_26", "InstrumentSans-Variable.ttf", 26, 26, 6, weight=700, charset="display"
+    ),
+    FontSpec(
+        "ins_bold_28", "InstrumentSans-Variable.ttf", 28, 28, 6, weight=700, charset="display"
+    ),
+    FontSpec(
+        "ins_semi_120", "InstrumentSans-Variable.ttf", 120, 89, 1, weight=600, charset="digits"
+    ),
+    FontSpec(
+        "jbm_14",
+        "JetBrainsMono-Variable.ttf",
+        14,
+        14,
+        3,
+        fixed_advance=8,
+        weight=400,
+        charset="french",
+    ),
 )
 MANIFEST_NAME = "MANIFEST"
 

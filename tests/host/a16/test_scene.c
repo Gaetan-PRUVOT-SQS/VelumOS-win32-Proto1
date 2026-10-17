@@ -14,7 +14,7 @@
 #define S_MONO 5
 #define S_MONO_WHITE 6
 
-static const uint64_t	g_scene_golden = 0xda7f11ad5e0904adull;
+static const uint64_t	g_scene_golden = 0x05916f7e7cca29edull;
 
 static const t_style	g_styles[] = {
 {FONT_TITLE, 0xFF0A246A},

@@ -4,13 +4,15 @@ int32_t	sm_hover(t_startmenu *m, int32_t idx)
 {
 	if (!m->open)
 		return (m->hot);
-	if (idx < 0 || !sm_visible((uint32_t)idx, m->level))
+	if (idx < 0 || !sm_visible((uint32_t)idx))
 		idx = SM_NO_ITEM;
 	m->hot = idx;
+	if (idx != SM_NO_ITEM)
+		m->focus = SM_NO_ITEM;
 	return (m->hot);
 }
 
-static int32_t	scan_visible(uint32_t level, int32_t i, int32_t step)
+static int32_t	scan_visible(int32_t i, int32_t step)
 {
 	int32_t	tries;
 
@@ -18,7 +20,7 @@ static int32_t	scan_visible(uint32_t level, int32_t i, int32_t step)
 	while (tries < SM_ITEMS)
 	{
 		i = (i + step) % SM_ITEMS;
-		if (sm_visible((uint32_t)i, level))
+		if (sm_visible((uint32_t)i))
 			return (i);
 		tries++;
 	}
@@ -32,8 +34,8 @@ int32_t	sm_move(t_startmenu *m, int dir)
 	int32_t	step;
 
 	if (!m->open)
-		return (m->hot);
-	from = m->hot;
+		return (m->focus);
+	from = m->focus;
 	step = 1;
 	if (dir < 0)
 	{
@@ -41,8 +43,11 @@ int32_t	sm_move(t_startmenu *m, int dir)
 		if (from < 0)
 			from = 0;
 	}
-	found = scan_visible(m->level, from, step);
+	found = scan_visible(from, step);
 	if (found >= 0)
-		m->hot = found;
-	return (m->hot);
+	{
+		m->focus = found;
+		m->hot = SM_NO_ITEM;
+	}
+	return (m->focus);
 }

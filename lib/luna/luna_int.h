@@ -20,7 +20,7 @@
 
 # define LP_COORD_MAX 16777216
 # define LP_WALL_MAX 16384
-# define LP_RMAX 16
+# define LP_RMAX 32
 # define LP_PMAX 6
 # define LP_OPS_ARGS 12
 # define LP_TEXT_MAX 4096
@@ -28,7 +28,10 @@
 # define LP_LETTERS 7
 # define LP_LETTER_GAP 5
 # define LP_BLK_GAP 3
-# define LP_HILLS 3
+# define LP_BLOBS 4
+# define LX_SCALE 4
+# define LX_PASSES 3
+# define LP_VEILS 2
 # define LP_ELLIPSIS "\xe2\x80\xa6"
 
 # define LA_LEFT 0
@@ -48,6 +51,46 @@
 # define LC_SELECTION 0xff316ac5
 # define LC_TEXT 0xff000000
 # define LC_GRAYTEXT 0xffaca899
+
+typedef struct s_lpal
+{
+	t_color	accent;
+	t_color	accent_hi;
+	t_color	accent_text;
+	t_color	sel_bg;
+	t_color	sel_ring;
+	t_color	ink;
+	t_color	ink_2;
+	t_color	muted;
+	t_color	dim;
+	t_color	danger;
+	t_color	frame;
+	t_color	dock;
+	t_color	chip;
+	t_color	panel;
+	t_color	window;
+	t_color	content;
+	t_color	control;
+	t_color	sel;
+	t_color	input;
+	t_color	hover;
+	t_color	press;
+	t_color	rim_top;
+	t_color	rim_in;
+	t_color	rim_bottom;
+	t_color	spec;
+	t_color	shadow_win;
+	t_color	shadow_dock;
+	t_color	opaque_panel;
+	t_color	opaque_content;
+	t_color	wall[5];
+	int32_t	sat;
+	int32_t	sat_panel;
+	int32_t	veil_a;
+	int32_t	veil_b;
+}	t_lpal;
+
+typedef const t_lpal		*t_cpal;
 
 typedef const t_lunametrics	*t_cmet;
 
@@ -78,6 +121,9 @@ typedef struct s_lunadetail
 	int32_t	task_gap;
 	int32_t	thumb_min;
 	int32_t	title_radius;
+	int32_t	resize;
+	int32_t	icon_left;
+	int32_t	caption_icon;
 }	t_lunadetail;
 
 typedef const t_lunadetail	*t_cdet;
@@ -101,6 +147,7 @@ typedef struct s_lgeo
 typedef struct s_lbp
 {
 	int32_t	size;
+	int32_t	height;
 	int32_t	top;
 	int32_t	right;
 	int32_t	left;
@@ -168,6 +215,30 @@ typedef struct s_ledge
 	t_color	c;
 }	t_ledge;
 
+typedef struct s_lbc
+{
+	int32_t	cx;
+	int32_t	cy;
+	int32_t	irx;
+	int32_t	iry;
+	int32_t	thr;
+	int32_t	ithr;
+	t_color	col;
+}	t_lbc;
+
+typedef struct s_lvc
+{
+	int32_t	cx;
+	int32_t	cy;
+	int32_t	a;
+	int32_t	b;
+	int32_t	co;
+	int32_t	si;
+	int32_t	sigma;
+	int32_t	peak;
+	bool	down;
+}	t_lvc;
+
 typedef struct s_lwall
 {
 	int32_t	w;
@@ -175,6 +246,9 @@ typedef struct s_lwall
 	int32_t	ox;
 	int32_t	oy;
 	t_rect	vis;
+	t_lbc	bc[LP_BLOBS];
+	t_lvc	vc[LP_VEILS];
+	t_color	base;
 }	t_lwall;
 
 typedef struct s_lglyph
@@ -196,23 +270,8 @@ typedef struct s_lboot
 	t_rect	mark;
 	t_rect	bar;
 	t_rect	text;
+	t_rect	card;
 }	t_lboot;
-
-typedef struct s_lhill
-{
-	int32_t	base;
-	int32_t	amp;
-	int32_t	freq;
-	int32_t	seed;
-	int32_t	bc;
-	int32_t	bw;
-	int32_t	bh;
-	t_color	top;
-	t_color	bot;
-	int32_t	haze;
-}	t_lhill;
-
-typedef const t_lhill		*t_chill;
 
 typedef struct s_lcring
 {
@@ -269,6 +328,45 @@ typedef struct s_lline
 	bool	round;
 }	t_lline;
 
+typedef struct s_lgb
+{
+	uint32_t	*a;
+	uint32_t	*b;
+	int32_t		w;
+	int32_t		h;
+	t_rect		src;
+}	t_lgb;
+
+typedef struct s_lgl
+{
+	int32_t	n;
+	int32_t	step;
+	int32_t	r;
+}	t_lgl;
+
+typedef struct s_lglass
+{
+	t_rect	r;
+	t_rect	hole;
+	int32_t	rad_top;
+	int32_t	rad_bot;
+	int32_t	blur;
+	int32_t	sat;
+	t_color	fill;
+	t_color	opaque;
+	t_color	spec;
+	t_color	rim[3];
+}	t_lglass;
+
+typedef struct s_gkind
+{
+	t_color	fill[2];
+	int32_t	blur;
+	int32_t	rad;
+	bool	panel;
+	bool	pill;
+}	t_gkind;
+
 typedef struct s_lscale
 {
 	int32_t	ox;
@@ -322,14 +420,6 @@ typedef struct s_ltx
 	t_color			c;
 }	t_ltx;
 
-typedef struct s_lfpal
-{
-	t_color			ring[2];
-	const t_lgrad	*fill;
-	t_color			text;
-	t_color			shadow;
-}	t_lfpal;
-
 typedef struct s_lcb
 {
 	t_rect		r;
@@ -342,6 +432,27 @@ typedef struct s_lcb
 t_cicon		lp_icons_a(void);
 t_cicon		lp_icons_b(void);
 t_cicon		lp_icons_c(void);
+t_cpal		lp_pal(void);
+bool		lp_gscratch(size_t px, uint32_t **a, uint32_t **b);
+int32_t		lp_rmask(const t_lglass *g, int32_t x, int32_t y);
+void		lp_gb_down(const t_surface *s, t_rect src, t_lgb *o);
+void		lp_gb_blur(t_lgb *o, int32_t r);
+void		lp_gb_line(const uint32_t *in, uint32_t *out, const t_lgl *p);
+t_color		lp_gb_sample(const t_lgb *o, int32_t x, int32_t y);
+t_color		lp_saturate(t_color c, int32_t sat10);
+bool		lp_glass_make(t_lglass *g, t_rect r, t_glasskind kind);
+void		lp_glass(t_surface *s, const t_lglass *g);
+void		lp_glass_rim(t_surface *s, const t_lglass *g);
+void		lp_frame_glass(t_surface *s, const t_lgeo *g, bool active);
+void		lp_capsule(t_surface *s, const t_lunawin *w, const t_lgeo *g);
+void		lp_capbuttons(t_surface *s, const t_lunawin *w, const t_lgeo *g);
+void		lp_capglyph(t_surface *s, const t_lcb *cb, t_color c);
+int32_t		lp_frame_radius(const t_lgeo *g);
+int32_t		lp_frame_bands(const t_lgeo *g, t_rect *out);
+void		lp_wall_setup(t_lwall *c, t_rect r, const t_surface *s);
+t_color		lp_wall_blobs(const t_lwall *c, int32_t x, int32_t y);
+t_color		lp_wall_veils(const t_lwall *c, t_color col, int32_t x, int32_t y);
+int32_t		lp_smooth256(int32_t t);
 t_cmet		lm_metrics(void);
 t_cdet		lm_detail(void);
 void		lg_make(const t_lunawin *w, t_lgeo *g);
@@ -399,27 +510,12 @@ void		lp_op_line(t_surface *s, const t_lscale *c, const t_lop *o);
 void		lp_text(t_surface *s, const t_ltext *t);
 int32_t		lp_text_len(const char *s);
 void		lp_dotted(t_surface *s, t_rect r, t_color c);
-void		lp_capbtn(t_surface *s, const t_lcb *cb);
-void		lp_capglyph(t_surface *s, const t_lcb *cb);
-void		lp_frame_pal(bool active, t_lfpal *out);
 void		lp_sthumb(t_surface *s, const t_rect *r, t_lunastate st, bool vert);
-void		lp_sm_frame(t_surface *s, t_rect r);
-void		lp_sm_columns(t_surface *s, const t_startlayout *l);
-void		lp_sm_header(t_surface *s, const t_startlayout *l, const char *u);
-void		lp_sm_footer(t_surface *s, const t_startlayout *l);
 void		lp_arrow(t_surface *s, t_rect r, int32_t dir, t_color c);
 t_loplist	lp_icon_list(t_iconid id);
 void		lp_emblem(t_surface *s, t_rect r);
 void		lp_boot_bar(t_surface *s, const t_rect *r, uint32_t p, uint32_t t);
 void		lp_wordmark(t_surface *s, t_rect r, t_color c);
 int32_t		lp_wordmark_w(int32_t h);
-t_chill		lp_wall_hill(int32_t i);
-int32_t		lp_wall_ridge(const t_lwall *c, int32_t u, int32_t i);
-t_color		lp_wall_sky(const t_lwall *c, int32_t u, int32_t v);
-t_color		lp_wall_hillcol(const t_lwall *c, t_point p, int32_t i, int32_t r);
-uint32_t	lp_hash(uint32_t x, uint32_t y, uint32_t seed);
-int32_t		lp_noise1(int32_t x256, uint32_t seed);
-int32_t		lp_noise2(int32_t x256, int32_t y256, uint32_t seed);
-int32_t		lp_fbm(int32_t x256, int32_t y256, uint32_t seed);
 
 #endif

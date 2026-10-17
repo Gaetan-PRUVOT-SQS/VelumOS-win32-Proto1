@@ -2,22 +2,42 @@
 #include "../common/layout.h"
 #include "taskbar.h"
 
+static int	metrics_ok(const t_tbmetrics *m)
+{
+	int32_t	dock_h;
+
+	if ((uint32_t)m->w - 1u >= TB_DIM_MAX || (uint32_t)m->h - 1u >= TB_DIM_MAX
+		|| (uint32_t)m->margin > TB_DIM_MAX || (uint32_t)m->pad > TB_DIM_MAX
+		|| (uint32_t)m->gap > TB_SIDE_GAP_MAX
+		|| (uint32_t)m->start_d - 1u >= TB_DIM_MAX
+		|| (uint32_t)m->tray_w - 1u >= TB_DIM_MAX
+		|| (uint32_t)m->tray_h - 1u >= TB_DIM_MAX
+		|| (uint32_t)m->task_h - 1u >= TB_DIM_MAX)
+		return (0);
+	dock_h = m->h - 2 * m->margin;
+	return (dock_h >= m->start_d && dock_h >= m->tray_h
+		&& dock_h >= m->task_h);
+}
+
 int	tb_regions(const t_tbmetrics *m, t_tbregions *out)
 {
+	int32_t	dock_h;
 	int32_t	strip_x;
-	int32_t	strip_w;
+	int32_t	tray_x;
 
-	if (!out || m->h <= 2 * TB_MARGIN_Y || m->start_w <= 0 || m->tray_w <= 0
-		|| m->gap < 0 || m->gap > TB_SIDE_GAP_MAX)
+	if (!m || !out || !metrics_ok(m))
 		return (E_INVAL);
-	strip_x = m->start_w + m->gap;
-	strip_w = m->w - strip_x - m->tray_w;
-	if (strip_w < 0)
+	dock_h = m->h - 2 * m->margin;
+	strip_x = m->margin + m->pad + m->start_d + m->gap + TB_STRIP_PAD_L;
+	tray_x = m->w - m->margin - m->pad - m->tray_w;
+	if (tray_x - m->gap - strip_x < 0)
 		return (E_RANGE);
-	out->start = lay_rect(0, 0, m->start_w, m->h);
-	out->strip = lay_rect(strip_x, TB_MARGIN_Y, strip_w,
-			m->h - 2 * TB_MARGIN_Y);
-	out->tray = lay_rect(m->w - m->tray_w, 0, m->tray_w, m->h);
+	out->start = lay_rect(m->margin + m->pad,
+			m->margin + (dock_h - m->start_d) / 2, m->start_d, m->start_d);
+	out->strip = lay_rect(strip_x, m->margin + (dock_h - m->task_h) / 2,
+			tray_x - m->gap - strip_x, m->task_h);
+	out->tray = lay_rect(tray_x, m->margin + (dock_h - m->tray_h) / 2,
+			m->tray_w, m->tray_h);
 	return (0);
 }
 

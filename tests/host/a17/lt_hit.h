@@ -21,6 +21,9 @@ typedef struct s_lthit
 typedef struct s_ltsweep
 {
 	uint32_t	count[21];
+	uint32_t	edge_client;
+	uint32_t	edge_close;
+	uint32_t	edge_sys;
 	uint32_t	bad;
 	int32_t		bad_x;
 	int32_t		bad_y;
@@ -32,6 +35,7 @@ extern const int		g_hit_count;
 bool		lt_ht_valid(uint32_t h);
 bool		lt_ht_edge(uint32_t h);
 uint32_t	lt_ht_mirror(uint32_t h);
+bool		lt_sweep_visit(const t_lunawin *w, t_point p, int32_t step);
 void		lt_sweep(const t_lunawin *w, int32_t step, t_ltsweep *out);
 uint32_t	lt_area(t_rect r);
 void		lt_sweep_report(const t_lunawin *w, const t_ltsweep *s);

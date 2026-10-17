@@ -32,6 +32,7 @@ KCFLAGS_COMMON := -std=gnu11 -ffreestanding -fno-pic -fno-pie -mcmodel=kernel \
 	-fstack-protector-strong -mstack-protector-guard=global \
 	-ftrivial-auto-var-init=zero -fzero-call-used-regs=used-gpr \
 	-ffunction-sections -fdata-sections -Wall -Wextra -Werror \
+	-Wvla -Wframe-larger-than=2048 -fstack-clash-protection \
 	-ffile-prefix-map=$(CURDIR)=. -DVELUM_KERNEL
 KCFLAGS_debug := -O1 -g -fsanitize=undefined -fsanitize-undefined-trap-on-error \
 	-DVELUM_DEBUG
@@ -51,6 +52,7 @@ include mk/kernel.mk
 include mk/user.mk
 include mk/host.mk
 include mk/test.mk
+include $(sort $(wildcard mk/qa-*.mk))
 
 .DEFAULT_GOAL := all
 .PHONY: all clean help limine
@@ -75,13 +77,12 @@ help:
 	'  limine        télécharge Limine $(LIMINE_VERSION) (empreinte vérifiée) et compile son outil' \
 	'  all           noyau, applis et image disque' \
 	'  ONLY="skel aNN"  ne construit que ces lots (noyau, libs, applis)' \
-	'  norme         norminette sur tout le C' \
 	'  scan          contrôle statique de sécurité (fonctions dangereuses, secrets)' \
 	'  matrice       recalcule les taux de couverture automatisée et manuelle (tests/MATRICE.md)' \
-	'  lot LOT=aNN   compile, norme et tests hôte du lot' \
+	'  lot LOT=aNN   compile le lot et lance ses tests hôte' \
 	'  test-host     tests unitaires hôte (ASan, UBSan)' \
 	'  test-qemu     scénarios QEMU (BIOS et UEFI)' \
 	'  ci            compilation avec le gcc du système, tests hôte, démarrage QEMU sans KVM' \
 	'  test-tools    tests des outils Python (pytest)' \
-	'  test          norme, outils, hôte, QEMU' \
+	'  test          outils, hôte, QEMU' \
 	'  run           lance QEMU avec fenêtre (run-uefi en UEFI)'

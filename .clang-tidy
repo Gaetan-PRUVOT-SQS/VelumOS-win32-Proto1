@@ -1,0 +1,16 @@
+Checks: >
+  -*,
+  clang-analyzer-core.*,
+  clang-analyzer-unix.*,
+  clang-analyzer-security.*,
+  -clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling,
+  bugprone-sizeof-expression,
+  bugprone-not-null-terminated-result,
+  bugprone-unused-return-value,
+  bugprone-switch-missing-default-case,
+  bugprone-integer-division,
+  bugprone-misplaced-widening-cast,
+  cert-err33-c
+WarningsAsErrors: ''
+HeaderFilterRegex: '.*'
+SystemHeaders: false

@@ -41,6 +41,8 @@ t_handle	hr_client(t_wsrv *s);
 void		hs_point(t_wsrv *s, int32_t x, int32_t y);
 void		hs_click(t_wsrv *s, int32_t x, int32_t y);
 void		hs_drag(t_wsrv *s, t_point from, t_point to);
+int32_t		hs_capbtn_x(int32_t win_x, int32_t win_w, int rank);
+int32_t		hs_capbtn_y(int32_t win_y);
 void		hs_key(t_wsrv *s, uint32_t vk, uint32_t mods);
 int			hs_slot(const t_wsrv *s, uint32_t id);
 uint32_t	hs_create(t_wsrv *s, t_handle c, t_rect r, uint32_t style);
@@ -56,5 +58,9 @@ void		hx_input(t_wsrv *s, uint64_t *st, uint32_t k);
 void		hx_req(t_wsrv *s, const t_handle *cl, uint64_t *st);
 int			hx_compare(t_wsrv *s, t_surface *ref);
 uint32_t	hf_message(const t_wsrv *s, uint8_t *buf, uint64_t *st);
+uint64_t	ha_glass_bytes(uint32_t width);
+bool		ha_has_size(uint64_t size);
+int			ha_start(t_wsrv *s, int64_t fail, uint32_t w, uint32_t h);
+int			hc_frame(t_wsrv *s, t_rect dirty, t_rect in);
 
 #endif

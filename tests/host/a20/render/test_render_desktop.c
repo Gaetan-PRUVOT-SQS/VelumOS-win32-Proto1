@@ -11,7 +11,7 @@ static void	bureau_selection_et_double_clic(void)
 	t_shell	sh;
 	t_point	hello;
 
-	render_reset("build/a20/a20-fixture/users");
+	render_reset(A20_FIXTURE);
 	sh_boot(&sh, 2, (char **)g_argv);
 	hello = rect_center(sh.cells[2]);
 	drv_click(&sh, sh.desk.id, hello);
@@ -34,7 +34,7 @@ static void	bureau_clavier_et_messages(void)
 {
 	t_shell	sh;
 
-	render_reset("build/a20/a20-fixture/users");
+	render_reset(A20_FIXTURE);
 	sh_boot(&sh, 2, (char **)g_argv);
 	drv_key(&sh, sh.desk.id, VK_SHIFT);
 	h_eq_i64("Maj ne selectionne rien", sh.selected, -1);
@@ -48,7 +48,7 @@ static void	bureau_clavier_et_messages(void)
 	h_eq_i64("message ferme", sh.dlg.ready, 0);
 	drv_key(&sh, sh.desk.id, VK_HOME);
 	drv_key(&sh, sh.desk.id, VK_RETURN);
-	h_true(fwm_find("Poste de travail") != NULL, "message du Poste de travail");
+	h_true(fwm_find("Ordinateur") != NULL, "message de l'Ordinateur");
 	sh_shutdown(&sh);
 }
 

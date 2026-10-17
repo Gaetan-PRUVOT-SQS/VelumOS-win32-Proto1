@@ -11,7 +11,7 @@ bool	ctl_edt_view(const t_ctl *c, t_edview *v)
 {
 	uint32_t	n;
 
-	v->font = ctl_font(c->flags);
+	v->font = ctl_font_of(c);
 	if (!v->font)
 		return (false);
 	if (c->flags & CTL_PASSWORD)

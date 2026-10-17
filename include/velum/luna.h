@@ -2,6 +2,7 @@
 # define LUNA_H
 
 # include <stdbool.h>
+# include <stddef.h>
 # include <stdint.h>
 # include "gfx.h"
 
@@ -64,6 +65,12 @@ typedef enum e_iconid
 	ICON_IDS
 }	t_iconid;
 
+typedef enum e_lunatheme
+{
+	LUNA_THEME_LIGHT = 0,
+	LUNA_THEME_DARK
+}	t_lunatheme;
+
 typedef struct s_lunametrics
 {
 	int32_t	caption_h;
@@ -117,11 +124,32 @@ void		luna_taskbar(t_surface *s, t_rect r);
 void		luna_start_button(t_surface *s, t_rect r, t_lunastate st);
 void		luna_task_button(t_surface *s, t_rect r, t_lunastate st);
 void		luna_tray(t_surface *s, t_rect r);
-void		luna_startmenu(t_surface *s, t_rect r);
 void		luna_wallpaper(t_surface *s, t_rect r);
 void		luna_logon_bg(t_surface *s, t_rect r);
 void		luna_icon(t_surface *s, t_point p, t_iconid id, int32_t size);
 void		luna_boot_draw(t_surface *s, uint32_t pct, uint32_t tick);
+typedef enum e_glasskind
+{
+	LUNA_GLASS_DOCK = 0,
+	LUNA_GLASS_LAUNCHER,
+	LUNA_GLASS_PANEL,
+	LUNA_GLASS_CARD,
+	LUNA_GLASS_CHIP,
+	LUNA_GLASS_FRAME,
+	LUNA_GLASS_WINDOW,
+	LUNA_GLASS_CONSOLE,
+	LUNA_GLASS_FLOAT,
+	LUNA_GLASS_KINDS
+}	t_glasskind;
+
+void		luna_glass_scratch(uint32_t *buf, size_t px);
+size_t		luna_glass_need(t_rect r);
+void		luna_glass(t_surface *s, t_rect r, t_glasskind kind);
+void		luna_theme_set(t_lunatheme theme);
+t_lunatheme	luna_theme_get(void);
+void		luna_transparency_set(bool reduced);
+bool		luna_transparency_reduced(void);
+t_color		luna_color_accent(void);
 t_color		luna_color_text(void);
 t_color		luna_color_window(void);
 t_color		luna_color_selection(void);
@@ -145,17 +173,6 @@ typedef struct s_scrollparts
 	t_rect	thumb;
 }	t_scrollparts;
 
-typedef struct s_startlayout
-{
-	t_rect	header;
-	t_rect	avatar;
-	t_rect	left;
-	t_rect	right;
-	t_rect	footer;
-	t_rect	logoff;
-	t_rect	poweroff;
-}	t_startlayout;
-
 typedef struct s_taskbarlayout
 {
 	t_rect	start;
@@ -163,13 +180,18 @@ typedef struct s_taskbarlayout
 	t_rect	tray;
 }	t_taskbarlayout;
 
+int32_t		luna_window_glass_bands(const t_lunawin *w, t_rect *out);
+int32_t		luna_client_band(const t_lunawin *w);
+void		luna_client_band_paint(t_surface *s, const t_lunawin *w,
+				const t_surface *src, t_color fallback);
 t_rect		luna_caption_rect(const t_lunawin *w);
 t_rect		luna_button_rect(const t_lunawin *w, uint32_t ht);
 void		luna_scrollbar_ex(t_surface *s, const t_lunascroll *sb);
 void		luna_scroll_layout(const t_lunascroll *sb, t_scrollparts *out);
 void		luna_tooltip(t_surface *s, t_rect r);
 void		luna_taskbar_layout(t_rect bar, t_taskbarlayout *out);
-void		luna_startmenu_named(t_surface *s, t_rect r, const char *user);
-void		luna_startmenu_layout(t_rect r, t_startlayout *out);
 
+# define LUNA_FOCUS_MARGIN 4
+
+t_color		luna_button_ink(const t_lunabtn *b);
 #endif

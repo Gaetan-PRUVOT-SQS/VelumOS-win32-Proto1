@@ -11,13 +11,20 @@ filtre MAIN et LAUNCHER), permissions (liste), [chaines.defaut] et [chaines.fr].
 L'outil écrit AndroidManifest.xml en XML binaire, resources.arsc (un paquet, type string,
 configurations par défaut et fr), l'archive ZIP (manifeste et classes.dex compressés,
 resources.arsc stocké et aligné sur 4 octets), puis le bloc de signature v2.
-La clé et le certificat de test sont créés par openssl dans --cles (cle.pem, cert.pem),
-jamais dans le dépôt hors de build/. --sans-signature saute la signature ; --alterer
-inverse l'octet de ce rang après signature, pour fabriquer un APK que la vérification refuse.
+La clé et le certificat de test sont dérivés d'une graine publique (GRAINE_DEFAUT, ou la
+variable VELUM_APK_GRAINE) et écrits dans --cles (cle.pem, cert.pem), jamais dans le dépôt hors
+de build/. Même graine, même clé, même certificat, même APK : la construction est reproductible.
+La clé est du matériel d'essai sans valeur : VelumOS ne s'en sert que pour comparer les
+signataires entre eux, il n'embarque aucune ancre de confiance.
+--sans-signature saute la signature ; --alterer inverse l'octet de ce rang après signature,
+pour fabriquer un APK que la vérification refuse.
 """
 
 import argparse
+import base64
 import hashlib
+import math
+import os
 import re
 import struct
 import subprocess
@@ -49,6 +56,21 @@ ALGO_RSA_PKCS1_SHA256 = 0x0103
 MAGIE_BLOC = b"APK Sig Block 42"
 MORCEAU = 1 << 20
 DATE_DOS = 0x0021
+GRAINE_DEFAUT = "VelumOS : cle de test publique, sans valeur, derivee d'une graine fixe"
+VARIABLE_GRAINE = "VELUM_APK_GRAINE"
+BITS_PREMIER = 1024
+EXPOSANT_PUBLIC = 65537
+BASES_MILLER_RABIN = (2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71)
+PREFIXE_SHA256 = bytes.fromhex("3031300d060960864801650304020105000420")
+OID_RSA = bytes.fromhex("06092a864886f70d010101")
+OID_SHA256_RSA = bytes.fromhex("06092a864886f70d01010b")
+OID_NOM_COMMUN = bytes.fromhex("0603550403")
+OID_ORGANISATION = bytes.fromhex("060355040a")
+OID_CONTRAINTES = bytes.fromhex("0603551d13")
+DEBUT_VALIDITE = b"250101000000Z"
+FIN_VALIDITE = b"491231235959Z"
+SUJET_NOM_COMMUN = "VelumOS essai"
+SUJET_ORGANISATION = "cle de test sans valeur"
 
 
 class Erreur(Exception):
@@ -384,16 +406,150 @@ def dossier_cles(chemin):
     return dossier
 
 
-def preparer_cles(chemin):
+def octets_derives(graine, etiquette, taille):
+    sortie = b""
+    compteur = 0
+    while len(sortie) < taille:
+        sortie += hashlib.sha256(f"{graine}\0{etiquette}\0{compteur}".encode()).digest()
+        compteur += 1
+    return sortie[:taille]
+
+
+def petits_premiers(limite=2000):
+    return [n for n in range(3, limite, 2) if all(n % d for d in range(3, math.isqrt(n) + 1, 2))]
+
+
+def est_premier(candidat, petits):
+    for premier in petits:
+        if candidat % premier == 0:
+            return candidat == premier
+    impair, puissance = candidat - 1, 0
+    while impair % 2 == 0:
+        impair //= 2
+        puissance += 1
+    for base in BASES_MILLER_RABIN:
+        x = pow(base, impair, candidat)
+        if x in (1, candidat - 1):
+            continue
+        for _ in range(puissance - 1):
+            x = x * x % candidat
+            if x == candidat - 1:
+                break
+        else:
+            return False
+    return True
+
+
+def premier_depuis_graine(graine, nom, petits):
+    brut = octets_derives(graine, nom, BITS_PREMIER // 8)
+    candidat = int.from_bytes(brut, "big") | (3 << (BITS_PREMIER - 2)) | 1
+    while not (est_premier(candidat, petits) and (candidat - 1) % EXPOSANT_PUBLIC != 0):
+        candidat += 2
+    return candidat
+
+
+def der(etiquette, contenu):
+    taille = len(contenu)
+    if taille < 0x80:
+        longueur = bytes([taille])
+    else:
+        octets = taille.to_bytes((taille.bit_length() + 7) // 8, "big")
+        longueur = bytes([0x80 | len(octets)]) + octets
+    return bytes([etiquette]) + longueur + contenu
+
+
+def der_entier(valeur):
+    octets = valeur.to_bytes(valeur.bit_length() // 8 + 1, "big")
+    return der(0x02, octets)
+
+
+def der_sequence(*elements):
+    return der(0x30, b"".join(elements))
+
+
+def der_nom(valeur):
+    return der(0x0C, valeur.encode())
+
+
+def pem(etiquette, contenu):
+    corps = base64.b64encode(contenu).decode()
+    lignes = [corps[i : i + 64] for i in range(0, len(corps), 64)]
+    return "\n".join([f"-----BEGIN {etiquette}-----", *lignes, f"-----END {etiquette}-----", ""])
+
+
+def cle_privee_der(n, d, p, q):
+    entiers = (0, n, EXPOSANT_PUBLIC, d, p, q, d % (p - 1), d % (q - 1), pow(q, -1, p))
+    rsa = der_sequence(*(der_entier(v) for v in entiers))
+    algo = der_sequence(OID_RSA, der(0x05, b""))
+    return der_sequence(der_entier(0), algo, der(0x04, rsa))
+
+
+def certificat_der(graine, n, d):
+    algo = der_sequence(OID_SHA256_RSA, der(0x05, b""))
+    nom_commun = der(0x31, der_sequence(OID_NOM_COMMUN, der_nom(SUJET_NOM_COMMUN)))
+    organisation = der(0x31, der_sequence(OID_ORGANISATION, der_nom(SUJET_ORGANISATION)))
+    sujet = der_sequence(nom_commun, organisation)
+    validite = der_sequence(der(0x17, DEBUT_VALIDITE), der(0x17, FIN_VALIDITE))
+    publique = der_sequence(der_entier(n), der_entier(EXPOSANT_PUBLIC))
+    spki = der_sequence(der_sequence(OID_RSA, der(0x05, b"")), der(0x03, b"\0" + publique))
+    contraintes = der_sequence(
+        OID_CONTRAINTES, der(0x01, b"\xff"), der(0x04, der(0x30, der(0x01, b"\xff")))
+    )
+    numero = int.from_bytes(octets_derives(graine, "serie", 16), "big") >> 1 or 1
+    corps = der_sequence(
+        der(0xA0, der_entier(2)),
+        der_entier(numero),
+        algo,
+        sujet,
+        validite,
+        sujet,
+        spki,
+        der(0xA3, der_sequence(contraintes)),
+    )
+    condensat = PREFIXE_SHA256 + hashlib.sha256(corps).digest()
+    taille = (n.bit_length() + 7) // 8
+    bourre = b"\x00\x01" + b"\xff" * (taille - len(condensat) - 3) + b"\x00" + condensat
+    signature = pow(int.from_bytes(bourre, "big"), d, n).to_bytes(taille, "big")
+    return der_sequence(corps, algo, der(0x03, b"\0" + signature))
+
+
+def materiel_depuis_graine(graine):
+    petits = petits_premiers()
+    p = premier_depuis_graine(graine, "p", petits)
+    q = premier_depuis_graine(graine, "q", petits)
+    if p == q:
+        raise Erreur("graine dégénérée : deux premiers identiques")
+    p, q = max(p, q), min(p, q)
+    d = pow(EXPOSANT_PUBLIC, -1, math.lcm(p - 1, q - 1))
+    n = p * q
+    cle = pem("PRIVATE KEY", cle_privee_der(n, d, p, q))
+    certificat = pem("CERTIFICATE", certificat_der(graine, n, d))
+    return cle, certificat
+
+
+def ecrire_atomiquement(chemin, texte, droits):
+    provisoire = chemin.with_name(f"{chemin.name}.{os.getpid()}.nouveau")
+    provisoire.write_text(texte, encoding="ascii")
+    provisoire.chmod(droits)
+    os.replace(provisoire, chemin)
+
+
+def graine_courante():
+    return os.environ.get(VARIABLE_GRAINE) or GRAINE_DEFAUT
+
+
+def preparer_cles(chemin, graine=None):
+    graine = graine_courante() if graine is None else graine
     dossier = dossier_cles(chemin)
-    cle, certificat = dossier / "cle.pem", dossier / "cert.pem"
-    if not (cle.is_file() and certificat.is_file()):
-        sujet = "/CN=VelumOS essai/O=cle de test sans valeur"
-        openssl(
-            ["req", "-x509", "-newkey", "rsa:2048", "-nodes", "-sha256", "-days", "3650"]
-            + ["-subj", sujet, "-keyout", str(cle), "-out", str(certificat)]
-        )
-        cle.chmod(0o600)
+    cle, certificat, marque = dossier / "cle.pem", dossier / "cert.pem", dossier / "graine.sha256"
+    empreinte = hashlib.sha256(graine.encode()).hexdigest()
+    deja_prets = cle.is_file() and certificat.is_file() and marque.is_file()
+    if deja_prets and marque.read_text(encoding="ascii").strip() == empreinte:
+        return cle, certificat
+    texte_cle, texte_certificat = materiel_depuis_graine(graine)
+    ecrire_atomiquement(cle, texte_cle, 0o600)
+    ecrire_atomiquement(certificat, texte_certificat, 0o644)
+    ecrire_atomiquement(marque, empreinte + "\n", 0o644)
     return cle, certificat
 
 

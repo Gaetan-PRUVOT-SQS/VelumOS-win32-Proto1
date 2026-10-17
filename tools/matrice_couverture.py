@@ -243,7 +243,9 @@ injectés par le moniteur QEMU (`tools/manuel.py`) et des captures relues une pa
 réel ni par une personne devant l'écran. Restent à faire : la fluidité perçue (MT-19), le matériel réel (MT-18), l'endurance
 de 8 h (MT-17 n'a duré que 10 minutes), la machine vierge (MT-24) et la comparaison avec de vraies captures d'époque
 (MT-04). MT-14, MT-17, MT-22 et MT-23, en échec le 5 octobre, ont été rejoués le 6 octobre après correction (voir leur
-fiche). Un statut « Échec » renvoie à un incident
+fiche). Ces passages ont eu lieu sur l'ancien thème Luna : MT-25 (fidélité à la maquette verre, thèmes clair et sombre)
+n'a pas encore été joué, et les fiches de rendu antérieures (MT-01, MT-04, MT-05, MT-14, MT-22) sont à rejouer sur le
+thème verre. Un statut « Échec » renvoie à un incident
 du registre de [`../TESTS.md`](../TESTS.md). À chaque nouvelle exécution, noter la date, le résultat et les anomalies
 dans la fiche.
 

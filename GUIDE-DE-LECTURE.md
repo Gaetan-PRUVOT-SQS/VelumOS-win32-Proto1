@@ -17,7 +17,7 @@ dit la technique de test utilisée : exigence, supposition d'erreur, injection d
 
 ## 2. La traçabilité (1 minute) : `tests/MATRICE.md`
 
-94 fonctionnalités, chacune avec son mode de vérification (A automatisé, AM automatisé avec complément manuel, M manuel),
+103 fonctionnalités, chacune avec son mode de vérification (A automatisé, AM automatisé avec complément manuel, M manuel),
 les tests qui la couvrent et les cas manuels associés. C'est de là que sort le taux de couverture fonctionnelle du README.
 Le fichier est généré par `tools/matrice_couverture.py` depuis `tests/matrice.toml`, qui refuse un test cité qui
 n'existe pas.
@@ -38,6 +38,9 @@ pas la référence sur sa mémoire.
 
 - Aucun test sur du matériel réel : tout tourne sous QEMU. Trois cas manuels ne sont pas joués (matériel, fluidité perçue,
   arrêt du serveur de fenêtres).
+- Le thème verre (clair et sombre) est vérifié sur des valeurs calculées depuis la maquette et sur des galeries relues,
+  pas par un jeu de captures QEMU : le cas manuel MT-25 est à exécuter. Ses limites sont dans le README, section Limites
+  connues.
 - Le classement des fonctionnalités en A, AM ou M est un jugement, pas une mesure de couverture de code.
 - L'intégration continue (`tools/ci.sh`) ne rejoue qu'un sous-ensemble : sept lots de tests hôte et cinq scénarios QEMU
   sans KVM. La suite complète se lance en local avec `make test`.

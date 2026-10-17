@@ -72,28 +72,47 @@ static int	rename_check(t_fat *fs, t_frename *r)
 	return (0);
 }
 
-static int	rename_apply(t_fat *fs, t_frename *r)
+static int	rename_same(t_fat *fs, t_frename *r)
 {
 	int	rc;
 
+	rc = fdir_del(fs, r->pf.first, &r->src);
+	if (rc < 0)
+		return (rc);
+	rc = fdir_add(fs, r->pt.first, r->nt, &r->dst);
+	if (rc < 0)
+		fdir_add(fs, r->pf.first, r->src.name, &r->src);
+	return (rc);
+}
+
+static int	rename_move(t_fat *fs, t_frename *r)
+{
+	bool	dotdot;
+	int		rc;
+
+	dotdot = r->isdir && r->pf.first != r->pt.first;
+	rc = fdir_add(fs, r->pt.first, r->nt, &r->dst);
+	if (rc < 0)
+		return (rc);
+	if (dotdot)
+		rc = fat_set_dotdot(fs, r->sfirst, r->pt.first);
+	if (rc == 0)
+		rc = fdir_del(fs, r->pf.first, &r->src);
+	if (rc < 0)
+	{
+		fdir_del(fs, r->pt.first, &r->dst);
+		if (dotdot)
+			fat_set_dotdot(fs, r->sfirst, r->pf.first);
+	}
+	return (rc);
+}
+
+static int	rename_apply(t_fat *fs, t_frename *r)
+{
 	memcpy(r->dst.raw, r->src.raw, FAT_DENT);
 	if (r->same)
-	{
-		rc = fdir_del(fs, r->pf.first, &r->src);
-		if (rc == 0)
-			rc = fdir_add(fs, r->pt.first, r->nt, &r->dst);
-		if (rc < 0)
-			fdir_add(fs, r->pf.first, r->src.name, &r->src);
-	}
-	else
-	{
-		rc = fdir_add(fs, r->pt.first, r->nt, &r->dst);
-		if (rc == 0)
-			rc = fdir_del(fs, r->pf.first, &r->src);
-	}
-	if (rc == 0 && r->isdir && r->pf.first != r->pt.first)
-		rc = fat_set_dotdot(fs, r->sfirst, r->pt.first);
-	return (rc);
+		return (rename_same(fs, r));
+	return (rename_move(fs, r));
 }
 
 int	fat_op_rename(void *fs, const char *from, const char *to)

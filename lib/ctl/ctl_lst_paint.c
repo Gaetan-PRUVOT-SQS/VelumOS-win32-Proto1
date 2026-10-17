@@ -22,6 +22,7 @@ static void	draw_item(t_ctlroot *r, const t_ctl *c, int32_t idx)
 	tx.flags = CTL_ELLIPSIS;
 	tx.enabled = true;
 	tx.mnemonic = false;
+	tx.font = NULL;
 	tx.color = ctl_color_text(ctl_enabled(c));
 	if (sel)
 	{
@@ -30,7 +31,7 @@ static void	draw_item(t_ctlroot *r, const t_ctl *c, int32_t idx)
 	}
 	ctl_text_draw(r->surface, &tx);
 	if (r->focus == c && idx == focus_row(l))
-		ctl_focus_ring(r->surface, row);
+		ctl_focus_ring_row(r->surface, row, sel);
 }
 
 void	ctl_lst_paint(t_ctlroot *r, t_ctl *c)

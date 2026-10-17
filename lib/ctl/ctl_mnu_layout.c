@@ -10,6 +10,7 @@ static int32_t	item_w(const t_ctlmenuitem *it)
 	tx.text = it->text;
 	tx.flags = 0;
 	tx.mnemonic = true;
+	tx.font = NULL;
 	return (ctl_text_width(&tx));
 }
 

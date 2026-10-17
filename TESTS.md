@@ -22,14 +22,14 @@ entrée hostile (ELF, cpio, FAT32, ACPI, messages d'un client graphique, argumen
 | Matériel (APIC, PCI, 8042, virtio) | 2 | 3 | fakes pilotés par la spec, QEMU BIOS et UEFI, variantes de machine |
 | Gel ou famine (préemption, kill) | 3 | 2 | scénario d'intégration avec preuve différentielle |
 | Interface (rendu, hit-test, focus) | 2 | 2 | balayage de pixels, galerie relue à l'œil, captures QEMU |
-| Format du code (norme 42, sécurité) | 1 | 3 | norminette, `make scan`, ruff, shellcheck |
+| Format et sécurité du code | 1 | 3 | `make scan`, ruff, shellcheck, shfmt |
 
 Critères de fin, écrits avant la campagne :
 
-1. Chaque lot : `make B=build/aNN lot LOT=aNN` vert (compilation noyau et utilisateur, tests hôte, norme).
+1. Chaque lot : `make B=build/aNN lot LOT=aNN` vert (compilation noyau et utilisateur, tests hôte).
 2. Le noyau complet démarre en BIOS et en UEFI et passe tous ses autotests.
 3. Tous les scénarios QEMU passent dans les deux firmwares.
-4. Norme, contrôle sécurité, ruff et shellcheck sans erreur sur tout le dépôt.
+4. Contrôle sécurité, ruff et shellcheck sans erreur sur tout le dépôt.
 5. Aucun incident de gravité haute ouvert.
 
 ## 2. Niveaux, outils et environnement
@@ -40,7 +40,7 @@ Critères de fin, écrits avant la campagne :
 | Noyau (autotests) | `<module>_selftest` dans le noyau | option `selftest` de la ligne de commande | compteurs, invariants, mesures de temps |
 | Système (QEMU) | `tests/qemu/*.py` | `tools/run_scenarios.py`, `tools/vtest.py` | journal série, captures d'écran, code de sortie QEMU |
 | Intégration | `tests/qemu/int_*.py`, `skel_boot.py` | idem | session complète, préemption, kill |
-| Statique | tout le dépôt | norminette, `make hdrcheck`, `make scan`, ruff, shellcheck, shfmt | zéro erreur |
+| Statique | tout le dépôt | `make hdrcheck`, `make scan`, ruff, shellcheck, shfmt | zéro erreur |
 
 Harnais hôte : un exécutable par fichier `test_*.c`, compilé avec `-fsanitize=address,undefined
 -fno-sanitize-recover=undefined -Werror`. Les fonctions de `lib/libk` sont renommées `vk_*` à la
@@ -62,7 +62,6 @@ Environnement de la campagne (versions relevées le jour même) :
 | Compilateur hôte des tests | gcc 16.2.1 |
 | Chargeur | Limine 12.9.1 (outil `image-disque`) |
 | Firmware UEFI | edk2 OVMF (`/usr/share/edk2/ovmf`) |
-| Norme | norminette 3.3.60 |
 | Python et lint | Python 3.14.7, ruff 0.16.9 |
 | Hôte | Fedora 44, noyau Linux 7.2.8, processeur x86-64 Intel avec KVM |
 
@@ -101,7 +100,6 @@ Les seuls aléas sont des graines affichées par les tests (listées au point 5)
 | Scénarios QEMU | 92 exécutions sur 92 (50 fichiers, deux firmwares pour la plupart) |
 | Intégration continue (`tools/ci.sh`) | rejouée dans un conteneur Ubuntu 24.04 (gcc 13, QEMU 8.2, sans KVM) : 13 tests d'outils, 7 lots de tests hôte, 5 scénarios (10 exécutions), tout vert |
 | Tests hôte | 669 exécutions de suites, 13,26 millions de vérifications, 0 échec au passage final (632 fichiers `test_*.c`, certains joués en debug et en release, plus 7 bancs de rendu) |
-| Norme 42 | 2 390 fichiers C et en-têtes sans erreur au dernier balayage complet |
 | `make scan` (fonctions C dangereuses, secrets, idiomes risqués) | 0 alerte sur tout le dépôt |
 | ruff, ruff format, shellcheck, shfmt | propres |
 | `make hdrcheck` | tous les en-têtes sont autonomes |
@@ -129,11 +127,11 @@ ce qui n'a pas tourné.
 | a13 affichage | 37 | 4 | fuzz de 20 000 appels (graine 20261005), géométrie hostile, mutation (8 tuées sur 12) | 99,4 % des 880 lignes, 87,4 % des 546 branches | 2 mutants survivants renforcés mais non rejoués, chemin DISPI par ports jamais exécuté |
 | a14 libvelum | 63 | 1 | allocateur (churn, double libération), pile de départ, 68 vérifications de `vtest` dans QEMU | pile de départ et RELRO 100 %, allocateur 505 sur 526 lignes, libc pure 100 % des lignes | `crt0.S`, `guard.S`, `thread.S` seulement en QEMU |
 | a15 gfx | 30 | 0 | mélange exhaustif 16,7 millions de triplets, 1 million d'appels fuzz, régions contre modèle bitmap | non mesurée | `cov.sh`, bancs de performance |
-| a16 polices | 22 | 1 | 10 365 120 séquences UTF-8 recoupées avec CPython sans écart, mutation (19 mutants tués sur 22 au premier passage, les 3 survivants tués à la repasse ciblée), génération reproductible | 100 % des lignes sauf l'autotest (92,7 %) | repasse complète des mutants sur l'arbre final interrompue |
-| a17 Luna | 11 | 0 | partition complète de `luna_hit_test` sur trois tailles (46 508 et 123 636 vérifications), galerie relue | non mesurée | tests de garde du dessin, pixels clés, hashes figés, mise en page |
-| a18 winsrv | 16 | 0 | 1 000 opérations aléatoires, 100 000 messages, composition incrémentale identique à la complète | non mesurée | scénario QEMU propre, `lib/wm` contre le serveur |
-| a19 ctl | 47 | 0 | chaque allocation échoue une fois (348), édition UTF-8 en fuzz, contraste WCAG (17:1, 5,25:1, 3,9:1) | non mesurée | comparaison aux vrais rendus Luna |
-| a20 session | 30 (+7 rendu) | 2 | PBKDF2 contre `hashlib`, balayages de mise en page, rendus relus | non mesurée | `hello` sans test de rendu |
+| a16 polices | 23 | 1 | 10 365 120 séquences UTF-8 recoupées avec CPython sans écart, mutation (19 mutants tués sur 22 au premier passage, les 3 survivants tués à la repasse ciblée), génération reproductible | 100 % des lignes sauf l'autotest (92,7 %) | repasse complète des mutants sur l'arbre final interrompue |
+| a17 thème verre | 30 | 0 | partition complète de `luna_hit_test` sur trois tailles, verre (bornes, repli, robustesse), palette clair et sombre, lanceur, galeries relues (voir 4.8) | non mesurée | couverture et mutation du verre, comparaison à la maquette (MT-25) |
+| a18 winsrv | 22 | 0 | 1 000 opérations aléatoires, 100 000 messages, composition incrémentale identique à la complète | non mesurée | scénario QEMU propre, `lib/wm` contre le serveur |
+| a19 ctl | 54 | 0 | chaque allocation échoue une fois (348), édition UTF-8 en fuzz, contraste WCAG (17:1, 5,25:1, 3,9:1), contrôles sur verre | non mesurée | comparaison à la maquette (MT-25) |
+| a20 session | 42 | 2 | PBKDF2 contre `hashlib`, mise en page de la connexion, du bureau et de Bonjour d'après la maquette, contrastes sur fonds variables | non mesurée | rendu QEMU du thème verre non rejoué |
 | Intégration | 0 | 3 | session complète, préemption, kill | sans objet | voir point 6 |
 
 ### 4.3 Mesures relevées pendant la campagne (QEMU sous KVM, BIOS)
@@ -158,29 +156,29 @@ ce qui n'a pas tourné.
 | Après correction du harnais et ajout de la préemption | 81 sur 81 | suite figée |
 | Clone propre du dépôt public, puis rejeu en isolation | 82 sur 83, puis `a20_desktop` en échec 4 fois sur 8 | trois causes dans le harnais (T15), 46 exécutions sur 46 réussies après correction, suite complète 83 sur 83 |
 | Suite hôte complète | 529 suites vertes, 1 échec (`a06/mutex`) | critère de convoi relâché, suite verte |
-| Norme et contrôle de sécurité sur tout le dépôt | norme OK, 3 alertes | deux `strcpy` et un `strcat` des tests remplacés par des fonctions bornées, contrôle à 0 |
+| Contrôle de sécurité sur tout le dépôt | 3 alertes | deux `strcpy` et un `strcat` des tests remplacés par des fonctions bornées, contrôle à 0 |
 | Historique git (15 états cumulatifs) | 1 état ne liait pas avant le crochet, puis 15 sur 15 compilent | crochet faible `sched_irq_exit` dans le squelette |
 
 ### 4.5 Répartition automatisé et manuel
 
-La couverture est mesurée sur les fonctionnalités vérifiables du système (94, regroupées par sous-système), chacune avec
+La couverture est mesurée sur les fonctionnalités vérifiables du système (103, regroupées par sous-système), chacune avec
 un mode de vérification et la liste des tests qui la couvrent. Les données sont dans [`tests/matrice.toml`](tests/matrice.toml),
 le script `tools/matrice_couverture.py` vérifie que chaque test cité existe et calcule les taux, et il génère
 [`tests/MATRICE.md`](tests/MATRICE.md) (matrice complète) et [`tests/MANUEL.md`](tests/MANUEL.md) (plan de tests manuels).
 
 | Mode | Sens | Fonctionnalités | Part |
 |------|------|-----------------|------|
-| A | automatisé, oracle automatique | 76 | 80,9 % |
-| AM | logique automatisée, complément manuel (visuel, ergonomie, vrai clavier) | 11 | 11,7 % |
-| M | manuel seulement | 7 | 7,4 % |
+| A | automatisé, oracle automatique | 85 | 82,5 % |
+| AM | logique automatisée, complément manuel (visuel, ergonomie, vrai clavier) | 11 | 10,7 % |
+| M | manuel seulement | 7 | 6,8 % |
 
-Couverture automatisée (A et AM) : **92,6 %**. Couverture manuelle seule : **7,4 %**. Au moins un test manuel
-est nécessaire pour 19,1 % des fonctionnalités. Par nombre de cas : 1 986 cas automatisés (1 861 cas unitaires nommés,
-50 scénarios QEMU, 75 tests Python) contre 21 cas manuels, soit 99,0 % ; ce taux est plus élevé parce que les cas
+Couverture automatisée (A et AM) : **93,2 %**. Couverture manuelle seule : **6,8 %**. Au moins un test manuel
+est nécessaire pour 17,5 % des fonctionnalités. Par nombre de cas : 2 185 cas automatisés (2 035 cas unitaires nommés,
+50 scénarios QEMU, 100 tests Python) contre 22 cas manuels, soit 99,0 % ; ce taux est plus élevé parce que les cas
 automatisés sont plus fins, le taux fonctionnel est la mesure à retenir.
 
 Les 7 fonctionnalités en mode M sont : le redémarrage ACPI, la performance du dessin (bancs jamais lancés), la netteté
-des polices, la fidélité visuelle au style Luna, le démarrage sur matériel réel, l'endurance et la cohérence linguistique
+des polices, la fidélité visuelle au style de référence (Luna, puis maquette verre), le démarrage sur matériel réel, l'endurance et la cohérence linguistique
 de l'interface. Le FAT32 est passé de M à AM avec le scénario `a12_fat32` (image mtools, relecture par mtools, `fsck.vfat`).
 
 ### 4.6 Exécution des cas manuels
@@ -188,14 +186,14 @@ de l'interface. Le FAT32 est passé de M à AM avec le scénario `a12_fat32` (im
 Les cas de [`tests/MANUEL.md`](tests/MANUEL.md) ont été joués les 5 et 6 octobre 2026 sous QEMU/KVM : le clavier et la souris
 sont injectés par le moniteur QEMU avec `tools/manuel.py`, chaque étape est relue sur une capture, et les mesures sont
 faites sur les pixels (`tools/contraste.py` pour les rapports de contraste). Rien n'a été joué sur du matériel réel ni par
-une personne devant l'écran. Résultat : 15 réussis, 4 partiels, 2 à exécuter, aucun échec. Les quatre cas en échec le
+une personne devant l'écran. Résultat : 15 réussis, 4 partiels, 2 à exécuter (3 avec MT-25, ajouté pour le thème verre), aucun échec. Les quatre cas en échec le
 5 octobre (MT-14, MT-17, MT-22, MT-23) ont été rejoués le 6 octobre après correction de leurs défauts (voir 5.3).
 
 | Cas | Titre | Résultat | Incident |
 |-----|-------|----------|----------|
 | MT-01 | Écran de démarrage | Réussi | - |
 | MT-02 | Démarrage en UEFI | Réussi | - |
-| MT-04 | Fidélité visuelle au style Luna | Partiel | - |
+| MT-04 | Fidélité visuelle au style Luna (ancien thème) | Partiel | - |
 | MT-05 | Lisibilité des polices | Partiel | - |
 | MT-06 | Manipulation des fenêtres à la souris | Réussi | - |
 | MT-07 | Menu Démarrer au clavier | Réussi | - |
@@ -214,6 +212,7 @@ une personne devant l'écran. Résultat : 15 réussis, 4 partiels, 2 à exécute
 | MT-22 | Revue linguistique de l'interface | Réussi | P26 (corrigé) |
 | MT-23 | FAT32 sur une image réelle | Réussi | P24 (corrigé) |
 | MT-24 | Construction sur une machine propre | Partiel | T15 |
+| MT-25 | Fidélité à la maquette verre, clair et sombre | A exécuter | - |
 
 Ce qui reste à faire : la fluidité perçue (MT-19) demande une personne, le matériel réel (MT-18) une machine, l'endurance
 de 8 h (MT-17 n'a duré que 20 minutes) et la machine vierge (MT-24) du temps. MT-20, bloqué le 5 octobre, se joue depuis
@@ -259,6 +258,38 @@ Relecture à contexte vierge du code de signature (`lib/rsa`, `lib/apk`, `lib/zi
 l'intégration : aucun contournement, aucune forge, aucun défaut mémoire ; un défaut de durée sur fichier hostile (P29),
 corrigé en plafonnant les noms d'entrée à 255 octets. Limite de cette preuve : aucun APK produit par la chaîne officielle
 n'a été lu (elle n'est pas installée ici).
+
+### 4.8 Thème verre, lots a16 à a20 (10 octobre)
+
+Après la campagne du 5 et 6 octobre, l'interface est passée du premier thème (style Windows XP) à un thème « verre »
+clair et sombre. Les lots a16 à a20 ont été réécrits ou étendus ; les fonctionnalités F95 à F103 et le cas manuel
+MT-25 de la [matrice](tests/MATRICE.md) les couvrent. Le plan est fondé sur les risques : une régression de géométrie
+casse le hit-test (risque de clic perdu), un flou mal borné écrit hors de la surface (risque mémoire), un verre mal
+élargi donne une image différente entre composition incrémentale et complète (risque visuel silencieux).
+
+| Risque | Technique (29119-4) | Tests |
+|--------|---------------------|-------|
+| Débordement ou lecture hors surface du flou | valeurs limites, partitions de rectangles (hors surface, dégénéré, rognage) | `test_glass_bounds.c`, `test_glass_robust*.c` |
+| Verre sans mémoire de travail | injection de panne (tampon absent, trop petit), repli opaque | `test_glass_edge.c`, `test_srv_glass.c` |
+| Composition incrémentale différente de la complète | métamorphique : mêmes pixels dans les deux modes | `test_core_glass_eq.c`, `test_core_glass_chain.c` (chaînes de bandes, boucle bornée) |
+| Géométrie du cadre, du dock, du lanceur, de la connexion | tables de valeurs calculées depuis la maquette, balayage de pixels | `test_geo_*.c`, `test_hit_*.c`, `test_launcher*.c`, `test_logon_layout*.c`, `test_desktop*.c` |
+| Texte illisible sur fond de verre | contraste WCAG calculé sur fonds variables, clair et sombre | `test_contrast*.c`, `test_colors_ext.c` |
+| Police générée différente d'une exécution à l'autre | génération reproductible, empreintes, budget de taille | `test_genfont.py`, `test_font_budget.c` |
+
+Résultat relevé au point de départ de la reprise du 10 octobre (`make host-a17 host-a18 host-a19 host-a20`) : 165 suites,
+372 283 vérifications, 0 échec ; `host-a16` vert, `test-host` code 0, `make all` code 0 (image de 67 Mio). Ce relevé
+vient de la passe de reprise, il n'a pas été rejoué pour cette mise à jour de la documentation.
+
+Ce qui n'est pas fait ou pas démontré pour ce thème :
+
+- Aucune couverture gcov ni mutation sur le code du verre, du dock, du lanceur ni de la connexion.
+- Aucun scénario QEMU n'a été rejoué pour le rendu. MT-25 (comparaison à la maquette, clair et sombre) est à exécuter,
+  et les fiches MT-01, MT-04, MT-05, MT-14 et MT-22 datent de l'ancien thème.
+- Le contrôle `make scan` n'a pas été rejoué dans la passe de reprise elle-même ; relancé ensuite sans dépôt git
+  (`tools/scan_securite.py` parcourt alors le disque), il rend 0 alerte.
+- Le thème sombre n'est exercé que par les tests : aucune appli ne le sélectionne.
+- Limites visuelles connues (ombres de fenêtres, flou des fenêtres sous le dock, client opaque, écrans non intégrés) :
+  README, section Limites connues.
 
 ## 5. Registre des incidents
 
@@ -315,11 +346,12 @@ au bout de 30 s (« SPIN PASS » absent, puis « KILL FAIL »). Avec eux, `SPIN 
 | T11 | test a06 mutex | seuil de convoi lié au nombre de cœurs de l'hôte (55 % mesuré, 25 % exigé) | seuil à 80 % |
 | T12 | tests a09, a12 | `strcpy` et `strcat` dans les fakes | fonctions bornées |
 | T13 | tests a14 | figeaient les défauts libk | attendu C17 rétabli |
-| T14 | norminette 3.3.60 | faux positifs : asm sans entrée contenant une variable, initialisations désignées, littéraux hexa commençant par `b`, avant-déclarations avant un typedef de pointeur de fonction | contournements décrits dans la section « Conventions de code » du README, exception `arch/x86_64/limine/` |
 | T15 | scénario `a20_desktop` | instable : 4 échecs sur 8 en séquentiel, 12 sur 30 en parallèle. Trois causes : capture juste après la touche avant le redessin, image de référence prise pendant le premier dessin du bureau, captures du BIOS et de l'UEFI écrites sous le même nom dans le même dossier | `capture_quand` et `capture_stable` dans `vtest.py`, noms de capture préfixés par la machine, 46 exécutions sur 46 réussies |
 | T17 | `mk/user.mk`, `mk/host.mk` | les dépendances d'en-têtes n'étaient pas suivies : motif `wildcard` trop court pour les applis, aucune pour les tests hôte. Après un changement de `shell.h`, le shell était lié avec des objets périmés et les boîtes de dialogue ne s'ouvraient plus (`a20_desktop` et `a20_souris` en échec), et des tests hôte qui ne compilaient plus restaient verts | liste des `.d` tirée des sources, dépendances générées pour chaque test hôte, `tests/tools/test_dependances.py` |
 | T18 | `mk/lot-a20.mk`, banc de rendu | la colle APK ajoutée à `user/apps/common/` inclut un en-tête système que le banc de rendu de l'hôte n'a pas : `a20-render` ne compilait plus | fichiers `apkglue*.c` exclus du banc, comme les `os_*.c` |
 | T16 | plan de tests manuels | étapes inexactes : Tab avant Entrée à la connexion (MT-13), `fault=panic` sans `selftest` (MT-21), formatage FAT32 sans `-F` (MT-23) | étapes corrigées dans les fiches |
+
+La référence T14 n'est pas réutilisée : l'entrée visait un outil de style retiré du projet.
 
 ### 5.3 Défauts trouvés par les cas manuels, corrigés le 6 octobre
 
@@ -365,7 +397,6 @@ python3 tools/run_scenarios.py --kernel build/main/debug/kernel.elf \
     --root build/main/debug/root --out build/main/qemu --filter int_ --jobs 2
 make -j8 -k test-host                         suites hôte (la première fois plus de 10 min, à lancer en arrière-plan)
 make B=build/aNN lot LOT=aNN                  un lot seul
-tools/norme.sh                                norminette sur tout le C (quelques minutes)
 make hdrcheck                                 autonomie des en-têtes
 make matrice                                  recalcule les taux de couverture automatisée et manuelle
 make scan                                     contrôle statique de sécurité

@@ -8,14 +8,15 @@
 # include "velum/err.h"
 # include "velum/libk.h"
 
-# define CTL_FLAGS_ALL 0xf7f
-# define CTL_FLAGS_VISUAL 0xf7b
+# define CTL_FLAGS_ALL 0xfff
+# define CTL_FLAGS_VISUAL 0xffb
 # define CTL_COORD_MAX 1048576
 # define CTL_BOX 13
 # define CTL_GAP 4
 # define CTL_PAD 3
 # define CTL_ROW_PAD 2
 # define CTL_FRAME 2
+# define CTL_RING_W 2
 # define CTL_EDIT_INSET 3
 # define CTL_WHEEL_ROWS 3
 # define CTL_DBLCLK_DIST 4
@@ -88,12 +89,13 @@ typedef struct s_sbctx
 
 typedef struct s_ctltext
 {
-	t_rect		box;
-	const char	*text;
-	uint32_t	flags;
-	t_color		color;
-	bool		enabled;
-	bool		mnemonic;
+	t_rect			box;
+	const char		*text;
+	uint32_t		flags;
+	t_color			color;
+	bool			enabled;
+	bool			mnemonic;
+	const t_font	*font;
 }	t_ctltext;
 
 typedef struct s_textrun
@@ -320,6 +322,7 @@ bool			ctl_rad_key(t_ctlroot *r, t_ctl *c, const t_inpevent *ev);
 void			ctl_refs_check(t_ctlroot *r);
 void			ctl_reap(t_ctlroot *r);
 void			ctl_focus_ring(t_surface *s, t_rect r);
+void			ctl_focus_ring_row(t_surface *s, t_rect r, bool sel);
 void			ctl_sb_arrow(t_surface *s, t_rect r, int dir, t_color col);
 int32_t			ctl_sb_axis(bool vertical, t_point p);
 int32_t			ctl_sb_start(bool vertical, t_rect r);
@@ -341,6 +344,8 @@ int32_t			ctl_text_strip(const char *text, char *out, int32_t *mn);
 int				ctl_mnemonic(const char *text);
 void			ctl_text_draw(t_surface *s, const t_ctltext *tx);
 const t_font	*ctl_font(uint32_t flags);
+const t_font	*ctl_font_of(const t_ctl *c);
+t_rect			ctl_btn_face(const t_ctl *c);
 void			ctl_text_init(t_ctltext *tx, const t_ctl *c);
 t_lunastate		ctl_lstate(const t_ctl *c);
 bool			ctl_run_init(t_textrun *run, const t_ctltext *tx);

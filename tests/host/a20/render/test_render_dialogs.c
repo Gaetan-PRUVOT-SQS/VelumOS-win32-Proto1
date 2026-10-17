@@ -11,9 +11,9 @@ static void	dialogue_executer_lance_un_programme(void)
 	t_shell	sh;
 	t_fwin	*dlg;
 
-	render_reset("build/a20/a20-fixture/users");
+	render_reset(A20_FIXTURE);
 	sh_boot(&sh, 2, (char **)g_argv);
-	drv_menu_item(&sh, 3);
+	drv_menu_item(&sh, SM_IDX_RUN);
 	dlg = fwm_find("Exécuter");
 	h_true(dlg != NULL, "dialogue ouvert");
 	h_eq_u64("style de dialogue", dlg->style, WS_CAPTION | WS_SYSMENU);
@@ -32,9 +32,9 @@ static void	dialogue_executer_refuse_un_nom_invalide(void)
 	t_shell	sh;
 	t_fwin	*dlg;
 
-	render_reset("build/a20/a20-fixture/users");
+	render_reset(A20_FIXTURE);
 	sh_boot(&sh, 2, (char **)g_argv);
-	drv_menu_item(&sh, 3);
+	drv_menu_item(&sh, SM_IDX_RUN);
 	dlg = fwm_find("Exécuter");
 	drv_type(&sh, dlg->id, "../bad name");
 	drv_key(&sh, dlg->id, VK_RETURN);
@@ -43,7 +43,7 @@ static void	dialogue_executer_refuse_un_nom_invalide(void)
 	render_shot("shell_executer_erreur");
 	drv_key(&sh, fwm_find("Exécuter")->id, VK_RETURN);
 	h_eq_i64("message ferme", sh.dlg.ready, 0);
-	drv_menu_item(&sh, 3);
+	drv_menu_item(&sh, SM_IDX_RUN);
 	drv_key(&sh, fwm_find("Exécuter")->id, VK_RETURN);
 	h_eq_u64("champ vide: rien lance", g_fos.nspawn, 0);
 	h_eq_i64("champ vide: dialogue ferme", sh.dlg.ready, 0);
@@ -55,7 +55,7 @@ static void	dialogue_extinction_arreter_redemarrer_annuler(void)
 	t_shell	sh;
 	t_fwin	*dlg;
 
-	render_reset("build/a20/a20-fixture/users");
+	render_reset(A20_FIXTURE);
 	sh_boot(&sh, 2, (char **)g_argv);
 	drv_menu_item(&sh, SM_IDX_SHUTDOWN);
 	dlg = fwm_find("Éteindre l'ordinateur");
@@ -78,7 +78,7 @@ static void	dialogue_fermer_la_session(void)
 {
 	t_shell	sh;
 
-	render_reset("build/a20/a20-fixture/users");
+	render_reset(A20_FIXTURE);
 	sh_boot(&sh, 2, (char **)g_argv);
 	drv_menu_item(&sh, SM_IDX_LOGOFF);
 	h_eq_i64("fin de session demandee", sh.quit, 1);

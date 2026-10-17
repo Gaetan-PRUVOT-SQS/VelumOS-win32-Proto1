@@ -40,6 +40,8 @@ static inline void	check_rest(const t_logonlayout *o, t_rect screen)
 	local = lay_rect(0, 0, o->card.w, o->card.h);
 	h_true(lay_inside(screen, o->prompt), "invite dans l'ecran");
 	h_true(!lay_overlap(o->prompt, o->card), "invite hors carte");
+	h_true(lay_inside(screen, o->chips), "puces dans l'ecran");
+	h_true(!lay_overlap(o->chips, o->card), "puces hors carte");
 	h_true(lay_inside(local, o->password), "saisie dans la carte");
 	h_true(lay_inside(local, o->go), "bouton aller dans la carte");
 	h_true(lay_inside(local, o->message), "message dans la carte");

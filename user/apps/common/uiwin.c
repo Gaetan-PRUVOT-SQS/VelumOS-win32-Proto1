@@ -58,9 +58,17 @@ void	uiwin_close(t_uiwin *u)
 void	uiwin_flush(t_uiwin *u)
 {
 	t_rect	r;
+	t_rect	pending;
 
 	if (!u->ready)
 		return ;
+	if (u->underlay && !region_empty(&u->root.dirty))
+	{
+		pending = region_bounds(&u->root.dirty);
+		pending.x += u->area.x;
+		pending.y += u->area.y;
+		u->underlay(u->underlay_user, pending);
+	}
 	r = ctl_paint(&u->root);
 	if (rect_empty(r))
 		return ;

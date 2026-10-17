@@ -2,6 +2,11 @@ import re
 import unittest
 from pathlib import Path
 
+from test_typographie_couleurs import (  # noqa: F401
+    TestCouleursDesApplications,
+    TestPolicesDesApplications,
+)
+
 RACINE = Path(__file__).resolve().parents[3]
 DOSSIERS = ["common", "hello", "logon", "shell"]
 JETON = re.compile(

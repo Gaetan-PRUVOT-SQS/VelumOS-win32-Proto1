@@ -1,5 +1,6 @@
 #include "harness.h"
 #include "help.h"
+#include "velum/theme.h"
 
 static t_wtable	g_t;
 
@@ -15,7 +16,7 @@ static void	clamp_and_min(void)
 	h_eq_i64("extremes", wg_clamp(INT32_MIN, -3, 3), -3);
 	wg_min_size(WS_DEFAULT, &w, &h);
 	h_eq_i64("largeur mini decoree", w, WS_MINTRACK_W);
-	h_eq_i64("hauteur mini decoree", h, 34);
+	h_eq_i64("hauteur mini decoree", h, VT_CAPTION_H);
 	wg_min_size(WS_POPUP, &w, &h);
 	h_true(w == 1 && h == 1, "popup sans minimum");
 	wg_min_size(WS_DEFAULT | WS_DESKTOP, &w, &h);
@@ -37,7 +38,8 @@ static void	normalize_size(void)
 	r = wg_normalize(&g_t, WS_FULLSCREEN, rect_make(5, 5, 10, 10));
 	h_true(r.w == 1024 && r.h == 768, "plein ecran");
 	r = wg_normalize(&g_t, WS_DEFAULT, rect_make(100, 100, 1, 1));
-	h_true(r.w == WS_MINTRACK_W && r.h == 34, "taille mini imposee");
+	h_true(r.w == WS_MINTRACK_W && r.h == VT_CAPTION_H,
+		"taille mini imposee");
 	r = wg_normalize(&g_t, WS_DEFAULT, rect_make(0, 0, 5000, 5000));
 	h_true(r.w == 1024 && r.h == 768, "taille plafonnee a l'ecran");
 }
@@ -50,13 +52,16 @@ static void	normalize_pos(void)
 	r = wg_normalize(&g_t, WS_DEFAULT, rect_make(-9000, -50, 300, 200));
 	h_true(r.x == -(300 - WS_DRAG_KEEP) && r.y == 0, "gauche et haut");
 	r = wg_normalize(&g_t, WS_DEFAULT, rect_make(9000, 9000, 300, 200));
-	h_true(r.x == 1024 - WS_DRAG_KEEP && r.y == 738 - 30, "droite et bas");
-	r = wg_normalize(&g_t, WS_DEFAULT, rect_make(1024 - 40, 738 - 30, 300,
-				200));
-	h_true(r.x == 984 && r.y == 708, "limite exacte acceptee");
-	r = wg_normalize(&g_t, WS_DEFAULT, rect_make(1024 - 39, 738 - 29, 300,
-				200));
-	h_true(r.x == 984 && r.y == 708, "limite + 1 ramenee");
+	h_true(r.x == 1024 - WS_DRAG_KEEP && r.y == 738 - VT_CAPTION_H,
+		"droite et bas");
+	r = wg_normalize(&g_t, WS_DEFAULT, rect_make(1024 - 40,
+				738 - VT_CAPTION_H, 300, 200));
+	h_true(r.x == 984 && r.y == 738 - VT_CAPTION_H,
+		"limite exacte acceptee");
+	r = wg_normalize(&g_t, WS_DEFAULT, rect_make(1024 - 39,
+				738 - VT_CAPTION_H + 1, 300, 200));
+	h_true(r.x == 984 && r.y == 738 - VT_CAPTION_H,
+		"limite + 1 ramenee");
 	r = wg_normalize(&g_t, WS_POPUP, rect_make(900, 700, 300, 200));
 	h_true(r.x == 724 && r.y == 568, "popup entierement visible");
 	r = wg_normalize(&g_t, WS_APPBAR, rect_make(0, 738, 1024, 30));

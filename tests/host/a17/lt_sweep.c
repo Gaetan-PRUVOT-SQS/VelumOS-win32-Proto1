@@ -10,6 +10,9 @@ static void	ft_zero_counts(t_ltsweep *out)
 		out->count[i] = 0;
 		i++;
 	}
+	out->edge_client = 0;
+	out->edge_close = 0;
+	out->edge_sys = 0;
 	out->bad = 0;
 	out->bad_x = 0;
 	out->bad_y = 0;
@@ -44,31 +47,18 @@ static bool	sweep_check(const t_lunawin *w, t_rect cl, t_point p, uint32_t h)
 			|| (w->maximized && !(w->style & WS_TOOLWINDOW)))
 			return (false);
 	}
-	if (lp_in(cl, p) != (h == HT_CLIENT))
+	if (h == HT_CLIENT && !lp_in(cl, p))
+		return (false);
+	if (lp_in(cl, p) && h != HT_CLIENT && !lt_ht_edge(h))
 		return (false);
 	return (framed || h == HT_CLIENT);
 }
 
-static bool	sweep_visit(const t_lunawin *w, t_point p, int32_t step)
+static void	sweep_edge(const t_lunawin *w, t_point p, t_ltsweep *out)
 {
-	int32_t	dx;
-	int32_t	dy;
-	bool	near_x;
-	bool	near_y;
-
-	dx = p.x - w->outer.x;
-	dy = p.y - w->outer.y;
-	if (step <= 1)
-		return (true);
-	near_x = dx < LT_BAND_X || dx >= w->outer.w - LT_BAND_BTN;
-	near_y = dy < LT_BAND || dy >= w->outer.h - LT_BAND;
-	if (near_x && near_y)
-		return (true);
-	if (near_x)
-		return (dy % step == 0);
-	if (near_y)
-		return (dx % step == 0);
-	return (dx % step == 0 && dy % step == 0);
+	out->edge_client += lp_in(luna_window_client(w), p);
+	out->edge_close += lp_in(luna_button_rect(w, HT_CLOSE), p);
+	out->edge_sys += lp_in(luna_button_rect(w, HT_SYSMENU), p);
 }
 
 void	lt_sweep(const t_lunawin *w, int32_t step, t_ltsweep *out)
@@ -85,11 +75,13 @@ void	lt_sweep(const t_lunawin *w, int32_t step, t_ltsweep *out)
 		p.x = w->outer.x;
 		while (p.x < w->outer.x + w->outer.w)
 		{
-			if (sweep_visit(w, p, step))
+			if (lt_sweep_visit(w, p, step))
 			{
 				h = luna_hit_test(w, p);
 				if (h < 21)
 					out->count[h]++;
+				if (lt_ht_edge(h))
+					sweep_edge(w, p, out);
 				sweep_note(out, p, h < 21 && sweep_check(w, cl, p, h));
 			}
 			p.x++;

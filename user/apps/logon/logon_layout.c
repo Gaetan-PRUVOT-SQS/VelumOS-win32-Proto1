@@ -3,82 +3,77 @@
 #include "../common/layout.h"
 #include "logon_layout.h"
 
+int32_t	logon_ident_h(uint32_t count)
+{
+	if (count <= 1)
+		return (LOGON_AVATAR + LOGON_GAP + LOGON_NAME_H);
+	return ((int32_t)count * LOGON_TILE_H
+		+ (int32_t)(count - 1) * LOGON_TILE_GAP);
+}
+
 int32_t	logon_card_h(uint32_t count)
 {
-	return (LOGON_MARGIN + (int32_t)count * (LOGON_TILE_H + LOGON_TILE_GAP) + 4
-		+ LOGON_PW_H + 8 + LOGON_MSG_H + 10 + LOGON_SHUT_H + LOGON_MARGIN);
+	return (LOGON_PAD_TOP + logon_ident_h(count) + LOGON_GAP + LOGON_PW_H
+		+ LOGON_GAP + LOGON_ROW_H + LOGON_PAD_BOTTOM);
+}
+
+static int32_t	place_identity(t_logonlayout *o)
+{
+	int32_t		y;
+	int32_t		iw;
+	uint32_t	i;
+
+	iw = o->card.w - 2 * LOGON_PAD_SIDE;
+	y = LOGON_PAD_TOP;
+	if (o->count <= 1)
+	{
+		o->avatar = lay_rect((o->card.w - LOGON_AVATAR) / 2, y, LOGON_AVATAR,
+				LOGON_AVATAR);
+		o->name = lay_rect(LOGON_PAD_SIDE, y + LOGON_AVATAR + LOGON_GAP, iw,
+				LOGON_NAME_H);
+		if (o->count == 1)
+			o->tile[0] = logon_btn_rect(LOGON_PAD_SIDE, y, iw,
+					logon_ident_h(1));
+		return (y + logon_ident_h(1));
+	}
+	i = 0;
+	while (i < o->count)
+	{
+		o->tile[i] = logon_btn_rect(LOGON_PAD_SIDE, y, iw, LOGON_TILE_H);
+		y += LOGON_TILE_H + LOGON_TILE_GAP;
+		i++;
+	}
+	return (y - LOGON_TILE_GAP);
 }
 
 static void	place_children(t_logonlayout *o)
 {
-	int32_t		iw;
-	int32_t		y;
-	int32_t		pw_x;
-	uint32_t	i;
-
-	iw = o->card.w - 2 * LOGON_MARGIN;
-	y = LOGON_MARGIN;
-	i = 0;
-	while (i < o->count)
-	{
-		o->tile[i] = lay_rect(LOGON_MARGIN, y, iw, LOGON_TILE_H);
-		y += LOGON_TILE_H + LOGON_TILE_GAP;
-		i++;
-	}
-	y += 4;
-	pw_x = LOGON_MARGIN + LOGON_AVATAR + 12;
-	o->password = lay_rect(pw_x, y, iw - (pw_x - LOGON_MARGIN) - 8 - LOGON_GO_W,
-			LOGON_PW_H);
-	o->go = lay_rect(o->password.x + o->password.w + 8, y, LOGON_GO_W,
-			LOGON_PW_H);
-	o->message = lay_rect(LOGON_MARGIN, y + LOGON_PW_H + 8, iw, LOGON_MSG_H);
-	o->shutdown = lay_rect(LOGON_MARGIN, o->message.y + LOGON_MSG_H + 10,
-			LOGON_SHUT_W, LOGON_SHUT_H);
-}
-
-static void	place_dialog(t_logonlayout *o)
-{
 	int32_t	iw;
 	int32_t	y;
 
-	iw = o->card.w - 2 * LOGON_MARGIN;
-	y = LOGON_MARGIN + LOGON_DLG_TEXT_H + 10;
-	o->dlg_text = lay_rect(LOGON_MARGIN, LOGON_MARGIN, iw, LOGON_DLG_TEXT_H);
-	o->dlg_ok = lay_rect(LOGON_MARGIN + iw - 2 * LOGON_DLG_BTN_W - 8, y,
-			LOGON_DLG_BTN_W, LOGON_DLG_BTN_H);
-	o->dlg_cancel = lay_rect(LOGON_MARGIN + iw - LOGON_DLG_BTN_W, y,
-			LOGON_DLG_BTN_W, LOGON_DLG_BTN_H);
-}
-
-static uint32_t	tiles_that_fit(int32_t h, uint32_t count)
-{
-	int32_t	avail;
-	int32_t	fit;
-
-	avail = h - LOGON_BAND_TOP - LOGON_BAND_BOTTOM;
-	fit = (avail - logon_card_h(0) + LOGON_TILE_GAP)
-		/ (LOGON_TILE_H + LOGON_TILE_GAP);
-	return ((uint32_t)lay_clamp((int32_t)count, 0,
-			lay_clamp(fit, 1, LOGON_TILES_MAX)));
+	iw = o->card.w - 2 * LOGON_PAD_SIDE;
+	y = place_identity(o) + LOGON_GAP;
+	o->field = lay_rect(LOGON_PAD_SIDE, y, iw, LOGON_PW_H);
+	o->password = lay_rect(LOGON_PAD_SIDE + LOGON_PW_PAD, y,
+			iw - LOGON_PW_PAD - LOGON_GO_D - 2 * LOGON_GO_INSET, LOGON_PW_H);
+	o->go = logon_btn_rect(LOGON_PAD_SIDE + iw - LOGON_GO_INSET - LOGON_GO_D,
+			y + LOGON_GO_INSET, LOGON_GO_D, LOGON_GO_D);
+	y += LOGON_PW_H + LOGON_GAP;
+	o->message = lay_rect(LOGON_PAD_SIDE, y, iw - LOGON_SHUT_W - 8,
+			LOGON_ROW_H);
+	o->shutdown = logon_btn_rect(LOGON_PAD_SIDE + iw - LOGON_SHUT_W, y,
+			LOGON_SHUT_W, LOGON_ROW_H);
 }
 
 int	logon_layout(int32_t w, int32_t h, uint32_t count, t_logonlayout *out)
 {
-	int32_t	card_w;
-	int32_t	card_h;
-	int32_t	avail;
-
 	if (!out || w < LOGON_MIN_W || h < LOGON_MIN_H)
 		return (E_RANGE);
 	memset(out, 0, sizeof(*out));
-	out->count = tiles_that_fit(h, count);
-	card_w = lay_clamp(w / 2 - 24, LOGON_CARD_W_MIN, LOGON_CARD_W_MAX);
-	card_h = logon_card_h(out->count);
-	avail = h - LOGON_BAND_TOP - LOGON_BAND_BOTTOM;
-	out->card = lay_rect(w / 2 + (w / 2 - card_w) / 2,
-			LOGON_BAND_TOP + (avail - card_h) / 2, card_w, card_h);
-	out->prompt = lay_rect(40, h / 2 - 60, w / 2 - 80, 120);
+	out->count = logon_tiles_fit(h, count);
+	logon_place_card(out, w, h);
 	place_children(out);
-	place_dialog(out);
+	logon_place_dialog(out);
+	logon_place_chips(out, w, h);
 	return ((int)out->count);
 }

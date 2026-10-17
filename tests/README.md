@@ -31,7 +31,7 @@ Un fragment `mk/lot-aNN.mk` déclare pour chacun ses sources compilées sur l'h�
 | Unitaire (hôte) | la logique pure d'un module : tables de pages, allocateurs, analyseurs, décodeurs, rendu | valeur attendue, modèle de référence, outil de l'hôte | `make host-aNN` |
 | Autotest noyau | le module dans le vrai noyau : verrous, interruptions, matériel émulé, mesures de temps | invariants, compteurs avant et après, tolérances | option `selftest` |
 | Scénario système (QEMU) | le système entier : démarrage BIOS et UEFI, fautes volontaires, session graphique | journal série, captures d'écran, code de sortie QEMU | `make test-qemu` |
-| Statique | le code et les outils | zéro erreur | `make norme`, `make hdrcheck`, `make scan`, `ruff` |
+| Statique | le code et les outils | zéro erreur | `make hdrcheck`, `make scan`, `ruff` |
 
 ## Matrice de couverture et tests manuels
 
@@ -91,6 +91,35 @@ Conventions :
   `vk_*` à la compilation pour ne pas entrer en conflit avec la libc de l'hôte.
 - Tout test aléatoire utilise un générateur à graine fixe et **affiche sa graine** (`a07/elf_fuzz : graine 0xa07c0de`,
   `modele de reference : graine = 0x...`). Un échec se rejoue donc à l'identique.
+
+## Tests du thème verre (a16 à a20)
+
+Le thème verre (voir le README, section « Thème verre ») s'appuie sur cinq lots. Leur règle commune : la valeur
+attendue vient de la maquette de conception ou d'un calcul fait à la main dans le test, jamais d'une copie de la sortie
+du code.
+
+| Lot | Ce qu'on y vérifie | Fichiers typiques |
+|-----|--------------------|-------------------|
+| a16 | génération reproductible des bitmaps (Instrument Sans, JetBrains Mono), jeu de caractères, budget de 80 Kio | `test_genfont.py`, `test_font_charset.c`, `test_font_cover.c`, `test_font_budget.c` |
+| a17 | verre (flou, repli opaque, bornes, coins), palette clair et sombre, contrastes, contrôles, lanceur, fond voile, métriques du cadre | `test_glass*.c`, `test_glass_robust*.c`, `test_colors_ext.c`, `test_ctrl_*.c`, `test_launcher*.c`, `test_geo_*.c`, `test_hit_*.c` |
+| a18 | verre dans le serveur : bandes sales, équivalence incrémental et complet, échec d'allocation du tampon de flou | `test_core_glass*.c`, `test_srv_glass*.c` |
+| a19 | contrôles sur fond de verre : encre des flèches, anneau de focus, police | `test_glass*.c`, `test_ring*.c` |
+| a20 | connexion, bureau, dock, fenêtre Bonjour, contrastes sur fonds variables | `test_logon_layout*.c`, `test_desktop*.c`, `test_taskbar*.c`, `test_hello_layout.c`, `test_contrast*.c` |
+
+Particularités :
+
+- Le banc de rendu de a17 (`lt_*.c`, `fake_gfx.c`) dessine sur une surface en mémoire. Les galeries (`test_gallery.c`,
+  `test_glass_gallery.c`, `test_wallpaper.c`, `test_desktop.c`) écrivent des PNG dans `build/a17/` (chemin fixe,
+  indépendant de `B=`) pour une relecture à l'œil face aux captures de la maquette.
+- Le verre travaille dans un tampon fourni par l'appelant. Les tests le donnent trop petit, absent, ou activent la
+  transparence réduite, et vérifient que le résultat est l'aplat opaque et non une erreur (`test_glass_edge.c`,
+  `test_srv_glass.c`).
+- a18 vérifie l'équivalence : une composition incrémentale par zones sales doit donner les mêmes pixels qu'une
+  composition complète (`test_core_glass_eq.c`), y compris quand le verre élargit le rectangle à redessiner.
+- Les palettes claire et sombre sont toutes deux testées, alors qu'aucune appli ne bascule le thème : les tests sont le
+  seul chemin qui exerce le sombre (voir Limites connues du README).
+- Lancer un lot : `make -j3 B=build/<nom> host-a17` (puis a18, a19, a20). Les scénarios QEMU `a20_desktop` et
+  `a20_souris` couvrent la session, pas le rendu du thème.
 
 ## Scénarios système (QEMU)
 
@@ -178,7 +207,7 @@ make -j8 -k test-host                 tous les tests unitaires
 make test-qemu                        tous les scénarios, BIOS et UEFI
 python3 tools/run_scenarios.py --kernel build/main/debug/kernel.elf \
     --root build/main/debug/root --out build/main/qemu --filter a01_ --jobs 4
-make norme hdrcheck scan              contrôles statiques
+make hdrcheck scan                    contrôles statiques
 make ci                               sous-ensemble rejoué par l'intégration continue (tools/ci.sh)
 ```
 

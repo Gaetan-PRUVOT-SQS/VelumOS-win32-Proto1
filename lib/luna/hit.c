@@ -34,8 +34,10 @@ static uint32_t	hit_edge(const t_lgeo *g, t_point p)
 	l = p.x - g->outer.x;
 	t = p.y - g->outer.y;
 	c = lm_detail()->corner_len;
-	sx = edge_side(l, g->outer.w - 1 - l, g->border, g->border);
-	sy = edge_side(t, g->outer.h - 1 - t, g->top, g->bottom);
+	sx = edge_side(l, g->outer.w - 1 - l, lm_detail()->resize,
+			lm_detail()->resize);
+	sy = edge_side(t, g->outer.h - 1 - t, lm_detail()->resize,
+			lm_detail()->resize);
 	if (sx != 0 && sy == 0 && lp_min(t, g->outer.h - 1 - t) < c)
 		sy = edge_side(t, g->outer.h - 1 - t, c, c);
 	else if (sy != 0 && sx == 0 && lp_min(l, g->outer.w - 1 - l) < c)

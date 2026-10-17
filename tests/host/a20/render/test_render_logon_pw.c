@@ -23,7 +23,7 @@ static void	pw_choix_du_compte_et_saisie(void)
 	t_logon	lg;
 	t_ctl	*edit;
 
-	render_reset("build/a20/a20-fixture/users-mdp");
+	render_reset(A20_FIXTURE_PW);
 	logon_boot(&lg);
 	lgd_click(&lg, lgd_tile(&lg, 0));
 	h_eq_i64("mode mot de passe", lg.flow.mode, LM_PASSWORD);
@@ -44,7 +44,7 @@ static void	pw_echec_attente_puis_succes(void)
 	t_logon	lg;
 	t_ctl	*edit;
 
-	render_reset("build/a20/a20-fixture/users-mdp");
+	render_reset(A20_FIXTURE_PW);
 	logon_boot(&lg);
 	lgd_click(&lg, lgd_tile(&lg, 0));
 	lgd_type(&lg, "mauvais");
@@ -69,7 +69,7 @@ static void	pw_connexion_reussie(void)
 {
 	t_logon	lg;
 
-	render_reset("build/a20/a20-fixture/users-mdp");
+	render_reset(A20_FIXTURE_PW);
 	logon_boot(&lg);
 	lgd_click(&lg, lgd_tile(&lg, 0));
 	lgd_type(&lg, "Passe 123");

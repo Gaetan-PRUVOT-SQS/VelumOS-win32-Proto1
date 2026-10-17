@@ -57,8 +57,31 @@ typedef struct s_wdirty
 {
 	t_rect		r[WS_DIRTY_MAX];
 	uint32_t	n;
+	uint32_t	overflow;
 	t_rect		screen;
 }	t_wdirty;
+
+typedef struct s_wframestat
+{
+	uint32_t	rects;
+	uint32_t	overflow;
+	uint64_t	px_dirty;
+	uint64_t	px_comp;
+	uint64_t	px_paint;
+	uint64_t	px_glass;
+	uint64_t	ns;
+}	t_wframestat;
+
+typedef struct s_wmeter
+{
+	t_wframestat	last;
+	t_wframestat	total;
+	t_wframestat	window;
+	uint64_t		ns_max;
+	uint64_t		log_at;
+	uint32_t		frames;
+	uint32_t		window_frames;
+}	t_wmeter;
 
 typedef struct s_wdrag
 {
@@ -127,5 +150,17 @@ t_rect		wcur_rect(t_wcursor c);
 void		wcur_draw(t_surface *s, t_wcursor c);
 void		wc_compose(const t_wtable *t, t_surface *s, t_wcursor c, t_rect d);
 void		wc_window(const t_wtable *t, int slot, t_surface *s);
+int32_t		wgl_bands(const t_wtable *t, int slot, t_rect *out);
+t_rect		wgl_extend_n(const t_wtable *t, t_rect r, uint32_t passes);
+t_rect		wgl_extend(const t_wtable *t, t_rect r);
+uint64_t	wst_area(t_rect r);
+uint64_t	wst_glass_px(const t_wtable *t, t_rect r);
+uint64_t	wst_paint_px(const t_wtable *t, t_rect r);
+void		wst_note(t_wframestat *f, const t_wtable *t, t_rect dirty,
+				t_rect comp);
+void		wst_close(t_wmeter *m, const t_wframestat *f);
+bool		wst_due(t_wmeter *m, uint64_t now, uint64_t period);
+void		wst_rearm(t_wmeter *m, uint64_t now);
+uint32_t	wst_format(const t_wmeter *m, char *buf, uint32_t n);
 
 #endif

@@ -16,6 +16,7 @@
 # define CTL_DEFAULT 0x10
 # define CTL_MULTILINE 0x20
 # define CTL_PASSWORD 0x40
+# define CTL_NOBACK 0x80
 # define CN_CLICKED 1
 # define CN_CHANGED 2
 # define CN_SELECT 3
@@ -56,6 +57,7 @@ typedef struct s_ctl
 	t_ctlcb			cb;
 	void			*user;
 	void			*priv;
+	uint32_t		font;
 }	t_ctl;
 
 typedef struct s_ctlroot
@@ -147,5 +149,9 @@ void	ctl_scroll_move(t_ctlroot *r, t_ctl *c, int pos);
 t_ctl	*ctl_menu_popup(t_ctlroot *r, const t_ctlmenuspec *spec);
 int		ctl_menu_result(const t_ctl *menu);
 void	ctl_menu_close(t_ctlroot *r, t_ctl *menu);
+
+# define CTL_FONT_AUTO FONT_IDS
+
+void	ctl_set_font(t_ctlroot *r, t_ctl *c, t_fontid font);
 
 #endif

@@ -161,6 +161,8 @@ bool		fake_dirty_is(const t_ctlroot *r, const t_rect *want, int n);
 bool		fake_dirty_covers(const t_ctlroot *r, t_rect q);
 void		fake_px_fill(t_surface *s, uint32_t color);
 bool		fake_rect_eq(t_rect a, t_rect b);
+t_color		fake_menu_hot_bg(void);
 double		fake_contrast(t_color a, t_color b);
+int			fake_band_area(t_rect r);
 
 #endif

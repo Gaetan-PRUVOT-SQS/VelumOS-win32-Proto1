@@ -8,6 +8,8 @@ $(O)/obj/%.c.o: %.c
 	@printf '  CC   %s\n' $<
 	$(Q)$(CC) $(KCFLAGS) -MMD -MP -c $< -o $@
 
+$(O)/obj/arch/x86_64/cpu/trap_report.c.o: KCFLAGS += -Wframe-larger-than=4096
+
 $(O)/obj/%.S.o: %.S
 	@mkdir -p $(dir $@)
 	@printf '  AS   %s\n' $<

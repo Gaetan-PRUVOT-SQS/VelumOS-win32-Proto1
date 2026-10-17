@@ -30,7 +30,7 @@ static t_color	highlight(t_ctlroot *r, t_rect row, bool sel, bool enabled)
 	if (sel && enabled)
 	{
 		luna_menu_item(r->surface, row, LS_HOT);
-		return (ctl_color_selected_text());
+		return (luna_color_text());
 	}
 	if (sel)
 		ctl_focus_ring(r->surface, row);
@@ -57,6 +57,7 @@ static void	item(t_ctlroot *r, const t_menu *m, uint32_t l, uint32_t i)
 	tx.text = it->text;
 	tx.flags = 0;
 	tx.mnemonic = true;
+	tx.font = NULL;
 	ctl_text_draw(r->surface, &tx);
 	marks(r->surface, row, it, tx.color);
 }

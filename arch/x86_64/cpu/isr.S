@@ -4,6 +4,13 @@
 .set MSR_GS_BASE, 0xc0000101
 .set FRAME_CS, 24
 .set REGS_SIZE, 176
+.set REGS_RAX, 112
+.set REGS_VEC, 120
+.set REGS_ERR, 128
+.set REGS_RIP, 136
+.set REGS_CS, 144
+.set RFLAGS_AC_CLEAR, -262145
+.set PROBE_FAULT_BIT, 32
 
 .macro SAVE_REGS
 	push rax
@@ -41,6 +48,12 @@
 	pop rax
 .endm
 
+.macro CLEAR_AC
+	pushfq
+	and qword ptr [rsp], RFLAGS_AC_CLEAR
+	popfq
+.endm
+
 .macro ISR_STUB vec
 	.balign 16
 1:
@@ -76,8 +89,20 @@ isr_common:
 	lfence
 	SAVE_REGS
 	cld
+	CLEAR_AC
+	cmp qword ptr [rsp + REGS_VEC], 14
+	je .Lprobe_check
+.Laudit:
+	cmp byte ptr [rip + g_cpu_entry_audit], 0
+	je .Ldispatch
+	test byte ptr [rsp + REGS_CS], 3
+	jz .Ldispatch
+	mov rdi, rsp
+	call cpu_entry_audit
+.Ldispatch:
 	mov rdi, rsp
 	call trap_dispatch
+.Lreturn:
 	RESTORE_REGS
 	test byte ptr [rsp + FRAME_CS], 3
 	jz 2f
@@ -85,11 +110,24 @@ isr_common:
 2:
 	add rsp, 16
 	iretq
+.Lprobe_check:
+	test byte ptr [rsp + REGS_CS], 3
+	jnz .Laudit
+	lea rax, [rip + .Lprobe_insn]
+	cmp [rsp + REGS_RIP], rax
+	jne .Laudit
+	mov rax, [rsp + REGS_ERR]
+	bts rax, PROBE_FAULT_BIT
+	mov [rsp + REGS_RAX], rax
+	lea rax, [rip + .Lprobe_done]
+	mov [rsp + REGS_RIP], rax
+	jmp .Lreturn
 
 .balign 16
 isr_paranoid:
 	SAVE_REGS
 	cld
+	CLEAR_AC
 	mov ecx, MSR_GS_BASE
 	rdmsr
 	shl rdx, 32
@@ -116,6 +154,16 @@ isr_paranoid:
 	ISR_STUB %vec
 	.set vec, vec + 1
 .endr
+
+.globl cpu_probe_user_read
+.type cpu_probe_user_read, @function
+cpu_probe_user_read:
+	xor eax, eax
+.Lprobe_insn:
+	movzx ecx, byte ptr [rdi]
+.Lprobe_done:
+	ret
+.size cpu_probe_user_read, . - cpu_probe_user_read
 
 .globl isr_stub_table
 .type isr_stub_table, @function

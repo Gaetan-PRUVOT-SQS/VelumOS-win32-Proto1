@@ -26,3 +26,14 @@ void	sh_on_mouse(t_shell *sh, const t_wmmouse *m)
 	else if (m->h.window == sh->desk.id)
 		sh_desk_mouse(sh, m);
 }
+
+int	sh_theme_sync(t_shell *sh)
+{
+	if (!sh_wall_sync(sh))
+		return (0);
+	sh_desk_paint(sh);
+	sh_bar_paint(sh);
+	if (sh->sm.open)
+		sh_menu_paint(sh);
+	return (1);
+}

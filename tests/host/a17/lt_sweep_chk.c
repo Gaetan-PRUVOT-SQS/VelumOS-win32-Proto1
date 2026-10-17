@@ -22,14 +22,16 @@ void	lt_sweep_counts(const t_lunawin *w, const t_ltsweep *s)
 	while (i < 21)
 		total += s->count[i++];
 	h_true(total == lt_area(w->outer), "chaque pixel a exactement une valeur");
-	h_true(s->count[HT_CLIENT] == lt_area(luna_window_client(w)), "client");
-	h_true(s->count[HT_CLOSE] == lt_area(luna_button_rect(w, HT_CLOSE)),
-		"pixels du bouton fermer");
+	h_true(s->count[HT_CLIENT] + s->edge_client
+		== lt_area(luna_window_client(w)), "client, bandes de bord comprises");
+	h_true(s->count[HT_CLOSE] + s->edge_close
+		== lt_area(luna_button_rect(w, HT_CLOSE)),
+		"pixels du bouton fermer, bandes de bord comprises");
 	h_true(s->count[HT_SYSMENU] <= lt_area(luna_button_rect(w, HT_SYSMENU)),
 		"pixels du menu systeme");
-	if (w->outer.h >= 40 || !(w->style & WS_SIZEBOX))
-		h_true(s->count[HT_SYSMENU] == lt_area(luna_button_rect(w, HT_SYSMENU)),
-			"menu systeme complet hors recouvrement");
+	h_true(s->count[HT_SYSMENU] + s->edge_sys
+		== lt_area(luna_button_rect(w, HT_SYSMENU)),
+		"menu systeme, bandes de bord comprises");
 }
 
 void	lt_same_zones(const t_lunawin *a, const t_lunawin *b, const char *msg)

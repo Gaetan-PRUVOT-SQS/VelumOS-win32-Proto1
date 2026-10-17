@@ -19,9 +19,9 @@ static int	build_run(t_ctlroot *r)
 		&& add(r, (t_ctlspec){CT_EDIT, SH_ID_EDIT, vis | CTL_FOCUSABLE,
 			{72, 46, 284, 22}, ""})
 		&& add(r, (t_ctlspec){CT_BUTTON, CTL_ID_OK, vis | CTL_FOCUSABLE
-			| CTL_DEFAULT, {192, 82, 80, 26}, "OK"})
+			| CTL_DEFAULT, {188, 78, 88, 34}, "OK"})
 		&& add(r, (t_ctlspec){CT_BUTTON, CTL_ID_CANCEL, vis | CTL_FOCUSABLE,
-			{276, 82, 80, 26}, "Annuler"}));
+			{272, 78, 88, 34}, "Annuler"}));
 }
 
 static int	build_power(t_ctlroot *r)
@@ -32,11 +32,11 @@ static int	build_power(t_ctlroot *r)
 	return (add(r, (t_ctlspec){CT_LABEL, 10, vis, {16, 16, 320, 18},
 			"Que voulez-vous que l'ordinateur fasse" NBSP "?"})
 		&& add(r, (t_ctlspec){CT_BUTTON, SH_ID_HALT, vis | CTL_FOCUSABLE
-			| CTL_DEFAULT, {16, 62, 100, 26}, "Arrêter"})
+			| CTL_DEFAULT, {12, 58, 108, 34}, "Arrêter"})
 		&& add(r, (t_ctlspec){CT_BUTTON, SH_ID_REBOOT, vis | CTL_FOCUSABLE,
-			{124, 62, 100, 26}, "Redémarrer"})
+			{120, 58, 108, 34}, "Redémarrer"})
 		&& add(r, (t_ctlspec){CT_BUTTON, CTL_ID_CANCEL, vis | CTL_FOCUSABLE,
-			{232, 62, 100, 26}, "Annuler"}));
+			{228, 58, 108, 34}, "Annuler"}));
 }
 
 static int	build_note(t_ctlroot *r, const char *text)
@@ -59,7 +59,7 @@ static int	build_note(t_ctlroot *r, const char *text)
 			cut + 1}))
 		return (0);
 	return (add(r, (t_ctlspec){CT_BUTTON, CTL_ID_CANCEL, vis | CTL_FOCUSABLE
-			| CTL_DEFAULT, {236, 62, 80, 26}, "OK"}));
+			| CTL_DEFAULT, {232, 58, 88, 34}, "OK"}));
 }
 
 int	sh_dlg_build(t_shell *sh, int kind)

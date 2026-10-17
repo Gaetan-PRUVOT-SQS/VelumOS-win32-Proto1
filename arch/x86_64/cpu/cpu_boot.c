@@ -1,6 +1,7 @@
 #include "velum/boot.h"
 #include "velum/klog.h"
 #include "cpu_int.h"
+#include "cpu_vuln.h"
 
 static t_cpuboot	g_boot;
 
@@ -54,5 +55,6 @@ int	cpu_boot_init(void)
 	cpu_fpu_boot(&g_boot.raw);
 	cpu_fault_option();
 	cpu_log();
+	cpu_hard_boot();
 	return (0);
 }

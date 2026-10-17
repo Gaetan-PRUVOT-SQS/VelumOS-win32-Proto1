@@ -1,84 +1,75 @@
-#include "luna_int.h"
+#include "luna_ctrl.h"
+
+static void	edit_colors(bool enabled, t_color *fill, t_color *ring)
+{
+	t_cpal	pal;
+
+	pal = lp_pal();
+	*fill = pal->input;
+	*ring = lp_tone_alpha(pal->muted, 0x73);
+	if (enabled)
+		return ;
+	*fill = lp_tone_alpha(*fill, (*fill >> 24) / 2);
+	*ring = lp_tone_alpha(pal->dim, 0x73);
+}
 
 void	luna_edit_frame(t_surface *s, t_rect r, bool enabled)
 {
-	t_lbox	b;
-	t_lgrad	g;
-	t_lstop	st;
-	t_color	ring;
+	t_lrfill	f;
+	t_color		fill;
+	t_color		ring;
+	int32_t		rad;
 
 	if (!lp_ok(s))
 		return ;
 	r = lp_clean(r);
-	ring = 0xff7f9db9;
-	lp_flat(&g, &st, LC_WHITE);
-	if (!enabled)
-	{
-		ring = 0xffc9c7ba;
-		lp_flat(&g, &st, LC_WINDOW);
-	}
-	b.r = r;
-	b.rad = 0;
-	b.ring = &ring;
-	b.nring = 1;
-	b.fill = &g;
-	lp_box(s, &b);
+	edit_colors(enabled, &fill, &ring);
+	rad = lp_min(LCT_RAD_FIELD, r.h / 2);
+	f = lp_rmake(lp_inset(r, 1), rad - 1, fill, fill);
+	lp_rfill(s, &f);
+	f = lp_rmake(r, rad, ring, ring);
+	lp_rring(s, &f, 1);
 }
 
-static void	group_corners(t_surface *s, t_rect r, t_color c)
+static void	group_part(t_surface *s, const t_lrfill *f, t_rect part)
 {
-	t_lcring	k;
+	t_rect	keep;
 
-	k.rad = 3;
-	k.c = c;
-	k.x = r.x;
-	k.y = r.y;
-	k.dx = 1;
-	k.dy = 1;
-	lp_corner_ring(s, &k);
-	k.x = r.x + r.w - 1;
-	k.dx = -1;
-	lp_corner_ring(s, &k);
-	k.y = r.y + r.h - 1;
-	k.dy = -1;
-	lp_corner_ring(s, &k);
-	k.x = r.x;
-	k.dx = 1;
-	lp_corner_ring(s, &k);
+	keep = s->clip;
+	s->clip = lp_isect(keep, part);
+	lp_rring(s, f, 1);
+	s->clip = keep;
 }
 
-static void	group_top(t_surface *s, t_rect r, int32_t label_w, t_color c)
+static void	group_draw(t_surface *s, const t_lrfill *f, int32_t label_w)
 {
 	int32_t	gap0;
 	int32_t	gap1;
 
-	gap0 = r.x + lm_detail()->group_pad;
+	if (label_w == 0)
+	{
+		lp_rring(s, f, 1);
+		return ;
+	}
+	gap0 = f->r.x + lm_detail()->group_pad;
 	gap1 = gap0 + label_w;
-	if (label_w <= 0)
-		gap0 = r.x + r.w - 3;
-	if (label_w <= 0)
-		gap1 = gap0;
-	lp_fill(s, lp_rect(r.x + 3, r.y, gap0 - r.x - 3, 1), c);
-	lp_fill(s, lp_rect(gap1, r.y, r.x + r.w - 3 - gap1, 1), c);
+	group_part(s, f, lp_rect(f->r.x, f->r.y, gap0 - f->r.x, f->r.h));
+	group_part(s, f, lp_rect(gap1, f->r.y, f->r.x + f->r.w - gap1, f->r.h));
+	group_part(s, f, lp_rect(gap0, f->r.y + 1, label_w, f->r.h - 1));
 }
 
 void	luna_groupbox(t_surface *s, t_rect r, int32_t label_w)
 {
-	t_color	c;
-	t_rect	box;
+	t_lrfill	f;
+	t_color		c;
+	int32_t		dy;
 
 	r = lp_clean(r);
 	label_w = lp_clamp(label_w, 0, LP_COORD_MAX);
-	if (!lp_ok(s) || r.w < 8 || r.h < 8)
+	dy = lm_detail()->group_line_y;
+	if (!lp_ok(s) || r.w < 8 || r.h < 8 || r.h - dy < 8)
 		return ;
-	c = 0xffd0d0bf;
-	box = lp_rect(r.x, r.y + lm_detail()->group_line_y, r.w,
-			r.h - lm_detail()->group_line_y);
-	if (box.h < 8)
-		return ;
-	group_corners(s, box, c);
-	group_top(s, box, label_w, c);
-	lp_fill(s, lp_rect(box.x + 3, box.y + box.h - 1, box.w - 6, 1), c);
-	lp_fill(s, lp_rect(box.x, box.y + 3, 1, box.h - 6), c);
-	lp_fill(s, lp_rect(box.x + box.w - 1, box.y + 3, 1, box.h - 6), c);
+	c = lp_tone_alpha(lp_pal()->muted, 0x4d);
+	f = lp_rmake(lp_rect(r.x, r.y + dy, r.w, r.h - dy), LCT_RAD_GROUP, c, c);
+	group_draw(s, &f, label_w);
 }

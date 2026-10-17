@@ -44,10 +44,3 @@ uint64_t	ws_sys_now(void)
 {
 	return (g_fk.now);
 }
-
-void	*ws_sys_alloc(uint64_t size)
-{
-	if (fk_fail(&g_fk.fail_alloc))
-		return (NULL);
-	return (calloc(1, size));
-}

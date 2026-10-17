@@ -1,4 +1,8 @@
 #include "lt_gal.h"
+#include "velum/luna_launcher.h"
+
+static const t_launchertile	g_gal_tiles[] = {
+{"Ex\xc3\xa9" "cuter...", ICON_RUN}, {"Bonjour", ICON_PROGRAM}};
 
 static void	gal_bar(t_surface *s, t_rect r)
 {
@@ -20,13 +24,26 @@ static void	gal_bar(t_surface *s, t_rect r)
 	}
 }
 
+static void	gal_launcher(t_surface *s, t_rect r)
+{
+	t_launcher	l;
+	t_rect		menu;
+
+	menu = luna_launcher_place(r.h, 30);
+	menu.x += r.x;
+	menu.y += r.y;
+	l.user = "Utilisateur";
+	l.tiles = g_gal_tiles;
+	l.ntiles = 2;
+	l.hot = 1;
+	l.focus = 0;
+	luna_launcher(s, &l, menu);
+}
+
 void	lt_gal_desktop(t_surface *s, t_rect r)
 {
-	t_rect	menu;
-
 	luna_wallpaper(s, r);
-	menu = lp_rect(r.x + 4, r.y + r.h - 30 - 460, 380, 460);
-	luna_startmenu(s, menu);
+	gal_launcher(s, r);
 	gal_bar(s, lp_rect(r.x, r.y + r.h - 30, r.w, 30));
 }
 

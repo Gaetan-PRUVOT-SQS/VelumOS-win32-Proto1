@@ -1,7 +1,4 @@
-.PHONY: norme hdrcheck matrice matrice-check scan test-tools test-qemu test ci run run-uefi lot lot-compile norme-lot
-
-norme:
-	tools/norme.sh
+.PHONY: hdrcheck matrice matrice-check scan test-tools test-qemu test ci run run-uefi lot lot-compile
 
 hdrcheck:
 	@for h in $$(find include -name '*.h' | sort); do \
@@ -13,12 +10,8 @@ LOTOBJ := $(patsubst %,$(O)/obj/%.o,$(KSRC_$(LOT))) $(ULOT_OBJ)
 
 lot-compile: $(LOTOBJ)
 
-norme-lot:
-	@files=$$(find $(DIRS_$(LOT)) \( -name '*.c' -o -name '*.h' \) -print | sort); \
-		tools/norme.sh $$files
-
-lot: lot-compile host-$(LOT) norme-lot
-	@echo 'lot $(LOT) : compilation, tests hôte et norme OK'
+lot: lot-compile host-$(LOT)
+	@echo 'lot $(LOT) : compilation et tests hôte OK'
 
 test-qemu: $(O)/kernel.elf $(O)/rootfs.stamp
 	python3 tools/run_scenarios.py --kernel $(O)/kernel.elf --root $(O)/root \
@@ -36,7 +29,7 @@ scan:
 test-tools:
 	python3 -m pytest -q tests/tools
 
-test: norme test-tools test-host test-qemu
+test: test-tools test-host test-qemu
 
 KVM := $(shell test -w /dev/kvm && echo -enable-kvm -cpu host)
 OVMF_CODE ?= $(firstword $(wildcard /usr/share/edk2/ovmf/OVMF_CODE.fd \

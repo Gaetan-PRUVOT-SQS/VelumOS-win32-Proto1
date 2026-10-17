@@ -88,6 +88,8 @@ void	ws_apply_rect(t_wsrv *s, int slot, t_rect r, bool final)
 	if (w->content.px != NULL && w->content.w == wg_clamp(cl.w, 1, WS_DIM_MAX)
 		&& w->content.h == wg_clamp(cl.h, 1, WS_DIM_MAX))
 		return ;
-	if (ws_section_attach(s, slot) == 0)
-		ws_send_section(s, slot, WMS_RESIZED, 0);
+	if (ws_section_attach(s, slot) != 0)
+		return ;
+	ws_mark_win(s, slot);
+	ws_send_section(s, slot, WMS_RESIZED, 0);
 }

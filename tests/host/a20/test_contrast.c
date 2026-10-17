@@ -1,7 +1,7 @@
 #include <stdint.h>
 #include "harness.h"
 #include "a20_srgb.h"
-#include "uicolor.h"
+#include "velum/theme.h"
 
 static void	contrast_formule_de_reference(void)
 {
@@ -15,44 +15,67 @@ static void	contrast_formule_de_reference(void)
 	h_true(ratio_x100(0xffffff, 0x245edc) <= 570, "blanc sur #245EDC: 5,7");
 }
 
-static void	contrast_couples_de_texte_du_shell(void)
+static uint32_t	sature(uint32_t rgb, int32_t sat10)
 {
-	h_true(ratio_x100(UI_WHITE & 0xffffff, 0x245edc) >= 450,
-		"barre des taches: blanc sur bleu");
-	h_true(ratio_x100(UI_WHITE & 0xffffff, 0x316ac5) >= 450,
-		"selection: blanc sur #316AC5");
-	h_true(ratio_x100(UI_BLACK & 0xffffff, 0xffffff) >= 450,
-		"colonne gauche: noir sur blanc");
-	h_true(ratio_x100(UI_BLACK & 0xffffff, 0xece9d8) >= 450,
-		"fenetre: noir sur #ECE9D8");
-	h_true(ratio_x100(UI_MENU_TEXT_RIGHT & 0xffffff, 0xd3e5fa) >= 450,
-		"colonne droite: bleu fonce sur bleu clair");
-	h_true(ratio_x100(UI_WHITE & 0xffffff, 0x245edc) >= 450,
-		"pied de menu: blanc sur bleu");
+	int32_t		lum;
+	int32_t		c;
+	int32_t		shift;
+	uint32_t	out;
+
+	lum = (int32_t)((299 * ((rgb >> 16) & 255) + 587 * ((rgb >> 8) & 255)
+				+ 114 * (rgb & 255)) / 1000);
+	out = 0;
+	shift = 16;
+	while (shift >= 0)
+	{
+		c = lum + (((int32_t)((rgb >> shift) & 255) - lum) * sat10) / 10;
+		if (c < 0)
+			c = 0;
+		if (c > 255)
+			c = 255;
+		out |= (uint32_t)c << shift;
+		shift -= 8;
+	}
+	return (out);
 }
 
-static void	contrast_fonds_variables(void)
+static void	encre_sur_le_dock(const uint32_t *walls, const uint32_t *tints,
+		int32_t sat10, uint32_t ink)
 {
-	uint32_t	label;
-	uint32_t	prompt;
+	uint32_t	dock;
+	uint32_t	plate;
+	int32_t		i;
 
-	label = blend_over(UI_LABEL_PLATE, 0xffffff);
-	prompt = blend_over(UI_PROMPT_PLATE, 0xffffff);
-	h_true(ratio_x100(0xffffff, label) >= 450,
-		"libelle d'icone: blanc sur plaque, pire fond blanc");
-	h_true(ratio_x100(0xffffff, prompt) >= 450,
-		"invite de connexion: blanc sur plaque, pire fond blanc");
-	h_true(ratio_x100(0x000000, 0x3aa6f4) >= 450, "heure: noir sur le haut");
-	h_true(ratio_x100(0x000000, 0x118ae8) >= 450, "heure: noir au milieu");
-	h_true(ratio_x100(0x000000, 0x107ad7) >= 450, "heure: noir, ligne 21");
-	h_true(ratio_x100(0xffffff, 0x118ae8) < 450, "heure en blanc: sous AA");
+	i = 0;
+	while (i < 5)
+	{
+		dock = blend_over(tints[0], sature(walls[i], sat10));
+		plate = blend_over(tints[1], dock);
+		h_true(ratio_x100(ink & 0xffffff, dock) >= 450,
+			"encre sur le verre du dock, pire fond de la palette");
+		h_true(ratio_x100(ink & 0xffffff, plate) >= 450,
+			"encre sur la plaque de la tache active");
+		i++;
+	}
+}
+
+static void	contrast_dock_clair_et_sombre(void)
+{
+	static const uint32_t	light[5] = {VT_WALL_BASE, VT_WALL_TEAL,
+		VT_WALL_VIOLET, VT_WALL_AMBER, VT_WALL_ROSE};
+	static const uint32_t	dark[5] = {VT_WALL_BASE_D, VT_WALL_TEAL_D,
+		VT_WALL_VIOLET_D, VT_WALL_AMBER_D, VT_WALL_ROSE_D};
+	static const uint32_t	tint_l[2] = {VT_GLASS_DOCK, 3019898879U};
+	static const uint32_t	tint_d[2] = {VT_GLASS_DOCK_D, 0x29ffffff};
+
+	encre_sur_le_dock(light, tint_l, 18, VT_INK);
+	encre_sur_le_dock(dark, tint_d, 16, VT_INK_D);
 }
 
 int	main(void)
 {
 	h_begin("a20/contrast");
 	h_run("contraste: formule de reference", contrast_formule_de_reference);
-	h_run("contraste: couples du shell AA", contrast_couples_de_texte_du_shell);
-	h_run("contraste: fonds variables", contrast_fonds_variables);
+	h_run("contraste: dock clair et sombre", contrast_dock_clair_et_sombre);
 	return (h_end());
 }

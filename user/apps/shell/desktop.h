@@ -5,9 +5,10 @@
 # include "velum/gfx.h"
 
 # define DESK_ICONS 3
-# define DESK_CELL_W 75
-# define DESK_CELL_H 75
-# define DESK_MARGIN 8
+# define DESK_CELL_W 90
+# define DESK_CELL_H 81
+# define DESK_STEP_Y 99
+# define DESK_MARGIN 24
 # define DESK_NONE -1
 # define DBL_MAX_NS 500000000ull
 # define DBL_SLOP 4

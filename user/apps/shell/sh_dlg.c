@@ -1,6 +1,7 @@
 #include "velum/abi/abi_syscall.h"
 #include "velum/libk.h"
 #include "../common/layout.h"
+#include "sh_desk.h"
 #include "shell.h"
 
 static t_rect	dlg_rect(const t_shell *sh, int kind)
@@ -8,23 +9,25 @@ static t_rect	dlg_rect(const t_shell *sh, int kind)
 	int32_t	w;
 	int32_t	h;
 	int32_t	sw;
-	int32_t	sh_h;
+	int32_t	area_h;
 
-	w = 380;
-	h = 150;
+	w = SH_DLGW_RUN;
+	h = SH_DLGH_RUN;
 	if (kind == SH_DLG_POWER)
 	{
-		w = 360;
-		h = 140;
+		w = SH_DLGW_POWER;
+		h = SH_DLGH_POWER;
 	}
 	if (kind == SH_DLG_NOTE)
 	{
-		w = 340;
-		h = 140;
+		w = SH_DLGW_NOTE;
+		h = SH_DLGH_NOTE;
 	}
+	w += 2 * sh->lm.frame_w;
+	h += sh->lm.caption_h + sh->lm.frame_bottom;
 	sw = (int32_t)sh->info.screen_w;
-	sh_h = (int32_t)sh->info.screen_h - sh->lm.taskbar_h;
-	return (lay_rect((sw - w) / 2, (sh_h - h) / 2, w, h));
+	area_h = (int32_t)sh->info.screen_h - sh->lm.taskbar_h;
+	return (lay_rect((sw - w) / 2, (area_h - h) / 2, w, h));
 }
 
 void	sh_dlg_close(t_shell *sh)

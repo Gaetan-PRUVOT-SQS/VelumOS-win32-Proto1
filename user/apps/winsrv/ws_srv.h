@@ -77,6 +77,8 @@ typedef struct s_wsrv
 	t_wcursor	cur;
 	t_surface	back;
 	t_surface	fb;
+	uint32_t	*glass;
+	uint64_t	glass_bytes;
 	t_handle	listener;
 	t_handle	input;
 	int32_t		shell;
@@ -143,6 +145,8 @@ void		ws_mark(t_wsrv *s, t_rect r);
 void		ws_mark_win(t_wsrv *s, int slot);
 void		ws_cursor_set(t_wsrv *s, t_point pos, uint32_t shape);
 void		ws_frame(t_wsrv *s);
+void		ws_glass_open(t_wsrv *s);
+void		ws_glass_close(t_wsrv *s);
 void		ws_input(t_wsrv *s, const t_inpevent *ev);
 void		ws_input_read(t_wsrv *s);
 void		ws_mouse_move(t_wsrv *s, int32_t dx, int32_t dy);

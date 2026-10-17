@@ -3,12 +3,6 @@
 #include "fake_kern.h"
 #include "ws_sys.h"
 
-void	ws_sys_free(void *p, uint64_t size)
-{
-	(void)size;
-	free(p);
-}
-
 void	ws_sys_log(const char *msg)
 {
 	g_fk.logs++;

@@ -2,6 +2,8 @@
 
 void	ctl_pnl_paint(t_ctlroot *r, t_ctl *c)
 {
+	if (c->flags & CTL_NOBACK)
+		return ;
 	gfx_fill(r->surface, c->rect, luna_color_window());
 }
 
@@ -23,7 +25,7 @@ void	ctl_grp_paint(t_ctlroot *r, t_ctl *c)
 	t_ctltext	tx;
 	int32_t		w;
 
-	if (!ctl_font(c->flags))
+	if (!ctl_font_of(c))
 		return ;
 	ctl_text_init(&tx, c);
 	w = ctl_text_width(&tx);
@@ -31,6 +33,6 @@ void	ctl_grp_paint(t_ctlroot *r, t_ctl *c)
 		w += 2 * CTL_GAP;
 	luna_groupbox(r->surface, c->rect, w);
 	tx.box.x += 2 * CTL_GAP;
-	tx.box.h = ctl_font(c->flags)->height;
+	tx.box.h = ctl_font_of(c)->height;
 	ctl_text_draw(r->surface, &tx);
 }

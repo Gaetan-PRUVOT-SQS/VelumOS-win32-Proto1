@@ -4,7 +4,7 @@
 #include "desktop.h"
 
 static const t_deskicon	g_icons[DESK_ICONS] = {
-{DA_COMPUTER, ICON_COMPUTER, "Poste de travail"},
+{DA_COMPUTER, ICON_COMPUTER, "Ordinateur"},
 {DA_RECYCLE, ICON_RECYCLE, "Corbeille"},
 {DA_HELLO, ICON_PROGRAM, "Bonjour"}
 };
@@ -20,7 +20,7 @@ int32_t	desk_rows(t_rect area)
 {
 	int32_t	rows;
 
-	rows = (area.h - DESK_MARGIN) / DESK_CELL_H;
+	rows = (area.h - DESK_MARGIN - DESK_CELL_H + DESK_STEP_Y) / DESK_STEP_Y;
 	if (rows < 1)
 		return (0);
 	return (rows);
@@ -39,7 +39,7 @@ int	desk_grid(t_rect area, uint32_t count, t_rect *out)
 	{
 		out[i] = lay_rect(area.x + DESK_MARGIN
 				+ (int32_t)i / rows * DESK_CELL_W,
-				area.y + DESK_MARGIN + (int32_t)i % rows * DESK_CELL_H,
+				area.y + DESK_MARGIN + (int32_t)i % rows * DESK_STEP_Y,
 				DESK_CELL_W, DESK_CELL_H);
 		if (lay_inside(area, out[i]))
 			placed++;

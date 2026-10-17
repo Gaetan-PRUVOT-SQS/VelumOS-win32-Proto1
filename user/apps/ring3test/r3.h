@@ -28,6 +28,7 @@
 # define R3_THREADS 1000
 # define R3_STACK_FREED 76
 # define R3_STACK_PROT 75
+# define R3_NO_MODE -1000
 
 typedef struct s_r3
 {
@@ -62,6 +63,8 @@ void		r3_hold_tramp(void);
 void		r3_hold_main(uint64_t arg);
 int			r3_seq_child(void);
 void		r3_suite_held(t_r3 *t, uint64_t base);
+void		r3_suite_entry(t_r3 *t);
+int			r3_entry_child(const char *mode);
 int			r3_child_main(const char *mode);
 void		r3_do_null(void);
 void		r3_do_div0(void);

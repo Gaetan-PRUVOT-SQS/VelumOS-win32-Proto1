@@ -1,6 +1,11 @@
 #include "velum/klog.h"
+#include "velum/libk.h"
 #include "velum/panic.h"
+#include "velum/sched.h"
 #include "cpu_int.h"
+#include "stack_report.h"
+
+#define VEC_DOUBLE_FAULT 8
 
 static uint64_t	g_unhandled[IDT_VECTORS / 64];
 
@@ -35,6 +40,85 @@ static void	report_pf(uint64_t err, uint64_t cr2)
 		(err >> 3) & 1, (err >> 4) & 1);
 }
 
+static void	stack_collect(t_stackinfo *si, const t_regs *regs, uint64_t cr2)
+{
+	t_cpu		*cpu;
+	t_thread	*th;
+
+	si->rsp = (uint64_t)__builtin_frame_address(0);
+	if (regs)
+		si->rsp = regs->rsp;
+	si->cr2 = cr2;
+	if (!regs || regs->vec == VEC_DOUBLE_FAULT)
+		si->cr2 = cpu_read_cr2();
+	cpu = cpu_self();
+	si->has_thread = false;
+	if (!cpu)
+		return ;
+	si->gs_kstack = cpu->kstack_top;
+	si->irq_depth = cpu->irq_depth;
+	si->preempt = cpu->preempt;
+	if (cpu->tss)
+		si->tss_rsp0 = ((const t_tss *)cpu->tss)->rsp[0];
+	th = cpu->current;
+	if (!th)
+		return ;
+	si->has_thread = true;
+	si->tid = th->tid;
+	si->name = th->name;
+	si->base = th->kstack_base;
+	si->top = th->kstack_top;
+}
+
+static void	chain_origin_words(const t_trapchain *ch, uint64_t base,
+				uint64_t top)
+{
+	const uint64_t	*w;
+	uint64_t		rsp;
+	uint64_t		i;
+	uint64_t		n;
+
+	if (ch->ntail == 0)
+		return ;
+	rsp = ch->tail[ch->ntail - 1].rsp;
+	if ((rsp & 7) != 0 || rsp < base || rsp >= top)
+		return ;
+	n = (top - rsp) / sizeof(uint64_t);
+	if (n > 6)
+		n = 6;
+	w = (const uint64_t *)rsp;
+	kprintf("chaine : origine, %llu mot(s) a rsp %#llx :", n, rsp);
+	i = 0;
+	while (i < n)
+		kprintf(" %#llx", w[i++]);
+	kputc('\n');
+}
+
+void	cpu_stack_report(const t_regs *regs, uint64_t cr2)
+{
+	t_stackinfo	si;
+	t_trapchain	chain;
+	char		text[STACK_REPORT_SIZE];
+	uint64_t	rbp;
+
+	memset(&si, 0, sizeof(si));
+	si.name = "?";
+	stack_collect(&si, regs, cr2);
+	stack_format(text, sizeof(text), &si);
+	kputs(text);
+	if (!si.has_thread)
+		return ;
+	rbp = (uint64_t)__builtin_frame_address(0);
+	if (regs)
+		rbp = regs->rbp;
+	stack_trap_chain(&chain, rbp, si.base, si.top);
+	if (chain.total < 2)
+		return ;
+	stack_chain_format(text, sizeof(text), &chain);
+	kputs(text);
+	chain_origin_words(&chain, si.base, si.top);
+}
+
 static void	report_trace(const t_regs *regs)
 {
 	uint64_t	pcs[BT_MAX];
@@ -61,6 +145,7 @@ _Noreturn void	trap_kernel_fault(const t_regs *regs, uint64_t cr2)
 	report_regs(regs);
 	if (regs->vec == VEC_PAGE_FAULT)
 		report_pf(regs->err, cr2);
+	cpu_stack_report(regs, cr2);
 	report_trace(regs);
 	ksnprintf(msg, sizeof(msg), "%s %s (anneau %llu)", trap_name(regs->vec),
 		trap_desc(regs->vec), regs->cs & 3);

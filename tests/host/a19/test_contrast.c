@@ -28,6 +28,8 @@ static void	text_colors_aa(void)
 	h_true(r >= 4.5, "texte sur fond de champ et de liste");
 	r = fake_contrast(ctl_color_selected_text(), luna_color_selection());
 	h_true(r >= 4.5, "texte blanc sur selection");
+	r = fake_contrast(luna_color_text(), fake_menu_hot_bg());
+	h_true(r >= 4.5, "encre de menu sur survol accent 12 %");
 	r = fake_contrast(ctl_color_text(true), ctl_color_track());
 	h_true(r >= 4.5, "fleches d'ascenseur sur la piste");
 }
@@ -40,10 +42,12 @@ static void	disabled_and_graphics(void)
 	h_true(r >= 3.0, "texte desactive lisible : >= 3:1 (exempte de 1.4.3)");
 	r = fake_contrast(ctl_color_text(false), ctl_color_back(false));
 	h_true(r >= 3.0, "champ desactive");
-	r = fake_contrast(luna_color_text(), luna_color_window());
-	h_true(r >= 3.0, "anneau de focus sur le fond (WCAG 1.4.11)");
-	r = fake_contrast(luna_color_text(), luna_color_selection());
-	h_true(r >= 3.0, "anneau de focus sur une ligne selectionnee");
+	r = fake_contrast(luna_color_accent(), luna_color_window());
+	h_true(r >= 3.0, "anneau accent sur le fond (WCAG 1.4.11)");
+	r = fake_contrast(luna_color_accent(), ctl_color_back(true));
+	h_true(r >= 3.0, "anneau accent sur le fond de liste");
+	r = fake_contrast(ctl_color_selected_text(), luna_color_selection());
+	h_true(r >= 3.0, "anneau sur une ligne selectionnee");
 	r = fake_contrast(ctl_color_text(true), ctl_color_text(false));
 	h_true(r > 1.0, "actif et desactif se distinguent");
 }

@@ -28,7 +28,7 @@ static void	sweep_invariants_de_1_a_200(void)
 	int32_t		shown;
 	int32_t		end;
 
-	strip = lay_rect(106, 2, 832, 26);
+	strip = lay_rect(74, 20, 732, 40);
 	n = 1;
 	while (n <= 200)
 	{
@@ -50,19 +50,20 @@ static void	sweep_largeur_decroissante(void)
 	int32_t	n;
 	int32_t	prev;
 
-	strip = lay_rect(0, 0, 832, 26);
+	strip = lay_rect(0, 0, 732, 40);
 	prev = TB_BTN_MAX_W;
 	n = 1;
-	while (n <= 46)
+	while (n <= 30)
 	{
 		tb_layout(strip, (uint32_t)n, out);
 		h_true(out[0].w <= prev, "la largeur ne grandit pas");
 		prev = out[0].w;
 		n++;
 	}
-	h_eq_i64("46 boutons tiennent", tb_layout(strip, 46, out), 46);
+	h_eq_i64("16 boutons tiennent: (732+6)/(40+6)", tb_layout(strip, 16, out),
+		16);
 	h_eq_i64("au dela, les derniers sont masques", tb_layout(strip, 60, out),
-		46);
+		16);
 }
 
 static void	sweep_frontiere_du_plafond(void)
@@ -71,14 +72,14 @@ static void	sweep_frontiere_du_plafond(void)
 	int32_t	w;
 
 	w = 3 * TB_BTN_MAX_W + 2 * TB_GAP;
-	h_eq_i64("pile 3 boutons au plafond", tb_layout(lay_rect(0, 0, w, 26), 3,
+	h_eq_i64("pile 3 boutons au plafond", tb_layout(lay_rect(0, 0, w, 40), 3,
 			out), 3);
 	h_eq_i64("plafond atteint", out[2].w, TB_BTN_MAX_W);
-	h_eq_i64("un pixel de plus", tb_layout(lay_rect(0, 0, w + 1, 26), 3, out),
+	h_eq_i64("un pixel de plus", tb_layout(lay_rect(0, 0, w + 1, 40), 3, out),
 		3);
 	h_true(out[0].w <= TB_BTN_MAX_W && out[1].w <= TB_BTN_MAX_W
 		&& out[2].w <= TB_BTN_MAX_W, "jamais plus large que le plafond");
-	h_eq_i64("un pixel de moins", tb_layout(lay_rect(0, 0, w - 1, 26), 3,
+	h_eq_i64("un pixel de moins", tb_layout(lay_rect(0, 0, w - 1, 40), 3,
 			out), 3);
 	h_true(out[0].w == TB_BTN_MAX_W && out[2].w == TB_BTN_MAX_W - 1,
 		"le pixel manquant va aux derniers");

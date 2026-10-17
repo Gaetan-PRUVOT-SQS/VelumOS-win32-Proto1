@@ -40,6 +40,8 @@ int			logon_boot(t_logon *lg);
 int			logon_load(t_logon *lg);
 int			logon_window(t_logon *lg);
 int			logon_build(t_logon *lg);
+int			logon_add_dialog(t_logon *lg);
+t_ctl		*logon_add_ctl(t_logon *lg, t_ctlspec s, t_fontid font);
 void		logon_sync(t_logon *lg);
 void		logon_overlay(void *user, t_rect dirty);
 void		logon_on_command(void *c, uint32_t code, void *user);

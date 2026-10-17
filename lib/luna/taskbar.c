@@ -1,75 +1,41 @@
-#include "luna_int.h"
+#include "dock_int.h"
 
-static void	bar_stops(int32_t h, t_lstop *st)
+static t_rect	dock_rect(t_rect bar)
 {
-	static const t_color	col[8] = {0xff5a8df0, 0xff3d79e8, 0xff2f6be0,
-		0xff2862dc, 0xff245edc, 0xff2058d2, 0xff1b4fc2, 0xff1544a4};
-	int32_t					k;
+	int32_t	h;
+	int32_t	y;
 
-	st[0].at = 0;
-	st[1].at = 1;
-	st[2].at = 3;
-	st[3].at = 7;
-	st[4].at = lp_max(h - 12, 8);
-	st[5].at = lp_max(h - 4, 9);
-	st[6].at = lp_max(h - 2, 10);
-	st[7].at = lp_max(h - 1, 11);
-	k = 0;
-	while (k < 8)
-	{
-		st[k].c = col[k];
-		k++;
-	}
+	h = lp_min(VT_DOCK_H, bar.h);
+	y = lp_max(bar.y, bar.y + bar.h - VT_DOCK_MARGIN - h);
+	return (lp_rect(bar.x + VT_DOCK_MARGIN, y,
+			lp_max(bar.w - 2 * VT_DOCK_MARGIN, 0), h));
 }
 
 void	luna_taskbar(t_surface *s, t_rect r)
 {
-	t_lstop	st[8];
-	t_lgrad	g;
-
 	r = lp_clean(r);
-	if (!lp_ok(s) || r.w <= 0 || r.h <= 0)
+	if (!lp_ok(s) || r.w <= 2 * VT_DOCK_MARGIN || r.h <= 0)
 		return ;
-	bar_stops(r.h, st);
-	g.st = st;
-	g.n = 8;
-	g.tint = 0;
-	g.tint_t = 0;
-	lp_vfill(s, r, &g);
-}
-
-void	luna_tray(t_surface *s, t_rect r)
-{
-	static const t_lstop	st[4] = {{0, 0xff3aa6f4}, {1, 0xff1a9bf2},
-	{12, 0xff118ae8}, {29, 0xff0e6cc8}};
-	t_lgrad					g;
-
-	r = lp_clean(r);
-	if (!lp_ok(s) || r.w <= 2 || r.h <= 0)
-		return ;
-	g.st = st;
-	g.n = 4;
-	g.tint = 0;
-	g.tint_t = 0;
-	lp_vfill(s, r, &g);
-	lp_fill(s, lp_rect(r.x, r.y, 1, r.h), 0xff0a4fa8);
-	lp_fill(s, lp_rect(r.x + 1, r.y, 1, r.h), 0xff3c9cf0);
+	luna_glass(s, dock_rect(r), LUNA_GLASS_DOCK);
 }
 
 void	luna_taskbar_layout(t_rect bar, t_taskbarlayout *out)
 {
 	const t_lunametrics	*m;
+	t_rect				d;
 	int32_t				tray;
 
 	if (out == NULL)
 		return ;
-	bar = lp_clean(bar);
+	d = dock_rect(lp_clean(bar));
 	m = lm_metrics();
-	tray = lp_min(m->tray_w, lp_max(bar.w - m->start_w, 0));
-	out->start = lp_rect(bar.x, bar.y, lp_min(m->start_w, bar.w), bar.h);
-	out->tray = lp_rect(bar.x + bar.w - tray, bar.y, tray, bar.h);
-	out->tasks = lp_rect(out->start.x + out->start.w + lm_detail()->task_gap,
-			bar.y, bar.w - out->start.w - tray - lm_detail()->task_gap, bar.h);
-	if (out->tasks.w < 0)
-		out->tasks.w = 0;
+	out->start = lp_rect(d.x + VT_DOCK_PAD_X, d.y + (d.h - m->start_w) / 2,
+			m->start_w, m->start_w);
+	tray = lp_clamp(d.w - 2 * VT_DOCK_PAD_X - m->start_w - VT_DOCK_GAP, 0,
+			LD_TRAY_W);
+	out->tray = lp_rect(d.x + d.w - VT_DOCK_PAD_X - tray,
+			d.y + (d.h - VT_TRAY_H) / 2, tray, VT_TRAY_H);
+	out->tasks = lp_rect(out->start.x + out->start.w + VT_DOCK_GAP
+			+ LD_STRIP_PAD_L, d.y + (d.h - VT_TASK_H) / 2, 0, VT_TASK_H);
+	out->tasks.w = lp_max(out->tray.x - VT_DOCK_GAP - out->tasks.x, 0);
 }

@@ -1,7 +1,11 @@
 #include "harness.h"
 #include "lt_contrast.h"
+#include "velum/luna_launcher.h"
 
-static t_lt	g_t;
+static t_lt					g_t;
+
+static const t_launchertile	g_tiles[] = {
+{"Ex\xc3\xa9" "cuter...", ICON_RUN}, {"Bonjour", ICON_PROGRAM}};
 
 static void	win_title(void)
 {
@@ -16,10 +20,19 @@ static void	win_title(void)
 
 static void	win_startmenu(void)
 {
+	t_launcher	l;
+
+	l.user = "Nom";
+	l.tiles = g_tiles;
+	l.ntiles = 2;
+	l.hot = LUNA_LAUNCHER_NONE;
+	l.focus = 0;
 	lk_begin(&g_t, LC_BLACK);
-	luna_startmenu_named(&g_t.s, lp_rect(0, 0, 380, 470), "Nom");
-	h_eq_i64("trois textes dans le menu", fk_spy()->n, 3);
-	lk_check("menu demarrer, nom et pied", lk_spied(&g_t.s));
+	luna_launcher(&g_t.s, &l, lp_rect(0, 0, LUNA_LAUNCHER_WIDTH,
+			LUNA_LAUNCHER_HEIGHT));
+	h_eq_i64("six textes dans le lanceur", fk_spy()->n, 6);
+	lk_check("lanceur, recherche, titre, tuiles, nom et pied",
+		lk_spied(&g_t.s));
 	lk_begin(&g_t, LC_BLACK);
 	luna_boot_draw(&g_t.s, 50, 0);
 	lk_check("texte de l'ecran de demarrage", lk_spied(&g_t.s));

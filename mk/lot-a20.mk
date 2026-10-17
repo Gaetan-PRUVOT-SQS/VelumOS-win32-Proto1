@@ -2,7 +2,7 @@ LOTS += a20
 KSRC_a20 :=
 A20_PURE_COMMON := $(addprefix user/apps/common/,tbuf.c timefmt.c utf8.c layout.c)
 A20_PURE_LOGON := $(addprefix user/apps/logon/,acc_line.c acc_parse.c acc_file.c \
-	acc_verify.c limiter.c auth.c logon_flow.c logon_flow2.c logon_layout.c logon_text.c)
+	acc_verify.c limiter.c auth.c logon_flow.c logon_flow2.c logon_layout.c logon_layout_top.c logon_text.c)
 A20_PURE_SHELL := $(addprefix user/apps/shell/,startmenu.c sm_items.c sm_nav.c \
 	sm_input.c sm_layout.c tasklist.c tasklist_apply.c taskbar.c desktop.c \
 	dblclick.c runcmd.c sm_progs.c sm_progs_line.c)
@@ -16,7 +16,8 @@ A20_FIXTURE := $(B)/a20-fixture/users
 A20_FIXTURE_PW := $(B)/a20-fixture/users-mdp
 HINC_a20 := -Iuser/apps/common -Iuser/apps/logon -Iuser/apps/shell \
 	-Itests/host/a20 -DA20_FIXTURE='"$(A20_FIXTURE)"' \
-	-DA20_FIXTURE_PW='"$(A20_FIXTURE_PW)"'
+	-DA20_FIXTURE_PW='"$(A20_FIXTURE_PW)"' \
+	-DA20_RENDER='"$(B)/a20-render"'
 
 $(A20_FIXTURE): tools/mkuser.py
 	@mkdir -p $(dir $@)
@@ -31,7 +32,7 @@ $(A20_FIXTURE_PW): tools/mkuser.py
 
 .PHONY: a20-mkuser
 a20-mkuser: $(A20_FIXTURE) $(A20_FIXTURE_PW)
-	python3 tests/host/a20/test_mkuser.py
+	A20_FIXTURE=$(A20_FIXTURE) python3 tests/host/a20/test_mkuser.py
 
 A20_RDIR := tests/host/a20/render
 A20_RTESTS := $(sort $(wildcard $(A20_RDIR)/test_*.c))

@@ -3,9 +3,8 @@
 
 # include <stdint.h>
 # include "../common/uiwin.h"
+# include "hello_layout.h"
 
-# define HELLO_W 340
-# define HELLO_H_PX 220
 # define HELLO_ID_TITLE 10
 # define HELLO_ID_UPTIME 11
 # define HELLO_ID_NOTE 12

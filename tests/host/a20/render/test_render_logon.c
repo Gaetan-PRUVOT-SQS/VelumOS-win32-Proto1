@@ -8,15 +8,16 @@ static void	logon_demarrage_et_fenetre(void)
 {
 	t_logon	lg;
 
-	render_reset("build/a20/a20-fixture/users");
+	render_reset(A20_FIXTURE);
 	h_eq_i64("demarrage", logon_boot(&lg), 0);
 	h_eq_u64("une fenetre", g_fwm.count, 1);
 	h_eq_u64("plein ecran", fwm_find("Ouverture de session")->style,
 		WS_FULLSCREEN);
 	h_eq_u64("un compte", lg.nshown, 1);
 	h_eq_u64("une tuile", lg.lay.count, 1);
-	h_true(px_near(&lg.ui.win.surface, (t_point){lg.lay.card.x + 8,
-			lg.lay.card.y + 8}, 0xece9d8, 8), "carte couleur fenetre");
+	h_eq_i64("carte de 380 de large", lg.lay.card.w, 380);
+	h_eq_i64("carte centree", lg.lay.card.x, (SCREEN_W - 380) / 2);
+	h_eq_i64("carte a 52 sous la date", lg.lay.card.y, 311);
 	render_shot("logon");
 	uiwin_close(&lg.ui);
 }
@@ -25,7 +26,7 @@ static void	logon_connexion_par_clic_sans_mot_de_passe(void)
 {
 	t_logon	lg;
 
-	render_reset("build/a20/a20-fixture/users");
+	render_reset(A20_FIXTURE);
 	logon_boot(&lg);
 	lgd_click(&lg, lgd_tile(&lg, 0));
 	h_eq_u64("le shell est lance", g_fos.nspawn, 1);
@@ -42,7 +43,7 @@ static void	logon_extinction_avec_confirmation(void)
 {
 	t_logon	lg;
 
-	render_reset("build/a20/a20-fixture/users");
+	render_reset(A20_FIXTURE);
 	logon_boot(&lg);
 	lgd_press_shutdown(&lg);
 	h_eq_i64("confirmation demandee", lg.flow.mode, LM_SHUTDOWN);

@@ -5,16 +5,18 @@ l'automatisation ne vérifie pas : jugement visuel, ergonomie, clavier et matér
 linguistique, reproductibilité sur machine propre. Les liens avec les fonctionnalités sont dans
 [`MATRICE.md`](MATRICE.md).
 
-Exécution : 19 cas sur 21 ont été joués les 5 et 6 octobre 2026 sous QEMU/KVM, avec le clavier et la souris
+Exécution : 19 cas sur 22 ont été joués les 5 et 6 octobre 2026 sous QEMU/KVM, avec le clavier et la souris
 injectés par le moniteur QEMU (`tools/manuel.py`) et des captures relues une par une. Aucun n'a été joué sur du matériel
 réel ni par une personne devant l'écran. Restent à faire : la fluidité perçue (MT-19), le matériel réel (MT-18), l'endurance
 de 8 h (MT-17 n'a duré que 10 minutes), la machine vierge (MT-24) et la comparaison avec de vraies captures d'époque
 (MT-04). MT-14, MT-17, MT-22 et MT-23, en échec le 5 octobre, ont été rejoués le 6 octobre après correction (voir leur
-fiche). Un statut « Échec » renvoie à un incident
+fiche). Ces passages ont eu lieu sur l'ancien thème Luna : MT-25 (fidélité à la maquette verre, thèmes clair et sombre)
+n'a pas encore été joué, et les fiches de rendu antérieures (MT-01, MT-04, MT-05, MT-14, MT-22) sont à rejouer sur le
+thème verre. Un statut « Échec » renvoie à un incident
 du registre de [`../TESTS.md`](../TESTS.md). À chaque nouvelle exécution, noter la date, le résultat et les anomalies
 dans la fiche.
 
-21 cas, durée estimée 14 h 35 min. Statuts : 15 réussi, 4 partiel, 2 a exécuter.
+22 cas, durée estimée 15 h 15 min. Statuts : 15 réussi, 4 partiel, 3 a exécuter.
 
 | ID | Cas | Durée (min) | Statut |
 |----|-----|-------------|--------|
@@ -39,6 +41,7 @@ dans la fiche.
 | MT-22 | Revue linguistique de l'interface | 20 | Réussi |
 | MT-23 | FAT32 sur une image réelle | 30 | Réussi |
 | MT-24 | Construction sur une machine propre | 90 | Partiel |
+| MT-25 | Fidélité à la maquette verre, thèmes clair et sombre | 40 | A exécuter |
 
 ## Fiches
 
@@ -95,6 +98,8 @@ Constat : L'écran de connexion est identique pixel pour pixel à celui du BIOS 
 3. Noter les écarts en pixels.
 
 Résultat attendu : Écarts de un pixel au plus sur les dimensions, couleurs proches de la palette Luna.
+
+Note : Joué le 5 octobre sur l'ancien thème Luna. Ne vaut plus pour le thème verre : voir MT-25.
 
 Exécution du 2026-10-05 : QEMU/KVM, mesures en pixels sur captures 1024x768.
 
@@ -489,3 +494,18 @@ Observations :
 - Le clone a été fait avant le correctif de a20_desktop, il faudra refaire le passage sur le dépôt corrigé.
 
 Incidents : T15 (voir `../TESTS.md`).
+
+### MT-25 : Fidélité à la maquette verre, thèmes clair et sombre
+
+- Fonctionnalités : F61
+- Objectif : Comparer à l'œil la connexion, le bureau, le lanceur, une fenêtre et le dock avec les captures de la maquette.
+- Préconditions : Image construite avec les polices Instrument Sans et JetBrains Mono. Pour le thème sombre, un binaire d'essai qui appelle luna_theme_set, puisqu'aucune appli ne le fait.
+- Durée estimée : 40 min
+- Statut : A exécuter
+
+1. Démarrer sous QEMU, capturer la connexion, le bureau et le lanceur à 1280x800.
+2. Ouvrir la fenêtre Bonjour et glisser une fenêtre sous le dock.
+3. Comparer chaque capture à celle de la maquette : verre, liseré, rayons, polices, accent.
+4. Relever séparément les écarts attendus (ombres de fenêtres, flou des fenêtres sous le dock, client opaque) et les écarts inattendus.
+
+Résultat attendu : Aucun écart inattendu. Les écarts attendus sont ceux de la section Limites connues du README.

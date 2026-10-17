@@ -2,12 +2,13 @@
 
 [![CI](../../actions/workflows/ci.yml/badge.svg?branch=main)](../../actions/workflows/ci.yml)
 
-VelumOS est un système d'exploitation écrit de zéro, en C, pour x86-64. Cette édition (« win32 ») reproduit
-l'expérience de bureau de Windows XP : démarrage, ouverture de session, thème Luna, barre des tâches, menu
-Démarrer. Le nom désigne le style de l'interface. Le noyau n'a rien de commun avec celui de Windows et il
-n'exécute pas de programmes Windows. Aucune ligne de code, aucun fichier,
-aucune image, aucune police de Microsoft n'y est utilisé : les dimensions viennent de la documentation
-publique de l'interface, les dessins sont générés par du code écrit ici.
+VelumOS est un système d'exploitation écrit de zéro, en C, pour x86-64. Cette édition (« win32 ») a un bureau
+graphique complet : démarrage, ouverture de session, bureau, dock, lanceur d'applications, fenêtres. Son thème,
+dit « verre », existe en clair et en sombre : surfaces translucides floutées, coins arrondis, accent turquoise,
+polices Instrument Sans et JetBrains Mono. Il remplace le premier thème de la tranche 1, qui imitait Windows XP
+(le nom `luna` de la bibliothèque de thème vient de là). Le noyau n'a rien de commun avec celui de Windows et il
+n'exécute pas de programmes Windows. Aucune ligne de code, aucun fichier, aucune image, aucune police de
+Microsoft n'y est utilisé : les dessins sont générés par du code écrit ici, d'après une maquette de conception.
 
 Les priorités du projet, dans l'ordre : sécurité, stabilité, rapidité, faible consommation de ressources.
 
@@ -15,13 +16,9 @@ Le dépôt documente aussi sa campagne de tests, de l'unité à la machine virtu
 [Campagne de tests](#campagne-de-tests), [`TESTS.md`](TESTS.md) et [`tests/README.md`](tests/README.md).
 Pressé ? Le [guide de lecture en cinq minutes](GUIDE-DE-LECTURE.md) indique trois fichiers à ouvrir.
 
-![Écran de démarrage](assets/demarrage.png)
-
-| | |
-|---|---|
-| ![Ouverture de session](assets/connexion.png) | ![Bureau](assets/bureau.png) |
-| ![Menu Démarrer](assets/menu-demarrer.png) | ![Fenêtre Bonjour](assets/fenetre-bonjour.png) |
-| ![Programmes du menu Démarrer](assets/menu-programmes.png) | ![Appli APK en marche](assets/appli-apk.png) |
+Les captures de ce dépôt (`assets/`) montrent encore l'ancien thème et ne sont plus affichées ici. De nouvelles
+captures du thème verre seront prises sous QEMU une fois toutes les applis passées au nouveau style : voir
+[Limites connues](#limites-connues).
 
 Windows et Windows XP sont des marques de Microsoft Corporation. VelumOS n'est ni affilié à Microsoft
 ni approuvé par elle, et il n'exécute pas de programmes Windows.
@@ -59,8 +56,9 @@ Ce qui fonctionne :
 - clavier et souris PS/2 (dispositions AZERTY et QWERTY), disques virtio-blk, partitions GPT et MBR ;
 - VFS avec initrd cpio et FAT32 en lecture et écriture (l'écriture n'est éprouvée que sur des disques simulés) ;
 - framebuffer, console noyau, écran d'arrêt, changement de mode sur l'adaptateur Bochs/QEMU ;
-- moteur de dessin 2D, polices bitmap UTF-8, thème Luna, serveur de fenêtres, bibliothèque de contrôles ;
-- écran de connexion avec mot de passe haché, bureau, barre des tâches, menu Démarrer, extinction ;
+- moteur de dessin 2D, polices bitmap UTF-8, thème verre clair et sombre (`lib/luna`), serveur de fenêtres,
+  bibliothèque de contrôles ;
+- écran de connexion avec mot de passe haché, bureau, dock avec zone de notification, lanceur, extinction ;
 - applis au format APK, pour un sous-ensemble : signature vérifiée, bytecode interprété par une machine
   virtuelle maison, une activité avec texte et boutons dans une fenêtre du bureau (voir
   [Applis au format APK](#applis-au-format-apk)).
@@ -95,38 +93,39 @@ dans [`TESTS.md`](TESTS.md). Le code de test et sa façon de s'écrire sont déc
 | Mesure (6 octobre 2026) | Résultat |
 |-------------------------|----------|
 | Niveaux de test | 4 : unitaire sur l'hôte, autotests du noyau, scénarios système QEMU, contrôles statiques |
-| Couverture fonctionnelle automatisée | **92,6 %** des 94 fonctionnalités vérifiables (80,9 % entièrement automatisées, 11,7 % avec un complément manuel) |
-| Couverture manuelle seule | **7,4 %** (7 fonctionnalités), plus 21 cas de test manuels décrits dans [`tests/MANUEL.md`](tests/MANUEL.md) |
-| Cas manuels joués (sous QEMU/KVM) | 19 sur 21 : 15 réussis, 4 partiels |
+| Couverture fonctionnelle automatisée | **93,2 %** des 103 fonctionnalités vérifiables (82,5 % entièrement automatisées, 10,7 % avec un complément manuel) |
+| Couverture manuelle seule | **6,8 %** (7 fonctionnalités), plus 22 cas de test manuels décrits dans [`tests/MANUEL.md`](tests/MANUEL.md) |
+| Cas manuels joués (sous QEMU/KVM, ancien thème) | 19 sur 22 : 15 réussis, 4 partiels ; MT-25 (thème verre) à exécuter |
 | Tests unitaires | 669 exécutions de suites, 13,26 millions de vérifications, 0 échec (ASan et UBSan) |
-| Scénarios système | 92 exécutions sur 92 (50 scénarios, BIOS et UEFI) |
+| Scénarios système | 92 exécutions sur 92 (50 scénarios, BIOS et UEFI) au 6 octobre, ancien thème, non rejoués depuis |
+| Lot du thème verre (a17 à a20), relevé du 10 octobre | 165 suites, 372 283 vérifications, 0 échec ; a16 vert, `test-host` code 0, `make all` code 0 (détail dans [`TESTS.md`](TESTS.md), 4.8) |
 | Autotests du noyau | 17 sur 17 |
 | Intégration continue | GitHub Actions : compilation avec le `gcc` du système, 10 lots de tests hôte, 6 scénarios QEMU sans KVM (voir [`tests/README.md`](tests/README.md)) |
-| Défauts trouvés et corrigés | 47 : 29 dans le produit (6 de gravité haute, 11 moyenne, 12 basse) et 18 dans l'infrastructure de test |
+| Défauts trouvés et corrigés | 46 : 29 dans le produit (6 de gravité haute, 11 moyenne, 12 basse) et 17 dans l'infrastructure de test |
 | Défauts ouverts | aucun au registre du 6 octobre ; les 4 défauts trouvés par les cas manuels sont corrigés, chacun avec son test de régression. Un panic sous KVM constaté le 8 octobre est décrit dans [Limites connues](#limites-connues) |
 | Couverture mesurée avec gcov | de 95 % à 100 % des lignes sur les sous-systèmes mesurés (a01, a02, a03, a08, a11, a13, a16) |
 | Test de mutation | mémoire physique (41 mutants définis, 31 joués), affichage (12), polices (22) |
-| Contrôles statiques | norminette sur 2 390 fichiers, en-têtes autonomes, contrôle de fonctions dangereuses, ruff, shellcheck : 0 erreur |
+| Contrôles statiques | en-têtes autonomes, contrôle de fonctions dangereuses, ruff, shellcheck : 0 erreur |
 
 ### Automatisé et manuel
 
 Le principe : tout ce qui a un oracle automatique est automatisé, et seul ce qui demande un jugement humain, un
 vrai périphérique ou une durée longue reste manuel. La mesure est faite sur les fonctionnalités vérifiables du système
-(82, regroupées par sous-système), pas sur le nombre de tests : chaque fonctionnalité a un mode de vérification et la
+(103, regroupées par sous-système), pas sur le nombre de tests : chaque fonctionnalité a un mode de vérification et la
 liste des tests qui la couvrent.
 
 | Mode | Fonctionnalités | Part |
 |------|-----------------|------|
-| A : automatisé | 76 | 80,9 % |
-| AM : automatisé, avec un complément manuel (aspect visuel, ergonomie, vrai clavier) | 11 | 11,7 % |
-| M : manuel seulement | 7 | 7,4 % |
+| A : automatisé | 85 | 82,5 % |
+| AM : automatisé, avec un complément manuel (aspect visuel, ergonomie, vrai clavier) | 11 | 10,7 % |
+| M : manuel seulement | 7 | 6,8 % |
 
-La couverture automatisée est donc de 92,6 % (A et AM), et 19,1 % des fonctionnalités appellent au moins un test
-manuel. Par nombre de cas, 1 593 cas sont automatisés (cas unitaires nommés, scénarios QEMU, tests Python) contre 21
-manuels, soit 98,7 % : ce second taux est beaucoup plus élevé parce que les cas automatisés sont fins, c'est le taux
+La couverture automatisée est donc de 93,2 % (A et AM), et 17,5 % des fonctionnalités appellent au moins un test
+manuel. Par nombre de cas, 2 185 cas sont automatisés (cas unitaires nommés, scénarios QEMU, tests Python) contre 22
+manuels, soit 99,0 % : ce second taux est beaucoup plus élevé parce que les cas automatisés sont fins, c'est le taux
 fonctionnel qu'il faut retenir.
 
-Ce qui reste en manuel : fidélité visuelle au style Luna, netteté des polices, manipulation des fenêtres à la souris,
+Ce qui reste en manuel : fidélité visuelle à la maquette du thème verre, netteté des polices, manipulation des fenêtres à la souris,
 saisie au clavier réel (touches mortes), redémarrage ACPI, matériel réel, endurance, performance perçue, revue
 linguistique, FAT32 sur une image réelle, reproduction de la construction sur une machine propre. Chaque cas a ses
 étapes et son résultat attendu dans [`tests/MANUEL.md`](tests/MANUEL.md).
@@ -135,9 +134,9 @@ Les taux ne sont pas écrits à la main : `make matrice` les recalcule depuis [`
 et vérifie que chaque test cité existe. Le détail par sous-système et par fonctionnalité est dans
 [`tests/MATRICE.md`](tests/MATRICE.md).
 
-Exécution des cas manuels (5 et 6 octobre 2026) : 19 cas sur 21 ont été joués sous QEMU/KVM, avec le clavier et la souris
-injectés par le moniteur QEMU et des captures relues une par une. 15 réussissent, 4 sont partiels, deux restent à faire
-(fluidité perçue et matériel réel). Les quatre cas en échec le 5 octobre (contraste de trois textes, espaces insécables,
+Exécution des cas manuels (5 et 6 octobre 2026, sur l'ancien thème) : 19 cas sur 22 ont été joués sous QEMU/KVM, avec le clavier et la souris
+injectés par le moniteur QEMU et des captures relues une par une. 15 réussissent, 4 sont partiels, trois restent à faire
+(fluidité perçue, matériel réel et fidélité à la maquette verre, MT-25). Les quatre cas en échec le 5 octobre (contraste de trois textes, espaces insécables,
 compteur `FSInfo` du FAT32, fenêtres qui cessaient de s'ouvrir après 222 ouvertures et fermetures) ont été rejoués le
 6 octobre après correction : trois réussissent, l'endurance reste partielle (300 fenêtres en 20 minutes, pas 8 h). Aucun cas n'a été joué sur du matériel réel ni par une personne devant l'écran. Le détail est dans
 [`TESTS.md`](TESTS.md) (4.6 et 5.3) et dans [`tests/MANUEL.md`](tests/MANUEL.md).
@@ -150,7 +149,7 @@ concurrence (verrous, attentes, messages), matériel (APIC, 8042, virtio), gel o
 processus), interface (rendu, zones de clic, focus). Chaque risque a une réponse de test (corpus corrompus et fuzz,
 modèle de référence, injection d'échec, simulation de courses, scénarios système).
 
-Critères de fin écrits avant l'exécution : chaque sous-système vert (compilation, tests unitaires, norme) ; le noyau
+Critères de fin écrits avant l'exécution : chaque sous-système vert (compilation, tests unitaires) ; le noyau
 complet démarre en BIOS et en UEFI et passe ses autotests ; tous les scénarios passent dans les deux firmwares ; zéro
 erreur statique ; aucun défaut de gravité haute ouvert. Ils sont atteints, avec les réserves de couverture données
 dans `TESTS.md`.
@@ -169,7 +168,7 @@ dans `TESTS.md`.
 | Comparaison dos à dos | UTF-8 contre CPython (10 365 120 séquences, 0 écart), PBKDF2 contre `hashlib`, SHA-256 contre les vecteurs NIST, partitions GPT relues par `sgdisk -v`, mélange de pixels contre un calcul exact (16,7 millions de triplets) |
 | Table de décision | focus clavier des contrôles (13 règles), partition des zones d'une fenêtre : chaque pixel appartient à une seule zone (`luna_hit_test`, trois tailles) |
 | Vérification visuelle | `tests/qemu/a13_panic.py` : une capture de l'écran d'arrêt doit contenir plus de 80 % de pixels de la couleur attendue ; les captures de ce README servent de preuve de parcours |
-| Statique | norminette, en-têtes publics compilés seuls, `make scan` (fonctions dangereuses, secrets), ruff, shellcheck |
+| Statique | en-têtes publics compilés seuls, `make scan` (fonctions dangereuses, secrets), ruff, shellcheck |
 
 ### Traçabilité
 
@@ -239,7 +238,7 @@ make -j8 -k test-host   tous les tests unitaires (plus de 10 minutes la premièr
 make test-tools         tests des outils Python
 make matrice            recalcule les taux de couverture automatisée et manuelle
 make ci                 ce que fait l'intégration continue (gcc du système, sept lots hôte, cinq scénarios sans KVM)
-make norme hdrcheck scan   contrôles statiques
+make hdrcheck scan      contrôles statiques
 ```
 
 Les captures de ce fichier sont produites par `tests/qemu/int_captures.py` et `tests/qemu/int_demarrage.py`.
@@ -257,7 +256,7 @@ Les captures de ce fichier sont produites par `tests/qemu/int_captures.py` et `t
 | `curl`, `tar`, `sha256sum` | téléchargement vérifié de Limine | |
 | QEMU et OVMF (edk2) | exécution et tests système | QEMU 10.2.2 |
 
-Facultatifs : `norminette` (contrôle de la norme de code), `ruff`, `shellcheck`, `shfmt`, Pillow
+Facultatifs : `ruff`, `shellcheck`, `shfmt`, Pillow
 (captures PNG et génération des polices), `pytest`.
 
 Sous Fedora : `sudo dnf install gcc make python3 gdisk mtools qemu-system-x86 edk2-ovmf curl`.
@@ -301,11 +300,10 @@ est branché sur le terminal : le journal du noyau y défile. Pour garder la con
 | `make test-qemu` | tous les scénarios système, BIOS et UEFI |
 | `make test-host` | tests unitaires de tous les sous-systèmes (long la première fois) |
 | `make test-tools` | tests des outils Python (image disque), nécessite `pytest` |
-| `make B=build/a03 lot LOT=a03` | compile, teste et contrôle la norme d'un seul sous-système |
-| `make norme` | norminette sur tout le C |
+| `make B=build/a03 lot LOT=a03` | compile et teste un seul sous-système |
 | `make scan` | contrôle statique de sécurité (fonctions C dangereuses, secrets, idiomes risqués) |
 | `make hdrcheck` | vérifie que chaque en-tête public se compile seul |
-| `make test` | norme, outils, tests hôte, scénarios QEMU |
+| `make test` | outils, tests hôte, scénarios QEMU |
 | `make help` | rappel des cibles |
 
 Variables utiles : `B` (dossier de build, un par personne ou par tâche), `PROFIL` (`debug` par défaut),
@@ -401,10 +399,46 @@ La définition fait foi dans [`include/velum/abi/`](include/velum/abi/).
 ### Interface graphique
 
 Tout est en mode utilisateur. Chaque fenêtre cliente possède une section partagée où elle dessine ses pixels
-(XRGB8888). Le serveur `winsrv` dessine le cadre Luna, compose dans un tampon arrière et copie les zones
+(XRGB8888). Le serveur `winsrv` dessine le cadre en verre, compose dans un tampon arrière et copie les zones
 modifiées dans le framebuffer qu'il a mappé. Les clients lui parlent par un canal nommé avec des messages à taille
 fixe, tous validés : un client qui envoie n'importe quoi est déconnecté. Le bureau et la barre des tâches sont de
 simples fenêtres du shell avec des styles particuliers.
+
+### Thème verre
+
+Le thème est dans `lib/luna` (préfixe `luna_` des fonctions). Ses valeurs viennent de `include/velum/theme.h`
+(jetons `VT_*` : couleurs claires et sombres, opacités, flous, rayons, tailles) et de `lib/luna/metrics.c`. Les
+tests recalculent leurs valeurs attendues depuis la maquette, pas depuis la sortie du code.
+
+| Élément | Valeurs (pixels) |
+|---------|------------------|
+| Cadre de fenêtre | légende 50, boutons 28 x 24 groupés en capsule, aucune bordure, zone de redimensionnement de 6 (elle recouvre le client), rayon 24 (26 pour la variante large), légende d'outil 36 |
+| Dock | fenêtre de barre de 80 de haut, plaque de 56 à 12 des bords (rayon 22), orbe de 42, boutons de tâche de 40 avec icône de 24 et indicateur de 14, zone de notification de 42 de haut avec pastille de 30 |
+| Lanceur | panneau de 540 x 289 (rayon 30) posé au-dessus du dock, marge gauche 12, quatre tuiles au plus, pied avec nom d'utilisateur, fermeture de session et extinction |
+| Bureau | cellule de 90 x 81, pas vertical 99, origine (24, 24), trois icônes (Ordinateur, Corbeille, Bonjour) avec ombre portée et sélection en accent |
+| Connexion | carte de 380, avatar de 88, champ de mot de passe en pilule de 48, horloge de 120 de haut, puces de 44, taille minimale 640 x 480 |
+| Fenêtre Bonjour | 480 x 235 (client de 185) |
+
+Verre : `luna_glass(surface, rect, genre)` dessine un des neuf genres (`LUNA_GLASS_DOCK`, `LAUNCHER`, `PANEL`,
+`CARD`, `CHIP`, `FRAME`, `WINDOW`, `CONSOLE`, `FLOAT`). Le fond est réduit par 4, flouté en trois passes de boîte
+(rayon de flou : puce 24, dock 28, fenêtre 30, panneau 34), saturé (x1,8 en clair, x1,6 en sombre), teinté par la
+couleur du genre, puis recouvert d'un reflet sur le tiers haut et d'un liseré à trois niveaux. Le tout est en
+entiers, sans flottants. Le flou travaille dans un tampon que le processus fournit (`luna_glass_scratch`, taille
+donnée par `luna_glass_need`) : `winsrv`, le shell et `logon` ont chacun le leur. Sans tampon, avec un tampon trop
+petit ou après `luna_transparency_set(true)`, le genre se dessine en aplat opaque (`VT_OPAQUE_*`), sans erreur.
+
+Fenêtres : le cadre est en verre sur la bande de légende et sur les coins du bas (`luna_window_glass_bands`),
+le serveur étend les rectangles sales à ces bandes pour que la composition incrémentale reste identique à la
+composition complète. Le contenu du client est opaque.
+
+Thèmes : `luna_theme_set` choisit `LUNA_THEME_LIGHT` (par défaut) ou `LUNA_THEME_DARK`, `lp_pal()` renvoie la palette
+courante et les accesseurs de `velum/luna_colors.h` donnent les couleurs aux applis.
+
+Polices : 21 jeux de bitmaps 1 bit (`FONT_*` de `include/velum/font.h`), générés par `tools/genfont.py` depuis
+les polices sources de `third_party/fonts/`. Instrument Sans (variable) en 11 à 15 px (400, 600, 700 selon la taille), 22, 24, 26 et
+28 px, plus un jeu de chiffres de 120 px pour l'horloge de connexion ; JetBrains Mono en 14 px. Les jeux de la
+première tranche (Open Sans 11 et 13 px, Noto Sans Mono 13 px) restent dans la table. Données de polices sous
+80 Kio, vérifié par `tests/host/a16/test_font_budget.c`.
 
 Le rendu 2D, les polices et le thème n'utilisent ni flottants ni allocations : le même code sert au noyau (écran de
 démarrage) et aux applis. Les polices sont des bitmaps 1 bit générés à la construction depuis des polices libres
@@ -412,20 +446,20 @@ démarrage) et aux applis. Les polices sont des bitmaps 1 bit générés à la c
 
 ## Du clic à l'écran
 
-Ce que traverse un clic sur le bouton Démarrer, du matériel au pixel :
+Ce que traverse un clic sur l'orbe du dock, du matériel au pixel :
 
 1. La souris PS/2 émet un paquet de 3 ou 4 octets. L'IRQ 12 arrive par l'IOAPIC, le pilote vide le contrôleur
    8042, resynchronise le flux si un octet manque et pousse un événement dans une file circulaire.
 2. `winsrv`, qui a ouvert l'entrée (`SYS_INPUT_OPEN`, privilège `PF_INPUT`), est réveillé par son `SYS_WAIT_MANY`,
    lit les événements, met à jour la position du curseur bornée à l'écran et cherche la fenêtre sous la souris.
-3. `luna_hit_test` dit quelle zone de la fenêtre est visée (légende, bouton, bord, client). Pour la barre des
-   tâches, c'est la zone cliente : le serveur transmet un message `WMS_MOUSE` au canal du shell, avec les
+3. `luna_hit_test` dit quelle zone de la fenêtre est visée (légende, bouton, bord, client). Pour le dock,
+   c'est la zone cliente : le serveur transmet un message `WMS_MOUSE` au canal du shell, avec les
    coordonnées relatives à la fenêtre.
-4. Le shell décide d'ouvrir le menu Démarrer : il crée une fenêtre popup (`WMC_CREATE`) et reçoit en réponse
+4. Le shell décide d'ouvrir le lanceur : il crée une fenêtre popup (`WMC_CREATE`) et reçoit en réponse
    une section partagée dont le handle a traversé le canal.
-5. Il mappe la section, dessine le menu dedans avec `libctl`, `libluna` et `libfont`, puis envoie `WMC_PRESENT`
+5. Il mappe la section, dessine le lanceur dedans avec `libctl`, `libluna` et `libfont`, puis envoie `WMC_PRESENT`
    avec les rectangles modifiés.
-6. `winsrv` recompose seulement les zones sales (cadre Luna, contenu de chaque fenêtre dans l'ordre Z, curseur)
+6. `winsrv` recompose seulement les zones sales (cadre en verre, contenu de chaque fenêtre dans l'ordre Z, curseur)
    dans son tampon arrière et copie ces zones dans le framebuffer qu'il a mappé en écriture combinée.
 
 Aucun de ces échanges ne passe par un appel système graphique : le noyau ne voit que des handles, des messages
@@ -486,7 +520,8 @@ est tirée à chaque build, donc cette partie de l'image n'est pas reproductible
 | Handles à droits réductibles et génération | un handle volé ou réutilisé par erreur ne donne rien de plus que ce qu'on lui a accordé | descripteurs globaux sans droits |
 | Copie utilisateur par le HHDM après parcours des tables | aucune faute possible pendant une copie, SMAP reste actif en permanence | ouvrir et refermer SMAP autour de chaque accès |
 | Noyau sans flottants, 2D et polices sans allocation | le même code sert à l'écran de démarrage du noyau et aux applis | deux implémentations |
-| Polices pré-rastérisées en bitmaps 1 bit | pas d'interpréteur de polices à l'exécution, rendu net et déterministe, 44 Kio de données | FreeType dans l'OS |
+| Polices pré-rastérisées en bitmaps 1 bit | pas d'interpréteur de polices à l'exécution, rendu déterministe, moins de 80 Kio de données | FreeType dans l'OS |
+| Verre calculé sur le processeur, flou à un quart de résolution et trois passes de boîte | coût borné, entiers seulement, repli opaque si la mémoire de travail manque | flou gaussien en pleine résolution, accélération graphique |
 | Minuterie de l'échéance la plus proche, sans tic périodique | CPU au repos réellement au repos, une seule armature matérielle | tic à 100 ou 1 000 Hz |
 | W^X strict et ASLR du chargeur | aucune page ne peut être écrite puis exécutée, la base de chaque appli change à chaque lancement | segments RWX, base fixe |
 | Limine (téléchargé, empreinte vérifiée) | BIOS et UEFI avec un seul protocole, le dépôt ne redistribue pas de binaire | chargeur maison, GRUB |
@@ -507,7 +542,7 @@ user/           libvelum (appels système, libc, crt0), include, apps (init, win
 include/velum/  en-têtes publics entre couches, dont abi/ pour l'interface avec les applis
 mk/             fragments de Makefile : un par sous-système (lot-aNN.mk) et la mécanique commune
 link/           script d'édition de liens du noyau
-tools/          image disque, scénarios QEMU, contrôle de la norme, génération des polices, chaîne d'outils,
+tools/          image disque, scénarios QEMU, génération des polices, chaîne d'outils,
                 assembleur DEX et fabrication d'APK
 tests/          host/ (tests unitaires par sous-système), qemu/ (scénarios système)
 third_party/    en-tête du protocole Limine et polices sources
@@ -525,7 +560,7 @@ Chaque sous-système a son fragment `mk/lot-aNN.mk` (sources, tests, applis) et 
 | a04 | tas noyau | a14 | libvelum, libc |
 | a05 | ACPI, APIC, horloges | a15 | moteur de dessin |
 | a06 | ordonnanceur, verrous | a16 | polices |
-| a07 | appels système, processus, ELF | a17 | thème Luna |
+| a07 | appels système, processus, ELF | a17 | thème verre (`lib/luna`) |
 | a08 | objets, canaux, sections | a18 | serveur de fenêtres |
 | a09 | PCI, aléa, crypto | a19 | contrôles |
 | a10 | clavier, souris | a20 | connexion, bureau |
@@ -540,26 +575,12 @@ jamais en retirer ni en changer le sens sans changer la version de l'ABI.
 ## Conventions de code
 
 - C freestanding (`-std=gnu11`, aucune libc dans le noyau), compilé en `-Wall -Wextra -Werror`.
-- Le C suit la norme de 42 et passe `norminette` : fonctions de 25 lignes au plus, 5 par fichier, 4 paramètres,
-  80 colonnes, pas de `for`, `switch`, ternaire ni macro-fonction. L'assembleur (`.S`, syntaxe Intel) et
-  `third_party/` en sont exemptés, ainsi que `arch/x86_64/limine/` (déclarations de requêtes du protocole,
-  que la norminette refuse parce qu'elles utilisent des initialisations désignées).
 - Pas de commentaires : les noms portent le sens.
 - Types préfixés (`t_`, `s_`, `e_`), erreurs en entiers négatifs `E_*`, pointeurs utilisateur dans un type à part
   (`t_uptr`) qu'on n'ouvre que par `copy_from_user` et `copy_to_user`.
 - Toute allocation peut échouer et son chemin d'échec est testé. Toute attente matérielle a un délai.
 - Python : ruff. Shell : shellcheck et shfmt.
 - Aucun code tiers, sauf une bibliothèque libre déclarée dans `third_party/` avec sa licence.
-
-Pièges connus de `norminette` 3.3.60 sur du code noyau, avec leur contournement :
-
-- l'assembleur en ligne avec des sorties et sans entrée contenant une variable déclenche un faux positif :
-  mettre l'asm dans un fichier `.S` ;
-- `typedef` interdit dans un `.c`, macros-fonctions interdites, initialisations désignées refusées ;
-- les noms de toutes les globales d'un fichier doivent s'aligner sur la même colonne ;
-- les prototypes d'un en-tête s'alignent sur une seule colonne : `tools/align_proto.py` le fait (on écrit
-  `type§nom(args);` puis on lance l'outil) ;
-- un littéral hexadécimal qui commence par `b` ou `B` est mal lu : écrire `0x0bb...`.
 
 ## Limites connues
 
@@ -579,8 +600,22 @@ Pièges connus de `norminette` 3.3.60 sur du code noyau, avec leur contournement
 - Le noyau monte une partition FAT32 sur `/data` si elle existe, mais l'image fournie n'en contient pas, et
   l'écriture FAT32 n'est testée que sur des disques simulés. Il n'y a ni récupération de mot de passe ni gestion
   de plusieurs comptes.
-- Les dimensions « 1:1 » du thème sont tirées de la documentation publique et marquées incertaines à un pixel
-  près pour quelques éléments (bouton Démarrer, zone de notification, entrées de menu).
+- Thème verre, ce qui manque par rapport à la maquette :
+  - pas d'ombres portées sous les fenêtres (le compositeur n'a pas de marge transparente autour d'une fenêtre) ;
+  - le dock et le lanceur floutent le fond d'écran, pas les fenêtres qui passent dessous ;
+  - le contenu des fenêtres (le client) est opaque, seul le cadre est en verre ;
+  - les écrans Fichiers, Réglages, Notifications et Console de la maquette ne sont pas intégrés : aucune appli ne
+    leur correspond ;
+  - la pastille de notifications du dock est dessinée sans source : elle n'affiche jamais de nombre ;
+  - la recherche du lanceur est un champ factice (elle n'accepte pas de saisie), les sections Récents et Toutes les
+    apps n'existent pas ;
+  - le thème sombre et la transparence réduite existent dans la bibliothèque (`luna_theme_set`,
+    `luna_transparency_set`) mais aucune appli ne les active : il n'y a pas de réglage, seuls les tests les exercent ;
+  - Instrument Sans n'est utilisée que par l'écran de connexion et la fenêtre Bonjour ; le cadre des fenêtres, le
+    dock, le lanceur, les libellés du bureau et les contrôles dessinent encore en Open Sans, et JetBrains Mono est
+    générée mais aucun code ne l'utilise ;
+  - les polices sont des bitmaps 1 bit, donc moins fines que celles de la maquette ;
+  - les captures du dépôt et le cas manuel MT-25 (fidélité à la maquette) ne sont pas refaits sur le thème verre.
 - Quelques sous-systèmes n'ont pas leurs mesures de couverture ni leurs bancs de performance.
 
 ## Composants tiers et licence
@@ -594,6 +629,8 @@ la licence de chaque fichier et les textes sont dans [`LICENSES/`](LICENSES/).
 | en-tête du protocole Limine | `third_party/limine/limine.h` | 0BSD |
 | Open Sans 1.10 (Regular, Bold, ExtraBold) | `third_party/fonts/` | Apache-2.0 |
 | Noto Sans Mono 2.014 | `third_party/fonts/` | SIL OFL 1.1 |
+| Instrument Sans (variable) | `third_party/fonts/`, texte `InstrumentSans-OFL.txt` | SIL OFL 1.1 |
+| JetBrains Mono (variable) | `third_party/fonts/`, texte `JetBrainsMono-OFL.txt` | SIL OFL 1.1 |
 | bitmaps dérivés de ces polices | `lib/font/gen/` | GPL-2.0-or-later, plus Apache-2.0 ou OFL-1.1 selon la police |
 | chargeur Limine 12.9.1 (BSD-2-Clause) | téléchargé par `make limine`, non redistribué | |
 

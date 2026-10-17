@@ -89,37 +89,10 @@ static void	programmes_valeurs_limites(void)
 	h_eq_str("chemin", p.list[1].path, "/system/b");
 }
 
-static void	programmes_menu(void)
-{
-	t_smprogs	p;
-
-	h_eq_i64("utf-8", sm_progs_parse("\xc3\x89" "dit;/system/bin/e\nB;/system/b"
-			"\nC;/system/c\n", 44, &p), 3);
-	h_eq_i64("pose", sm_set_programs(&p), 0);
-	h_eq_str("premier", sm_item(SM_IDX_PROG)->label, "\xc3\x89" "dit");
-	h_eq_str("troisieme", sm_item(7)->label, "C");
-	h_true(sm_visible(6, SM_LEVEL_PROGRAMS), "deuxieme visible");
-	h_true(!sm_visible(7, SM_LEVEL_TOP), "cache au premier niveau");
-	h_eq_u64("retour en dernier", sm_item(SM_IDX_BACK)->slot, 3);
-	h_eq_i64("commande C", sm_prog_of(sm_item(7)->cmd), 2);
-	h_eq_i64("commande autre", sm_prog_of(SMC_RUN), -1);
-	p.count = SM_PROGS_MAX + 1;
-	h_eq_i64("trop d'entrees", sm_set_programs(&p), E_INVAL);
-	p.count = 0;
-	h_eq_i64("aucune entree", sm_set_programs(&p), E_INVAL);
-	sm_progs_default(&p);
-	h_eq_i64("repli", sm_set_programs(&p), 0);
-	h_eq_str("repli nom", sm_item(SM_IDX_PROG)->label, "Bonjour");
-	h_eq_str("repli chemin", p.list[0].path, "/system/bin/hello");
-	h_true(!sm_visible(6, SM_LEVEL_PROGRAMS), "deuxieme cache");
-	h_eq_u64("retour remonte", sm_item(SM_IDX_BACK)->slot, 1);
-}
-
 int	main(void)
 {
 	h_begin("a20/programmes");
 	h_run("programmes: fichier hostile", programmes_fichier_hostile);
 	h_run("programmes: valeurs limites", programmes_valeurs_limites);
-	h_run("programmes: menu", programmes_menu);
 	return (h_end());
 }

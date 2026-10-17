@@ -10,14 +10,10 @@ void	ctl_scr_init(t_ctl *c)
 
 void	ctl_scr_paint(t_ctlroot *r, t_ctl *c)
 {
-	t_rect	ring;
-
 	ctl_sb_paint(r->surface, c->rect, c->priv, ctl_enabled(c));
 	if (r->focus != c)
 		return ;
-	ring = rect_make(c->rect.x + 1, c->rect.y + 1, c->rect.w - 2,
-			c->rect.h - 2);
-	ctl_focus_ring(r->surface, ring);
+	ctl_focus_ring(r->surface, c->rect);
 }
 
 static bool	scr_apply(t_ctlroot *r, t_ctl *c, int32_t pos)

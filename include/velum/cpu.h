@@ -113,5 +113,6 @@ void			cpu_fpu_restore(const void *area);
 uint64_t		cpu_fpu_area_size(void);
 int				cpu_backtrace(uint64_t rbp, uint64_t *pcs, int max);
 int				cpu_selftest(void);
+void			cpu_stack_report(const t_regs *regs, uint64_t cr2);
 
 #endif

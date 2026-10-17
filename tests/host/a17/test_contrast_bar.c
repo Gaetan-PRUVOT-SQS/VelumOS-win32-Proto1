@@ -1,66 +1,64 @@
 #include "harness.h"
-#include "lt_contrast.h"
+#include "lt_bar_ink.h"
 
-static t_lt	g_t;
+static t_lt		g_t;
+static t_color	g_emblem;
 
-static void	bar_start(void)
+static void	bar_start(const t_lkbar *b)
 {
-	static const char	*name[3] = {"demarrer normal", "demarrer survol",
-		"demarrer enfonce"};
-	int					st;
+	t_rect	r;
+	t_point	mid;
+	int32_t	st;
 
+	r = b->lay.start;
+	mid = lp_pt(r.x + r.w / 2, r.y + r.h / 2);
 	st = LS_NORMAL;
 	while (st <= LS_PRESSED)
 	{
-		lk_begin(&g_t, LC_BLACK);
-		luna_start_button(&g_t.s, lp_rect(0, 0, 100, 30), (t_lunastate)st);
-		lk_check(name[st], lk_spied(&g_t.s));
+		luna_start_button(&b->t->s, r, (t_lunastate)st);
+		if (g_emblem == 0)
+			g_emblem = gfx_get(&b->t->s, mid);
+		h_eq_u64("embleme opaque, identique selon l'etat et le theme",
+			gfx_get(&b->t->s, mid), g_emblem);
 		st++;
 	}
 }
 
-static void	bar_task_at(int32_t h, t_lunastate st, const char *what)
+static void	bar_theme(bool dark)
 {
-	t_rect	r;
+	t_lkbar	b;
+	int32_t	st;
 
-	r = lp_rect(0, 0, 160, h);
-	lk_begin(&g_t, LC_BLACK);
-	luna_task_button(&g_t.s, r, st);
-	r = lk_band(lp_rect(4, 0, 152, h), LK_UI);
-	lk_check(what, lk_worst(&g_t.s, r, LC_WHITE));
+	lkb_begin(&b, &g_t, dark);
+	st = LS_NORMAL;
+	while (st <= LS_PRESSED)
+	{
+		lkb_task(&b, st, (t_lunastate)st);
+		st++;
+	}
+	lkb_clock(&b);
+	bar_start(&b);
 }
 
-static void	bar_task(void)
+static void	bar_light(void)
 {
-	bar_task_at(30, LS_NORMAL, "tache inactive h30");
-	bar_task_at(22, LS_NORMAL, "tache inactive h22");
-	bar_task_at(30, LS_HOT, "tache survolee h30");
-	bar_task_at(22, LS_HOT, "tache survolee h22");
-	bar_task_at(30, LS_PRESSED, "tache active h30");
-	bar_task_at(22, LS_PRESSED, "tache active h22");
+	bar_theme(false);
 }
 
-static void	bar_clock(void)
+static void	bar_dark(void)
 {
-	t_rect	r;
-
-	r = lp_rect(0, 0, 110, 30);
-	lk_begin(&g_t, LC_BLACK);
-	luna_taskbar(&g_t.s, lp_rect(0, 0, 200, 30));
-	luna_tray(&g_t.s, r);
-	r = lk_band(lp_rect(4, 0, 102, 30), LK_UI);
-	lk_check("horloge sur la zone de notification",
-		lk_worst(&g_t.s, r, LC_BLACK));
+	bar_theme(true);
 }
 
 int	main(void)
 {
-	if (lt_open(&g_t, 200, 40) != 0)
+	if (lt_open(&g_t, LKB_W, LKB_H) != 0)
 		return (1);
 	h_begin("a17/contrast_bar");
-	h_run("P25 libelle du bouton demarrer", bar_start);
-	h_run("P25 libelle des boutons de tache", bar_task);
-	h_run("horloge", bar_clock);
+	h_run("P25 encre du theme sur le verre du dock, clair", bar_light);
+	h_run("P25 encre du theme sur le verre du dock, sombre", bar_dark);
+	luna_glass_scratch(NULL, 0);
+	luna_theme_set(LUNA_THEME_LIGHT);
 	lt_close(&g_t);
 	return (h_end());
 }

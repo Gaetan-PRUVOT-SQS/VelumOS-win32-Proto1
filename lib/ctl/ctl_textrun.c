@@ -2,7 +2,9 @@
 
 bool	ctl_run_init(t_textrun *run, const t_ctltext *tx)
 {
-	run->font = ctl_font(tx->flags);
+	run->font = tx->font;
+	if (!run->font)
+		run->font = ctl_font(tx->flags);
 	if (!run->font || !tx->text)
 		return (false);
 	run->mn = -1;

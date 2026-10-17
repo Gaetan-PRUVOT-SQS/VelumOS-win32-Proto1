@@ -20,7 +20,7 @@ static int	selftest_tables(void)
 				return (E_INVAL);
 			k++;
 		}
-		if (font_glyph(f, 'A')->cp != 'A' || font_glyph(f, 0x1F)->cp != 0xFFFD)
+		if (font_glyph(f, '0')->cp != '0' || font_glyph(f, 0x1F)->cp != 0xFFFD)
 			return (E_INVAL);
 	}
 	if (font_get(FONT_IDS))

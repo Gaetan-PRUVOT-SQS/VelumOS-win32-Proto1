@@ -2,6 +2,7 @@
 # define SHELL_H
 
 # include <stdbool.h>
+# include <stddef.h>
 # include <stdint.h>
 # include "velum/ctl.h"
 # include "velum/font.h"
@@ -34,6 +35,16 @@
 # define SH_ID_EDIT 20
 # define SH_ID_HALT 30
 # define SH_ID_REBOOT 31
+# define SH_GLASS_LAUNCHER_W 540
+# define SH_GLASS_LAUNCHER_H 540
+# define SH_DATE_MAX 11
+
+typedef struct s_civil
+{
+	int64_t	y;
+	int64_t	m;
+	int64_t	d;
+}	t_civil;
 
 typedef struct s_cellctx
 {
@@ -51,6 +62,8 @@ typedef struct s_shell
 	t_wmwin			menu;
 	uint32_t		*wall_px;
 	t_surface		wall;
+	uint32_t		*glass_px;
+	size_t			glass_n;
 	t_tasklist		tasks;
 	t_startmenu		sm;
 	t_smprogs		progs;
@@ -67,6 +80,7 @@ typedef struct s_shell
 	t_click			last_click;
 	char			user[SH_USER_MAX];
 	char			clock[CLOCK_TEXT_MAX];
+	char			date[SH_DATE_MAX];
 	t_handle		timer;
 	t_handle		children[SH_CHILD_MAX];
 	uint32_t		nchildren;
@@ -88,12 +102,20 @@ void	sh_on_key(t_shell *sh, const t_wmkey *k);
 void	sh_on_mouse(t_shell *sh, const t_wmmouse *m);
 void	sh_wall_make(t_shell *sh);
 void	sh_wall_blit(t_shell *sh, t_rect r);
+int		sh_wall_sync(t_shell *sh);
+int		sh_theme_sync(t_shell *sh);
 void	sh_desk_paint(t_shell *sh);
 void	sh_desk_cell(t_shell *sh, int32_t idx);
 void	sh_desk_cell_draw(t_shell *sh, int32_t idx);
 void	sh_desk_mouse(t_shell *sh, const t_wmmouse *m);
 void	sh_desk_key(t_shell *sh, uint32_t vk);
 void	sh_bar_paint(t_shell *sh);
+void	sh_bar_tray(t_shell *sh);
+t_color	sh_ink(void);
+size_t	sh_glass_px(int32_t screen_w);
+int		sh_glass_alloc(t_shell *sh, size_t px);
+int		sh_glass_make(t_shell *sh);
+void	sh_glass_free(t_shell *sh);
 void	sh_bar_relayout(t_shell *sh);
 void	sh_bar_mouse(t_shell *sh, const t_wmmouse *m);
 void	sh_task_click(t_shell *sh, int32_t idx);
@@ -105,6 +127,7 @@ void	sh_menu_toggle(t_shell *sh);
 void	sh_menu_mouse(t_shell *sh, const t_wmmouse *m);
 void	sh_menu_key(t_shell *sh, uint32_t vk);
 void	sh_menu_run(t_shell *sh, int cmd);
+void	sh_date_fmt(uint64_t wall_ns, char *out, size_t size);
 void	sh_clock_arm(t_shell *sh);
 void	sh_clock_tick(t_shell *sh);
 int		sh_launch(t_shell *sh, const char *path);

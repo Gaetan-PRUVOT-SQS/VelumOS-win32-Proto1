@@ -62,7 +62,7 @@ typedef struct s_fk
 	const char	*last_log;
 }	t_fk;
 
-extern t_fk	g_fk;
+extern t_fk		g_fk;
 
 void		fk_reset(void);
 void		fk_set_display(uint32_t w, uint32_t h);
@@ -82,5 +82,20 @@ void		fk_push_input(uint32_t type, uint32_t code, int32_t x, int32_t y);
 void		fk_push_key(uint32_t type, uint32_t code, uint32_t mods);
 uint32_t	fk_queued(t_handle ch);
 int64_t		fk_connect(void);
+
+# define FK_ALLOC_MAX 32
+
+typedef struct s_fkmem
+{
+	uint32_t	live;
+	uint32_t	bad;
+	uint32_t	calls;
+	void		*p[FK_ALLOC_MAX];
+	uint64_t	size[FK_ALLOC_MAX];
+}	t_fkmem;
+
+extern t_fkmem	g_fkmem;
+
+void		fk_alloc_reset(void);
 
 #endif

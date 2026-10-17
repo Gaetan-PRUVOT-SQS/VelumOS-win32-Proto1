@@ -1,0 +1,8 @@
+*:third_party/*
+missingInclude
+missingIncludeSystem
+variableScope
+constParameterPointer
+constParameterCallback
+constVariablePointer
+constVariable

@@ -441,9 +441,10 @@ tests = ["tests/host/a17/test_metrics.c", "tests/host/a17/test_geo_table.c", "te
 [[fonction]]
 id = "F61"
 sous_systeme = "a17"
-titre = "Fidélité visuelle au style Luna de référence"
+titre = "Fidélité visuelle : ancien style Luna (MT-04) et maquette verre (MT-25)"
 mode = "M"
-manuels = ["MT-04"]
+manuels = ["MT-04", "MT-25"]
+note = "Les tests a17 et a20 vérifient des valeurs calculées depuis la maquette, pas l'aspect d'ensemble."
 
 [[fonction]]
 id = "F62"
@@ -527,9 +528,9 @@ tests = ["tests/qemu/a20_souris.py", "tests/qemu/a20_desktop.py", "tests/qemu/in
 [[fonction]]
 id = "F73"
 sous_systeme = "a20"
-titre = "Barre des tâches et liste des fenêtres"
+titre = "Dock en verre, tâches et liste des fenêtres"
 mode = "AM"
-tests = ["tests/host/a20/test_taskbar.c", "tests/host/a20/test_taskbar_sweep.c", "tests/host/a20/test_tasklist.c"]
+tests = ["tests/host/a20/test_taskbar.c", "tests/host/a20/test_taskbar_sweep.c", "tests/host/a20/test_tasklist.c", "tests/host/a20/test_tasklist_state.c", "tests/host/a20/test_contrast.c"]
 manuels = ["MT-16"]
 
 [[fonction]]
@@ -558,9 +559,9 @@ tests = ["tests/qemu/skel_boot.py", "tests/tools/test_mkimage.py", "Makefile"]
 [[fonction]]
 id = "F77"
 sous_systeme = "transverse"
-titre = "Qualité du code : norme, en-têtes autonomes, sécurité statique"
+titre = "Qualité du code : en-têtes autonomes, sécurité statique"
 mode = "A"
-tests = ["tools/norme.sh", "tools/scan_securite.py", "mk/test.mk"]
+tests = ["tools/scan_securite.py", "mk/test.mk"]
 
 [[fonction]]
 id = "F78"
@@ -688,6 +689,73 @@ mode = "A"
 tests = ["tests/tools/test_dexasm.py", "tests/tools/test_mkapk.py", "tests/tools/test_croise_opcodes.py"]
 note = "Outils et lecteurs écrits séparément depuis les mêmes spécifications."
 
+[[fonction]]
+id = "F95"
+sous_systeme = "a17"
+titre = "Verre : flou, saturation, teinte, reflet, liseré, repli opaque et bornes"
+mode = "A"
+tests = ["tests/host/a17/test_glass.c", "tests/host/a17/test_glass_blur.c", "tests/host/a17/test_glass_bounds.c", "tests/host/a17/test_glass_edge.c", "tests/host/a17/test_glass_robust.c", "tests/host/a17/test_glass_robust_band.c", "tests/host/a17/test_glass_robust_corner.c", "tests/host/a17/test_glass_robust_geo.c", "tests/host/a17/test_glass_robust_lg.c", "tests/host/a17/test_glass_robust_zone.c"]
+note = "Ombres de fenêtres non faites, flou du fond d'écran seulement (pas des fenêtres dessous)."
+
+[[fonction]]
+id = "F96"
+sous_systeme = "a17"
+titre = "Palette clair et sombre : jetons, accesseurs de couleur et contrastes"
+mode = "A"
+tests = ["tests/host/a17/test_colors_ext.c", "tests/host/a17/test_contrast_bar.c", "tests/host/a17/test_contrast_win.c", "tests/host/a20/test_contrast_fonds.c", "tests/host/a20/test_contrast_plates.c", "tests/host/a20/test_uicolor.c"]
+note = "Aucune appli ne bascule le thème : le sombre n'est exercé que par les tests."
+
+[[fonction]]
+id = "F97"
+sous_systeme = "a17"
+titre = "Contrôles luna : taille des cases, anneau de focus, dégradé du bouton, encre, symétrie du verre"
+mode = "A"
+tests = ["tests/host/a17/test_ctrl_bornes.c", "tests/host/a17/test_ctrl_degrade.c", "tests/host/a17/test_ctrl_glass.c", "tests/host/a17/test_ctrl_ink.c", "tests/host/a19/test_glass.c", "tests/host/a19/test_glass_focus.c", "tests/host/a19/test_glass_font.c", "tests/host/a19/test_ring.c", "tests/host/a19/test_ring_ctl.c", "tests/host/a19/test_ring_face.c"]
+
+[[fonction]]
+id = "F98"
+sous_systeme = "a17"
+titre = "Lanceur : disposition de 540 px, zones cliquables, dessin et activation"
+mode = "A"
+tests = ["tests/host/a17/test_launcher.c", "tests/host/a17/test_launcher_draw.c", "tests/host/a17/test_launcher_hit.c", "tests/host/a20/test_sm_layout.c", "tests/host/a20/test_sm_rect.c", "tests/host/a20/test_sm_activation.c"]
+note = "Recherche factice, quatre tuiles au plus, pas de Récents ni de Toutes les apps."
+
+[[fonction]]
+id = "F99"
+sous_systeme = "a17"
+titre = "Fond voile, rendus du bureau, de la connexion et du démarrage (galeries PNG)"
+mode = "A"
+tests = ["tests/host/a17/test_wallpaper.c", "tests/host/a17/test_desktop.c", "tests/host/a17/test_gallery.c", "tests/host/a17/test_glass_gallery.c"]
+
+[[fonction]]
+id = "F100"
+sous_systeme = "a16"
+titre = "Polices Instrument Sans et JetBrains Mono : génération reproductible, jeu de caractères, budget"
+mode = "A"
+tests = ["tests/host/a16/test_genfont.py", "tests/host/a16/test_font_charset.c", "tests/host/a16/test_font_cover.c", "tests/host/a16/test_font_data.c", "tests/host/a16/test_font_budget.c"]
+note = "Rendu 1 bit, donc moins fin que la maquette."
+
+[[fonction]]
+id = "F101"
+sous_systeme = "a18"
+titre = "Verre dans le serveur de fenêtres : bandes sales, équivalence incrémental et complet, échec d'allocation"
+mode = "A"
+tests = ["tests/host/a18/test_core_glass.c", "tests/host/a18/test_core_glass_chain.c", "tests/host/a18/test_core_glass_eq.c", "tests/host/a18/test_srv_glass.c", "tests/host/a18/test_srv_glass_ext.c"]
+
+[[fonction]]
+id = "F102"
+sous_systeme = "a20"
+titre = "Connexion : mise en page de la maquette, puces, messages et flux invalides"
+mode = "A"
+tests = ["tests/host/a20/test_logon_layout.c", "tests/host/a20/test_logon_layout_mockup.c", "tests/host/a20/test_logon_layout_ring.c", "tests/host/a20/test_logon_text.c", "tests/host/a20/test_logon_flow_invalid.c"]
+
+[[fonction]]
+id = "F103"
+sous_systeme = "a20"
+titre = "Bureau : grille d'icônes, zones, sélection au clavier, double-clic et fenêtre Bonjour"
+mode = "A"
+tests = ["tests/host/a20/test_desktop.c", "tests/host/a20/test_desktop_zone.c", "tests/host/a20/test_dblclick.c", "tests/host/a20/test_hello_layout.c"]
+
 [[manuel]]
 id = "MT-01"
 titre = "Écran de démarrage"
@@ -725,6 +793,7 @@ objectif = "Comparer les dimensions et les couleurs avec des captures de référ
 prerequis = "Captures de référence de l'interface d'époque (documentation publique)."
 etapes = ["Capturer le bureau, une fenêtre et le menu Démarrer à 1024x768.", "Mesurer barre des tâches, barre de titre, boutons de légende, bouton Démarrer.", "Noter les écarts en pixels."]
 attendu = "Écarts de un pixel au plus sur les dimensions, couleurs proches de la palette Luna."
+note = "Joué le 5 octobre sur l'ancien thème Luna. Ne vaut plus pour le thème verre : voir MT-25."
 statut = "Partiel"
 date = "2026-10-05"
 moyen = "QEMU/KVM, mesures en pixels sur captures 1024x768"
@@ -992,3 +1061,13 @@ constat = "Dépôt public cloné dans un dossier vide, puis make limine (téléc
 observations = ["Ce n'est pas une machine vierge : les paquets du système et le compilateur croisé étaient déjà présents.", "Le clone a été fait avant le correctif de a20_desktop, il faudra refaire le passage sur le dépôt corrigé."]
 incidents = ["T15"]
 duree = 90
+
+[[manuel]]
+id = "MT-25"
+titre = "Fidélité à la maquette verre, thèmes clair et sombre"
+objectif = "Comparer à l'œil la connexion, le bureau, le lanceur, une fenêtre et le dock avec les captures de la maquette."
+prerequis = "Image construite avec les polices Instrument Sans et JetBrains Mono. Pour le thème sombre, un binaire d'essai qui appelle luna_theme_set, puisqu'aucune appli ne le fait."
+etapes = ["Démarrer sous QEMU, capturer la connexion, le bureau et le lanceur à 1280x800.", "Ouvrir la fenêtre Bonjour et glisser une fenêtre sous le dock.", "Comparer chaque capture à celle de la maquette : verre, liseré, rayons, polices, accent.", "Relever séparément les écarts attendus (ombres de fenêtres, flou des fenêtres sous le dock, client opaque) et les écarts inattendus."]
+attendu = "Aucun écart inattendu. Les écarts attendus sont ceux de la section Limites connues du README."
+statut = "A exécuter"
+duree = 40

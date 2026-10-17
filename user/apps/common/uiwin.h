@@ -26,6 +26,8 @@ typedef struct s_uiwin
 	t_surface	view;
 	t_rect		area;
 	t_ctlroot	root;
+	void		(*underlay)(void *user, t_rect dirty);
+	void		*underlay_user;
 	void		(*overlay)(void *user, t_rect dirty);
 	void		*overlay_user;
 	int			ready;

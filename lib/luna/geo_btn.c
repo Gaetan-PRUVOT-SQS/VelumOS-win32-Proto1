@@ -26,6 +26,7 @@ static void	lg_btn_params(const t_lgeo *g, t_lbp *bp)
 
 	d = lm_detail();
 	bp->size = lm_metrics()->btn_w;
+	bp->height = lm_metrics()->btn_h;
 	bp->top = d->btn_top;
 	bp->right = d->btn_right;
 	bp->left = g->caption.x;
@@ -39,6 +40,7 @@ static void	lg_btn_params(const t_lgeo *g, t_lbp *bp)
 	if (g->flags & LG_TOOL)
 	{
 		bp->size = d->tool_btn;
+		bp->height = d->tool_btn;
 		bp->top = d->tool_btn_top;
 		bp->right = d->tool_btn_right;
 	}
@@ -79,7 +81,7 @@ void	lg_buttons(const t_lunawin *w, t_lgeo *g)
 		slot = LG_NBTN - 1 - i;
 		r = lp_rect(g->outer.x + g->outer.w - bp.right - (slot + 1) * bp.size
 				- slot * lm_detail()->btn_gap, g->outer.y + bp.top, bp.size,
-				bp.size);
+				bp.height);
 		g->btn[i] = lp_rect(g->outer.x, g->outer.y, 0, 0);
 		f = lg_btn_flags(w, g, i);
 		if (f != 0 && lg_inside(r, g->caption) && r.x >= bp.left)

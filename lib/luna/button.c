@@ -1,64 +1,64 @@
-#include "luna_int.h"
+#include "luna_ctrl.h"
+#include "velum/theme.h"
 
-static const t_color	g_face[2][4] = {{0xffffffff, 0xfff1f0ea, 0xffe8e6dc,
-	0xffd8d2c3}, {0xffcfcabc, 0xffdcd8cb, 0xffe6e3d8, 0xffedebe3}};
-
-static int32_t	btn_rings(const t_lunabtn *b, t_color *ring)
+static t_color	btn_shade(t_color c, t_lunastate st)
 {
-	ring[0] = 0xff003c74;
-	if (b->state == LS_DISABLED)
-	{
-		ring[0] = 0xffc9c7ba;
-		return (1);
-	}
-	if (b->state == LS_HOT)
-	{
-		ring[1] = 0xfffff0cf;
-		ring[2] = 0xfff8b330;
-		return (3);
-	}
-	if (b->state == LS_DEFAULT || (b->is_default && b->state != LS_PRESSED))
-	{
-		ring[1] = 0xffa6c1f5;
-		ring[2] = 0xff8aaaf0;
-		return (3);
-	}
-	return (1);
+	if (st == LS_HOT)
+		return (lp_mix(c, LC_WHITE, 36));
+	if (st == LS_PRESSED)
+		return (lp_mix(c, LC_BLACK, 56));
+	return (c);
 }
 
-static void	btn_fill(const t_lunabtn *b, t_lgrad *g, t_lstop *st)
+static void	btn_primary(t_surface *s, const t_lunabtn *b, int32_t rad)
 {
-	int32_t			k;
-	int32_t			h;
-	const t_color	*c;
+	t_lrfill	f;
 
-	h = b->r.h;
-	c = g_face[b->state == LS_PRESSED];
-	st[0].at = 0;
-	st[1].at = h * 55 / 100;
-	st[2].at = h * 85 / 100;
-	st[3].at = h - 1;
-	k = 0;
-	while (k < 4)
-	{
-		st[k].c = c[k];
-		k++;
-	}
-	g->st = st;
-	g->n = 4;
-	g->tint = 0xfff4f2e8;
-	g->tint_t = 0;
+	f = lp_rmake(b->r, rad, btn_shade(VT_ACCENT_HI, b->state),
+			btn_shade(VT_ACCENT, b->state));
+	lp_rfill(s, &f);
+	f.top = LCT_RIM_PRIMARY;
+	f.bottom = LCT_RIM_PRIMARY;
+	lp_rtop(s, &f);
+}
+
+static void	btn_body(t_surface *s, const t_lunabtn *b, int32_t rad)
+{
+	t_lrfill	f;
+	t_color		fill;
+
+	fill = lp_pal()->control;
 	if (b->state == LS_DISABLED)
-		g->tint_t = 255;
+		fill = lp_tone_alpha(fill, (fill >> 24) / 2);
+	f = lp_rmake(lp_inset(b->r, 1), rad - 1, fill, fill);
+	lp_rfill(s, &f);
+	if (b->state != LS_HOT && b->state != LS_PRESSED)
+		return ;
+	f.top = lp_tone_hover();
+	if (b->state == LS_PRESSED)
+		f.top = lp_tone_press();
+	f.bottom = f.top;
+	lp_rfill(s, &f);
+}
+
+static void	btn_rims(t_surface *s, const t_lunabtn *b, int32_t rad)
+{
+	t_cpal		pal;
+	t_lrfill	f;
+	t_color		edge;
+
+	pal = lp_pal();
+	edge = lp_tone_alpha(pal->muted, 0x59);
+	f = lp_rmake(b->r, rad, edge, edge);
+	lp_rring(s, &f, 1);
+	f = lp_rmake(lp_inset(b->r, 1), rad - 1, pal->rim_top, pal->rim_top);
+	lp_rtop(s, &f);
 }
 
 void	luna_button(t_surface *s, const t_lunabtn *src)
 {
 	t_lunabtn	b;
-	t_lbox		box;
-	t_color		ring[3];
-	t_lgrad		g;
-	t_lstop		st[4];
+	int32_t		rad;
 
 	if (!lp_ok(s) || src == NULL)
 		return ;
@@ -66,13 +66,13 @@ void	luna_button(t_surface *s, const t_lunabtn *src)
 	b.r = lp_clean(src->r);
 	if (b.r.w <= 0 || b.r.h <= 0)
 		return ;
-	btn_fill(&b, &g, st);
-	box.nring = btn_rings(&b, ring);
-	box.ring = ring;
-	box.r = b.r;
-	box.rad = 3;
-	box.fill = &g;
-	lp_box(s, &box);
-	if (b.focus && b.state != LS_DISABLED)
-		lp_dotted(s, lp_inset(b.r, 4), LC_BLACK);
+	rad = lp_min(LCT_RAD_CTRL, b.r.h / 2);
+	if (lp_btn_primary(&b))
+		btn_primary(s, &b, rad);
+	else
+		btn_body(s, &b, rad);
+	if (!lp_btn_primary(&b) && b.state != LS_DISABLED)
+		btn_rims(s, &b, rad);
+	if ((b.focus || b.state == LS_FOCUSED) && b.state != LS_DISABLED)
+		lp_rfocus(s, b.r, rad, lp_pal()->accent);
 }

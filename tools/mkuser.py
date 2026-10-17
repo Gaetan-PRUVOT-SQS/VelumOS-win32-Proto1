@@ -15,6 +15,7 @@ SEL_MIN = 8
 SEL_MAX = 32
 MOT_DE_PASSE_MAX = 1024
 DRAPEAUX_CONNUS = 0x1
+VARIABLE_REPRO = "VELUM_REPRO"
 
 
 class ErreurCompte(ValueError):
@@ -69,6 +70,12 @@ def analyser(argv):
     parseur.add_argument("--iterations", type=int, default=ITERATIONS_DEFAUT)
     parseur.add_argument("--sel-hex", help="sel fixe (tests, build reproductible)")
     parseur.add_argument(
+        "--sel-reproductible",
+        action="store_true",
+        help=f"sel dérivé de SOURCE_DATE_EPOCH et du compte, mot de passe vide seulement "
+        f"(actif aussi si {VARIABLE_REPRO}=1 et mot de passe vide)",
+    )
+    parseur.add_argument(
         "--mot-de-passe-stdin",
         action="store_true",
         help="lit le mot de passe sur l'entrée standard (vide par défaut)",
@@ -76,13 +83,25 @@ def analyser(argv):
     return parseur.parse_args(argv)
 
 
-def lire_sel(sel_hex):
-    if sel_hex is None:
-        return os.urandom(SEL_DEFAUT)
-    try:
-        return bytes.fromhex(sel_hex)
-    except ValueError as erreur:
-        raise ErreurCompte("sel hexadécimal invalide") from erreur
+def sel_reproductible(compte, mot_de_passe, environnement):
+    if mot_de_passe:
+        raise ErreurCompte("sel reproductible refusé avec un mot de passe : fournir --sel-hex")
+    epoque = environnement.get("SOURCE_DATE_EPOCH", "0")
+    if not epoque.isascii() or not epoque.isdigit():
+        raise ErreurCompte("SOURCE_DATE_EPOCH invalide")
+    graine = f"velumos-users-sel\0{epoque}\0{compte}".encode()
+    return hashlib.sha256(graine).digest()[:SEL_DEFAUT]
+
+
+def lire_sel(sel_hex, reproductible=False, compte="", mot_de_passe=b"", environnement=None):
+    if sel_hex is not None:
+        try:
+            return bytes.fromhex(sel_hex)
+        except ValueError as erreur:
+            raise ErreurCompte("sel hexadécimal invalide") from erreur
+    if reproductible:
+        return sel_reproductible(compte, mot_de_passe, environnement or {})
+    return os.urandom(SEL_DEFAUT)
 
 
 def lire_mot_de_passe(depuis_stdin):
@@ -94,12 +113,11 @@ def lire_mot_de_passe(depuis_stdin):
 def main(argv):
     args = analyser(argv)
     try:
-        ligne = ligne_compte(
-            args.compte,
-            args.iterations,
-            lire_sel(args.sel_hex),
-            lire_mot_de_passe(args.mot_de_passe_stdin),
-        )
+        mot_de_passe = lire_mot_de_passe(args.mot_de_passe_stdin)
+        demande_par_env = os.environ.get(VARIABLE_REPRO) == "1" and not mot_de_passe
+        reproductible = args.sel_reproductible or demande_par_env
+        sel = lire_sel(args.sel_hex, reproductible, args.compte, mot_de_passe, os.environ)
+        ligne = ligne_compte(args.compte, args.iterations, sel, mot_de_passe)
     except ErreurCompte as erreur:
         print(f"mkuser: {erreur}", file=sys.stderr)
         return 2

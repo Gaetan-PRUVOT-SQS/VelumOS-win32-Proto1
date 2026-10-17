@@ -55,7 +55,7 @@ void	sh_desk_action(t_shell *sh, uint32_t action)
 	if (action == DA_HELLO)
 		sh_launch(sh, SH_HELLO_PATH);
 	else if (action == DA_COMPUTER)
-		sh_note(sh, "Poste de travail",
+		sh_note(sh, "Ordinateur",
 			"Cette fonction n'est pas encore disponible dans VelumOS.");
 	else if (action == DA_RECYCLE)
 		sh_note(sh, "Corbeille", "La corbeille est vide.");

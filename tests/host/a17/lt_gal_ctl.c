@@ -8,21 +8,17 @@ static const char			*g_names[6] = {"Normal", "Survol", "Appuy\xc3\xa9",
 void	lt_gal_buttons(t_surface *s, int32_t x, int32_t y)
 {
 	t_lunabtn	b;
-	t_color		tc;
 	int32_t		i;
 
 	i = 0;
 	while (i < 6)
 	{
-		b.r = lp_rect(x + i * 90, y, 80, 23);
+		b.r = lp_rect(x + i * 90, y, 80, 28);
 		b.state = g_states[i];
 		b.is_default = false;
 		b.focus = (i == 5);
 		luna_button(s, &b);
-		tc = luna_color_text();
-		if (i == 3)
-			tc = 0xffaca899;
-		lt_gal_text(s, b.r, g_names[i], tc);
+		lt_gal_text(s, b.r, g_names[i], luna_button_ink(&b));
 		i++;
 	}
 }

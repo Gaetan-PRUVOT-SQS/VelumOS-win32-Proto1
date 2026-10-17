@@ -20,7 +20,7 @@ static void	taches_activation_et_reduction(void)
 	t_infospec	a;
 	t_infospec	b;
 
-	render_reset("build/a20/a20-fixture/users");
+	render_reset(A20_FIXTURE);
 	sh_boot(&sh, 2, (char **)g_argv);
 	a = (t_infospec){10, WS_DEFAULT, WSTATE_NORMAL, 0, "Bloc-notes"};
 	b = (t_infospec){11, WS_DEFAULT, WSTATE_NORMAL, 1, "Bonjour"};
@@ -49,7 +49,7 @@ static void	taches_beaucoup_de_fenetres(void)
 	t_infospec	w;
 	uint32_t	i;
 
-	render_reset("build/a20/a20-fixture/users");
+	render_reset(A20_FIXTURE);
 	sh_boot(&sh, 2, (char **)g_argv);
 	w = (t_infospec){0, WS_DEFAULT, WSTATE_NORMAL, 0, "Fenetre"};
 	i = 0;
@@ -59,11 +59,11 @@ static void	taches_beaucoup_de_fenetres(void)
 		feed(&sh, WMS_WIN_ADD, &w);
 		i++;
 	}
-	h_eq_u64("quarante boutons", sh.shown, 40);
-	h_true(sh.btn[39].x + sh.btn[39].w <= sh.reg.tray.x, "avant la zone");
+	h_eq_u64("quinze boutons: (736+8)/(40+8)", sh.shown, 15);
+	h_true(sh.btn[14].x + sh.btn[14].w <= sh.reg.tray.x, "avant la zone");
 	render_shot("shell_40_taches");
-	drv_click(&sh, sh.bar.id, rect_center(sh.btn[39]));
-	h_eq_u64("dernier bouton actif", g_fwm.activated, 59);
+	drv_click(&sh, sh.bar.id, rect_center(sh.btn[14]));
+	h_eq_u64("dernier bouton actif", g_fwm.activated, 34);
 	sh_shutdown(&sh);
 }
 
@@ -73,7 +73,7 @@ static void	taches_horloge_a_la_minute(void)
 	t_uimsg		m;
 	uint32_t	armed;
 
-	render_reset("build/a20/a20-fixture/users");
+	render_reset(A20_FIXTURE);
 	sh_boot(&sh, 2, (char **)g_argv);
 	h_eq_str("heure initiale", sh.clock, "14:07");
 	armed = g_fos.timer_armed;

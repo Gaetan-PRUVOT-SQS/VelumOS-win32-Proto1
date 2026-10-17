@@ -1,8 +1,9 @@
 #include "fake.h"
 
-static const t_font	g_fonts[2] = {
+static const t_font	g_fonts[3] = {
 {9, 2, 11, 0, NULL, NULL, 0},
-{9, 2, 11, 1, NULL, NULL, 0}
+{9, 2, 11, 1, NULL, NULL, 0},
+{19, 5, 24, 0, NULL, NULL, 0}
 };
 
 static int32_t	char_w(const t_font *f)
@@ -16,6 +17,8 @@ const t_font	*font_get(t_fontid id)
 {
 	if (id == FONT_UI_BOLD)
 		return (&g_fonts[1]);
+	if (id == FONT_INS_BOLD_24)
+		return (&g_fonts[2]);
 	return (&g_fonts[0]);
 }
 

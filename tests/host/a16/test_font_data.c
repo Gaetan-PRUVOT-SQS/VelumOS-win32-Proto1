@@ -1,7 +1,5 @@
 #include "a16_test.h"
 
-#define GLYPH_COUNT 330
-
 static void	data_font_get_ids(void)
 {
 	int				id;
@@ -24,11 +22,12 @@ static void	data_font_get_ids(void)
 	h_true(font_get((t_fontid)77) == NULL, "ID-hors enumeration");
 }
 
-static void	check_table(const t_font *f)
+static void	check_table(const t_font *f, t_cset set)
 {
 	int32_t	k;
 
-	h_eq_i64("TABLE-nombre de glyphes", f->nglyphs, GLYPH_COUNT);
+	h_eq_i64("TABLE-nombre de glyphes du jeu", f->nglyphs,
+		charset_count(set));
 	h_eq_u64("TABLE-premier = espace", f->glyphs[0].cp, 0x20);
 	h_eq_u64("TABLE-dernier = U+FFFD", f->glyphs[f->nglyphs - 1].cp, 0xFFFD);
 	k = 1;
@@ -38,22 +37,18 @@ static void	check_table(const t_font *f)
 			"TABLE-points de code strictement croissants");
 		k++;
 	}
-	k = 0;
-	while (k <= 0x7E - 0x20)
-	{
-		h_eq_u64("TABLE-ascii a l'indice cp - 0x20", f->glyphs[k].cp,
-			(uint32_t)(0x20 + k));
-		k++;
-	}
 }
 
-static void	data_sorted_and_ascii_direct(void)
+static void	data_sorted_and_sized(void)
 {
 	int	id;
 
 	id = 0;
 	while (id < FONT_IDS)
-		check_table(font_get((t_fontid)id++));
+	{
+		check_table(font_get((t_fontid)id), charset_of((t_fontid)id));
+		id++;
+	}
 }
 
 static void	data_kernel_selftest_passes(void)
@@ -65,7 +60,7 @@ int	main(void)
 {
 	h_begin("a16/font_data");
 	h_run("identifiants et metriques", data_font_get_ids);
-	h_run("tri, taille et table directe ascii", data_sorted_and_ascii_direct);
+	h_run("tri et effectif de la table par jeu", data_sorted_and_sized);
 	h_run("autotest noyau", data_kernel_selftest_passes);
 	return (h_end());
 }

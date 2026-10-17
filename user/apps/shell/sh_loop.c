@@ -72,6 +72,7 @@ void	sh_run(t_shell *sh)
 	{
 		if (drain(sh) < 0 || sh->quit)
 			return ;
+		sh_theme_sync(sh);
 		w = ui_wait(sh->timer, TIMEOUT_INF);
 		if (w == UI_WAIT_TIMER)
 			sh_clock_tick(sh);

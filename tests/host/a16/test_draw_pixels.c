@@ -1,8 +1,8 @@
 #include <stdlib.h>
 #include "a16_test.h"
 
-#define SURF_W 40
-#define SURF_H 40
+#define SURF_W 160
+#define SURF_H 160
 #define AT_X 5
 #define AT_Y 7
 

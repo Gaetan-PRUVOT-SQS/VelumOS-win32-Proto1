@@ -11,12 +11,15 @@ static void	desktop_grille_ecran_normal(void)
 	t_rect	area;
 
 	area = lay_rect(0, 0, 1024, 738);
-	h_eq_i64("lignes", desk_rows(area), 9);
+	h_eq_i64("lignes: (738-24-81+99)/99", desk_rows(area), 7);
 	h_eq_i64("trois icones", desk_grid(area, DESK_ICONS, out), DESK_ICONS);
-	h_eq_i64("premiere: x", out[0].x, DESK_MARGIN);
-	h_eq_i64("premiere: y", out[0].y, DESK_MARGIN);
-	h_eq_i64("seconde sous la premiere", out[1].y, DESK_MARGIN + DESK_CELL_H);
-	h_eq_i64("meme colonne", out[2].x, DESK_MARGIN);
+	h_eq_i64("premiere: x", out[0].x, 24);
+	h_eq_i64("premiere: y", out[0].y, 24);
+	h_eq_i64("cellule: largeur", out[0].w, 90);
+	h_eq_i64("cellule: hauteur", out[0].h, 81);
+	h_eq_i64("seconde: pas vertical de 99", out[1].y, 24 + 99);
+	h_eq_i64("meme colonne", out[2].x, 24);
+	h_eq_i64("troisieme: y", out[2].y, 24 + 2 * 99);
 	h_true(!lay_overlap(out[0], out[1]) && !lay_overlap(out[1], out[2]),
 		"cellules disjointes");
 	h_true(lay_inside(area, out[2]), "cellules dans la zone");
@@ -26,21 +29,22 @@ static void	desktop_petites_fenetres(void)
 {
 	t_rect	out[DESK_ICONS];
 
-	h_eq_i64("une ligne, large", desk_grid(lay_rect(0, 0, 400, 150), 3, out),
+	h_eq_i64("une ligne, large", desk_grid(lay_rect(0, 0, 400, 105), 3, out),
 		3);
-	h_eq_i64("une ligne: 3e en colonne 3", out[2].x, DESK_MARGIN + 2 * 75);
-	h_eq_i64("une ligne, etroit", desk_grid(lay_rect(0, 0, 200, 150), 3, out),
-		2);
-	h_eq_i64("trop bas pour une ligne", desk_grid(lay_rect(0, 0, 400, 82), 3,
+	h_eq_i64("une ligne: 3e en colonne 3", out[2].x, 24 + 2 * 90);
+	h_eq_i64("une ligne: meme y", out[2].y, 24);
+	h_eq_i64("pile deux colonnes", desk_grid(lay_rect(0, 0, 204, 105), 3,
+			out), 2);
+	h_eq_i64("un pixel de moins", desk_grid(lay_rect(0, 0, 203, 105), 3, out),
+		1);
+	h_eq_i64("trop bas pour une ligne", desk_grid(lay_rect(0, 0, 400, 104), 3,
 			out), 0);
-	h_eq_i64("pile une ligne", desk_grid(lay_rect(0, 0, 400, 83), 3, out), 3);
+	h_eq_i64("lignes: 203", desk_rows(lay_rect(0, 0, 400, 203)), 1);
+	h_eq_i64("lignes: 204", desk_rows(lay_rect(0, 0, 400, 204)), 2);
 	h_eq_i64("aucune icone", desk_grid(lay_rect(0, 0, 400, 400), 0, out), 0);
 	h_eq_i64("zone vide", desk_grid(lay_rect(0, 0, 0, 0), 3, out), 0);
 	h_eq_i64("zone negative", desk_grid(lay_rect(0, 0, -5, -5), 3, out), 0);
 	h_eq_i64("lignes: zone negative", desk_rows(lay_rect(0, 0, -5, -5)), 0);
-	h_eq_i64("decalage de la zone de travail", desk_grid(lay_rect(0, 30,
-				1024, 700), 1, out), 1);
-	h_eq_i64("origine decalee", out[0].y, 30 + DESK_MARGIN);
 }
 
 static void	desktop_test_de_clic(void)
@@ -48,14 +52,19 @@ static void	desktop_test_de_clic(void)
 	t_rect	out[DESK_ICONS];
 
 	desk_grid(lay_rect(0, 0, 1024, 738), DESK_ICONS, out);
-	h_eq_i64("coin haut gauche de la 1re", desk_hit(out, 3, 8, 8), 0);
-	h_eq_i64("dernier pixel de la 1re", desk_hit(out, 3, 82, 82), 0);
-	h_eq_i64("premier pixel de la 2e", desk_hit(out, 3, 8, 83), 1);
-	h_eq_i64("marge", desk_hit(out, 3, 7, 8), DESK_NONE);
-	h_eq_i64("bureau vide", desk_hit(out, 3, 500, 400), DESK_NONE);
-	h_eq_i64("sous la derniere", desk_hit(out, 3, 20, 8 + 3 * 75),
+	h_eq_i64("coin haut gauche de la 1re", desk_hit(out, 3, 24, 24), 0);
+	h_eq_i64("dernier pixel de la 1re", desk_hit(out, 3, 113, 104), 0);
+	h_eq_i64("marge gauche", desk_hit(out, 3, 23, 24), DESK_NONE);
+	h_eq_i64("marge haute", desk_hit(out, 3, 24, 23), DESK_NONE);
+	h_eq_i64("sous la 1re: interstice", desk_hit(out, 3, 24, 105),
 		DESK_NONE);
-	h_eq_i64("aucune cellule", desk_hit(out, 0, 20, 20), DESK_NONE);
+	h_eq_i64("dernier pixel de l'interstice", desk_hit(out, 3, 24, 122),
+		DESK_NONE);
+	h_eq_i64("premier pixel de la 2e", desk_hit(out, 3, 24, 123), 1);
+	h_eq_i64("bureau vide", desk_hit(out, 3, 500, 400), DESK_NONE);
+	h_eq_i64("sous la derniere", desk_hit(out, 3, 30, 24 + 2 * 99 + 81),
+		DESK_NONE);
+	h_eq_i64("aucune cellule", desk_hit(out, 0, 30, 30), DESK_NONE);
 }
 
 static void	desktop_clavier(void)

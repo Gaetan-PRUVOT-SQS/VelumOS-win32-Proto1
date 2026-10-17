@@ -1,6 +1,12 @@
+import fnmatch
 import sys
+import tomllib
 import unittest
+from dataclasses import replace
 from pathlib import Path
+from unittest import mock
+
+from PIL import ImageFont
 
 RACINE = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(RACINE / "tools"))
@@ -10,6 +16,31 @@ import genfont_raster as raster  # noqa: E402
 from genfont import SPECS  # noqa: E402
 
 FONTS = RACINE / "third_party" / "fonts"
+
+ASCII = list(range(0x20, 0x7F))
+LETTERS_LOW = [0xE0, 0xE2, 0xE7, 0xE8, 0xE9, 0xEA, 0xEB, 0xEE, 0xEF, 0xF4, 0xF9, 0xFB, 0xFC, 0x153]
+EXPECTED = {
+    "french": sorted(
+        ASCII
+        + [0xC0, 0xC2, 0xC7, 0xC8, 0xC9, 0xCA, 0xCE, 0xD4]
+        + LETTERS_LOW
+        + [0xA0, 0xAB, 0xBB, 0xB0, 0xB7, 0xD7, 0x2013, 0x2014, 0x2019, 0x2026]
+    ),
+    "display": sorted(
+        ASCII
+        + [0xC0, 0xC7, 0xC8, 0xC9, 0xCA]
+        + LETTERS_LOW
+        + [0xA0, 0xAB, 0xBB, 0x2013, 0x2014, 0x2019, 0x2026]
+    ),
+    "digits": sorted(list(range(0x30, 0x3A)) + [0x20, 0x3A, 0xA0]),
+}
+SIZES = {"french": 128, "display": 122, "digits": 14}
+CHARSET_OF = {
+    "ins_bold_24": "display",
+    "ins_bold_26": "display",
+    "ins_bold_28": "display",
+    "ins_semi_120": "digits",
+}
 
 
 def spec_of(ident):
@@ -38,6 +69,28 @@ class CoverageTests(unittest.TestCase):
         self.assertNotIn(raster.REPLACEMENT, cps)
 
 
+class ReducedCharsetTests(unittest.TestCase):
+    def test_reduced_sets_are_the_ones_of_the_brief(self):
+        for name, expected in EXPECTED.items():
+            self.assertEqual(raster.charset(name), expected, name)
+            self.assertEqual(len(expected) + 1, SIZES[name], name)
+
+    def test_reduced_sets_exclude_replacement_and_soft_hyphen(self):
+        for name in EXPECTED:
+            cps = raster.charset(name)
+            self.assertNotIn(raster.REPLACEMENT, cps, name)
+            self.assertNotIn(0xAD, cps, name)
+
+    def test_charset_assigned_to_each_font(self):
+        self.assertEqual(len(SPECS), 21)
+        for spec in SPECS:
+            self.assertEqual(spec.charset, CHARSET_OF.get(spec.ident, "french"), spec.ident)
+
+    def test_unknown_charset_is_refused(self):
+        with self.assertRaises(raster.FontError):
+            raster.charset("latin")
+
+
 class RasterTests(unittest.TestCase):
     def test_fixed_advance_glyph_is_kept_in_cell(self):
         spec = spec_of("mono")
@@ -54,7 +107,8 @@ class RasterTests(unittest.TestCase):
         self.assertIs(raster.keep_in_cell(spec_of("ui"), glyph), glyph)
 
     def test_soft_hyphen_is_the_hyphen(self):
-        glyphs = {glyph.cp: glyph for glyph in raster.rasterize(spec_of("ui"), FONTS)}
+        spec = replace(spec_of("ui"), charset="full")
+        glyphs = {glyph.cp: glyph for glyph in raster.rasterize(spec, FONTS)}
         hyphen, soft = glyphs[0x2D], glyphs[0xAD]
         shape = ("bits", "width", "height", "xoff", "yoff", "advance")
         for field in shape:
@@ -63,13 +117,78 @@ class RasterTests(unittest.TestCase):
     def test_every_font_fits_its_cell(self):
         for spec in SPECS:
             glyphs = raster.rasterize(spec, FONTS)
-            self.assertEqual(len(glyphs), 330, spec.ident)
+            expected = EXPECTED[spec.charset]
+            self.assertEqual(len(glyphs), SIZES[spec.charset], spec.ident)
+            self.assertEqual([glyph.cp for glyph in glyphs[:-1]], expected, spec.ident)
             self.assertEqual(glyphs[-1].cp, raster.REPLACEMENT)
 
     def test_mono_ink_stays_inside_its_8_pixel_cell(self):
         for glyph in raster.rasterize(spec_of("mono"), FONTS):
             self.assertGreaterEqual(glyph.xoff, 0, hex(glyph.cp))
             self.assertLessEqual(glyph.xoff + glyph.width, 8, hex(glyph.cp))
+
+
+def raw_glyphs(spec):
+    font = ImageFont.truetype(
+        str(FONTS / spec.source), spec.size, layout_engine=ImageFont.Layout.BASIC
+    )
+    if spec.weight is not None:
+        font.set_variation_by_axes(raster.weight_axes(font, spec.weight))
+    return {cp: raster.raster_one(font, cp, spec) for cp in raster.charset(spec.charset)}
+
+
+class ClippingTests(unittest.TestCase):
+    def test_canvas_never_clips_ink(self):
+        wide = {"CANVAS": 480, "ORIGIN_X": 120, "ORIGIN_Y": 360}
+        for spec in SPECS:
+            normal = raw_glyphs(spec)
+            with mock.patch.multiple(raster, **wide):
+                reference = raw_glyphs(spec)
+            for cp, glyph in normal.items():
+                self.assertEqual(glyph, reference[cp], f"{spec.ident} U+{cp:04X}")
+
+    def test_clock_digits_have_the_mockup_height(self):
+        glyphs = {glyph.cp: glyph for glyph in raster.rasterize(spec_of("ins_semi_120"), FONTS)}
+        for cp in range(0x30, 0x3A):
+            self.assertGreaterEqual(glyphs[cp].height, 84, hex(cp))
+            self.assertLessEqual(glyphs[cp].height, 90, hex(cp))
+
+
+def reuse_annotations():
+    data = tomllib.loads((RACINE / "REUSE.toml").read_text(encoding="utf-8"))
+    return data["annotations"]
+
+
+def annotation_for(path, annotations):
+    found = None
+    for entry in annotations:
+        paths = entry["path"] if isinstance(entry["path"], list) else [entry["path"]]
+        if (
+            any(fnmatch.fnmatchcase(path, pattern) for pattern in paths)
+            and entry.get("precedence") == "override"
+        ):
+            found = entry
+    return found
+
+
+class LicenceTests(unittest.TestCase):
+    def test_generated_font_keeps_the_licence_of_its_source(self):
+        annotations = reuse_annotations()
+        for spec in SPECS:
+            source = annotation_for(f"third_party/fonts/{spec.source}", annotations)
+            generated = annotation_for(f"lib/font/gen/font_{spec.ident}.c", annotations)
+            self.assertIsNotNone(source, spec.source)
+            self.assertIsNotNone(generated, spec.ident)
+            self.assertIn(
+                source["SPDX-License-Identifier"], generated["SPDX-License-Identifier"], spec.ident
+            )
+            holders = generated["SPDX-FileCopyrightText"]
+            self.assertIn(source["SPDX-FileCopyrightText"], holders, spec.ident)
+
+    def test_notice_names_every_source_font(self):
+        notice = (FONTS / "NOTICE.txt").read_text(encoding="utf-8")
+        for name in sorted({spec.source for spec in SPECS}):
+            self.assertIn(name, notice)
 
 
 class EmitTests(unittest.TestCase):

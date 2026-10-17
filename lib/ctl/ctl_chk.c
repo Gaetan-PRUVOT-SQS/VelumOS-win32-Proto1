@@ -3,16 +3,16 @@
 static void	chk_ring(t_ctlroot *r, const t_ctl *c, const t_ctltext *tx)
 {
 	t_rect	ring;
-	int32_t	h;
+	int32_t	m;
 
-	if (r->focus != c || !ctl_font(c->flags))
+	if (r->focus != c || !ctl_font_of(c))
 		return ;
-	h = ctl_font(c->flags)->height + 2;
-	ring.x = tx->box.x - 2;
-	ring.w = ctl_text_width(tx) + 4;
-	ring.y = c->rect.y + (c->rect.h - h) / 2;
-	ring.h = h;
-	ctl_focus_ring(r->surface, ring);
+	m = LUNA_FOCUS_MARGIN;
+	ring.x = tx->box.x - m;
+	ring.w = ctl_text_width(tx) + 2 * m;
+	ring.h = ctl_font_of(c)->height + 2 * m;
+	ring.y = c->rect.y + (c->rect.h - ring.h) / 2;
+	ctl_focus_ring(r->surface, rect_intersect(ring, c->rect));
 }
 
 void	ctl_chk_paint(t_ctlroot *r, t_ctl *c)

@@ -1,3 +1,4 @@
+import os
 import shutil
 import subprocess
 import sys
@@ -107,7 +108,10 @@ class TestOutil(unittest.TestCase):
                 self.assertFalse(sortie.exists())
 
     def test_fixture_du_makefile(self):
-        chemin = RACINE / "build" / "a20" / "a20-fixture" / "users"
+        brut = os.environ.get("A20_FIXTURE")
+        if not brut:
+            self.skipTest("A20_FIXTURE non defini (lancer make host-a20)")
+        chemin = RACINE / brut
         if not chemin.exists():
             self.skipTest("fixture absente (lancer make host-a20)")
         self.assertEqual(chemin.read_text(), LIGNE_ATTENDUE)

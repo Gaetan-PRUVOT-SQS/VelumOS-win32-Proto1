@@ -17,10 +17,20 @@ static const char		*g_lines[PAGE_LINES] = {
 };
 
 static const uint64_t	g_golden[FONT_IDS] = {
-	0x6332754a9f6f3741ull, 0x681eca5b6212e6c3ull, 0x6a0ce746a9a8c353ull,
-	0x2698d396da2728eaull,
+	0x303729739d13d41eull, 0xcbe6877fa50be96eull, 0x3929e94c69ff03c6ull,
+	0x05adfd93009742c5ull, 0x4f89442afdcdaba2ull, 0xf459f26bc71e06f2ull,
+	0x67f5c0407e3d30d4ull, 0x79d5869eede6c3b8ull, 0x015d1f2088e5834dull,
+	0x1fb606b946836606ull, 0x4296a2793e7aaa03ull, 0x0e1ea694ba10de3eull,
+	0x6cfb70df80d36252ull, 0x77c17c695adb6097ull, 0x01b4172578fe8434ull,
+	0xa1f553f05afcd8eaull, 0xa15fe4a39068ccacull, 0xf9f49d60326391b4ull,
+	0x657a8e275c913c36ull, 0xcebf144545cec4a6ull, 0xdaf58a35c3841b16ull,
 };
-static const char		*g_names[FONT_IDS] = {"ui", "ui_bold", "title", "mono"};
+static const char		*g_names[FONT_IDS] = {
+	"ui", "ui_bold", "title", "mono", "ins_11", "ins_12", "ins_semi_12",
+	"ins_13", "ins_semi_13", "ins_bold_13", "ins_14", "ins_semi_14",
+	"ins_bold_14", "ins_15", "ins_22", "ins_semi_22", "ins_bold_24",
+	"ins_bold_26", "ins_bold_28", "ins_semi_120", "jbm_14",
+};
 
 static void	draw_page(t_surface *s, t_fontid id)
 {
@@ -76,6 +86,6 @@ static void	render_every_font(void)
 int	main(void)
 {
 	h_begin("a16/render");
-	h_run("pages d'essai francaises des 4 polices", render_every_font);
+	h_run("pages d'essai francaises des 21 polices", render_every_font);
 	return (h_end());
 }

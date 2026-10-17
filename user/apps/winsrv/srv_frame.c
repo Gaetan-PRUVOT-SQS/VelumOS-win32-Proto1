@@ -25,18 +25,20 @@ void	ws_cursor_set(t_wsrv *s, t_point pos, uint32_t shape)
 void	ws_frame(t_wsrv *s)
 {
 	uint32_t	i;
+	t_rect		r;
 	t_blit		b;
 
 	i = 0;
 	while (s->back.px != NULL && i < s->dirty.n)
 	{
-		wc_compose(&s->t, &s->back, s->cur, s->dirty.r[i]);
+		r = wgl_extend(&s->t, s->dirty.r[i]);
+		wc_compose(&s->t, &s->back, s->cur, r);
 		if (s->fb.px != NULL)
 		{
 			b.dst = &s->fb;
 			b.src = &s->back;
-			b.sr = s->dirty.r[i];
-			b.dr = s->dirty.r[i];
+			b.sr = r;
+			b.dr = r;
 			gfx_blit(&b);
 		}
 		i++;

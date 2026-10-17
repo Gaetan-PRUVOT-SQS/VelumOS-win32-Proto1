@@ -7,3 +7,11 @@ OpenSans-Regular.ttf, OpenSans-Bold.ttf, OpenSans-ExtraBold.ttf (Open Sans 1.10)
 NotoSansMono-Variable.ttf (Noto Sans Mono 2.014)
   Copyright 2022 The Noto Project Authors (https://github.com/notofonts/latin-greek-cyrillic)
   SIL Open Font License 1.1, texte dans Noto-LICENSE.txt
+
+InstrumentSans-Variable.ttf (Instrument Sans, police variable, axes graisse et chasse)
+  Copyright 2022 The Instrument Sans Project Authors (https://github.com/Instrument/instrument-sans)
+  SIL Open Font License 1.1, texte dans InstrumentSans-OFL.txt
+
+JetBrainsMono-Variable.ttf (JetBrains Mono, police variable)
+  Copyright 2020 The JetBrains Mono Project Authors (https://github.com/JetBrains/JetBrainsMono)
+  SIL Open Font License 1.1, texte dans JetBrainsMono-OFL.txt

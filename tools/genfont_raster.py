@@ -18,9 +18,9 @@ EXTRA_CODEPOINTS = (
     0x20AC,
 )
 SOURCE_ALIAS = {0x00AD: 0x002D}
-CANVAS = 96
+CANVAS = 192
 ORIGIN_X = 32
-ORIGIN_Y = 56
+ORIGIN_Y = 128
 
 
 @dataclass(frozen=True)
@@ -32,6 +32,7 @@ class FontSpec:
     descent: int
     fixed_advance: int | None = None
     weight: int | None = None
+    charset: str = "full"
 
 
 @dataclass(frozen=True)
@@ -49,7 +50,23 @@ class FontError(Exception):
     pass
 
 
-def charset():
+DIGIT_CODEPOINTS = tuple(range(0x30, 0x3A)) + (0x20, 0x3A, 0xA0)
+ASCII_CODEPOINTS = tuple(range(0x20, 0x7F))
+FRENCH_LETTERS = "ÀÂÇÈÉÊÎÔàâçèéêëîïôùûüœ"
+DISPLAY_LETTERS = "ÀÇÈÉÊàâçèéêëîïôùûüœ"
+FRENCH_SIGNS = (0xA0, 0xAB, 0xBB, 0xB0, 0xB7, 0xD7, 0x2013, 0x2014, 0x2019, 0x2026)
+DISPLAY_SIGNS = (0xA0, 0xAB, 0xBB, 0x2013, 0x2014, 0x2019, 0x2026)
+
+
+def charset(name="full"):
+    if name == "digits":
+        return sorted(DIGIT_CODEPOINTS)
+    if name == "french":
+        return sorted(set(ASCII_CODEPOINTS + FRENCH_SIGNS + tuple(map(ord, FRENCH_LETTERS))))
+    if name == "display":
+        return sorted(set(ASCII_CODEPOINTS + DISPLAY_SIGNS + tuple(map(ord, DISPLAY_LETTERS))))
+    if name != "full":
+        raise FontError(f"jeu de caractères inconnu : {name}")
     cps = list(range(0x20, 0x7F)) + list(range(0xA0, 0x180)) + list(EXTRA_CODEPOINTS)
     return sorted(set(cps))
 
@@ -195,15 +212,25 @@ def check_cell(spec, glyph):
         raise FontError(f"{spec.ident} U+{glyph.cp:04X} : décalage ou largeur hors limites")
 
 
+def weight_axes(font, weight):
+    axes = font.get_variation_axes()
+    names = [axis["name"] for axis in axes]
+    if names.count(b"Weight") != 1:
+        raise FontError(f"axe de graisse introuvable : {names}")
+    values = [axis["default"] for axis in axes]
+    values[names.index(b"Weight")] = weight
+    return values
+
+
 def rasterize(spec, fonts_dir):
     path = Path(fonts_dir) / spec.source
-    cps = charset()
+    cps = charset(spec.charset)
     check_coverage(path, [SOURCE_ALIAS.get(cp, cp) for cp in cps])
     font = ImageFont.truetype(str(path), spec.size, layout_engine=ImageFont.Layout.BASIC)
     if spec.weight is not None:
-        font.set_variation_by_axes([spec.weight])
+        font.set_variation_by_axes(weight_axes(font, spec.weight))
     glyphs = [keep_in_cell(spec, raster_one(font, cp, spec)) for cp in cps]
-    cap = next(g for g in glyphs if g.cp == ord("H"))
+    cap = next(g for g in glyphs if g.cp == ord("0" if spec.charset == "digits" else "H"))
     advance = glyphs[cps.index(ord("0"))].advance
     glyphs.append(replacement_glyph(spec, cap.height, advance))
     for glyph in glyphs:

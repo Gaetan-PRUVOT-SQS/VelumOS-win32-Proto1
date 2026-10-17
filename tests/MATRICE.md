@@ -21,23 +21,23 @@ Les cas manuels sont décrits dans [`MANUEL.md`](MANUEL.md).
 
 | Mesure | Valeur |
 |--------|--------|
-| Fonctionnalités vérifiables recensées | 94 |
-| Couverture automatisée (A + AM) | **92,6 %** (87 sur 94) |
-| dont automatisée seule (A) | 80,9 % (76) |
-| dont automatisée avec complément manuel (AM) | 11,7 % (11) |
-| Couverture manuelle seule (M) | **7,4 %** (7 sur 94) |
-| Fonctionnalités qui demandent au moins un test manuel (AM + M) | 19,1 % (18) |
-| Cas de test automatisés (cas unitaires, scénarios QEMU, tests Python) | 1986 |
-| Cas de test manuels | 21 |
-| Cas manuels joués | 19 sur 21 (15 réussi, 4 partiel) |
+| Fonctionnalités vérifiables recensées | 103 |
+| Couverture automatisée (A + AM) | **93,2 %** (96 sur 103) |
+| dont automatisée seule (A) | 82,5 % (85) |
+| dont automatisée avec complément manuel (AM) | 10,7 % (11) |
+| Couverture manuelle seule (M) | **6,8 %** (7 sur 103) |
+| Fonctionnalités qui demandent au moins un test manuel (AM + M) | 17,5 % (18) |
+| Cas de test automatisés (cas unitaires, scénarios QEMU, tests Python) | 2196 |
+| Cas de test manuels | 22 |
+| Cas manuels joués | 19 sur 22 (15 réussi, 4 partiel) |
 | Taux d'automatisation par nombre de cas | 99,0 % |
 
 Lecture : le taux par nombre de cas est très supérieur au taux fonctionnel parce que les cas automatisés sont fins
 (une valeur limite, une partition) alors que les cas manuels sont des sessions complètes. Le taux fonctionnel est
 la mesure à retenir.
 
-Inventaire des cas automatisés : 639 fichiers de tests unitaires contenant 1861 cas nommés
-(`h_run`), 50 scénarios QEMU et 75 tests Python.
+Inventaire des cas automatisés : 732 fichiers de tests unitaires contenant 2046 cas nommés
+(`h_run`), 50 scénarios QEMU et 100 tests Python.
 
 ## Par sous-système
 
@@ -58,11 +58,11 @@ Inventaire des cas automatisés : 639 fichiers de tests unitaires contenant 1861
 | a13 | 5 | 3 | 2 | 0 | 100,0 % |
 | a14 | 3 | 3 | 0 | 0 | 100,0 % |
 | a15 | 4 | 3 | 0 | 1 | 75,0 % |
-| a16 | 3 | 2 | 0 | 1 | 66,7 % |
-| a17 | 3 | 2 | 0 | 1 | 66,7 % |
-| a18 | 4 | 3 | 1 | 0 | 100,0 % |
+| a16 | 4 | 3 | 0 | 1 | 75,0 % |
+| a17 | 8 | 7 | 0 | 1 | 87,5 % |
+| a18 | 5 | 4 | 1 | 0 | 100,0 % |
 | a19 | 5 | 4 | 1 | 0 | 100,0 % |
-| a20 | 5 | 2 | 3 | 0 | 100,0 % |
+| a20 | 7 | 4 | 3 | 0 | 100,0 % |
 | transverse | 7 | 3 | 1 | 3 | 57,1 % |
 | apk | 12 | 12 | 0 | 0 | 100,0 % |
 
@@ -130,7 +130,7 @@ Inventaire des cas automatisés : 639 fichiers de tests unitaires contenant 1861
 | F58 | a16 | Netteté et lisibilité des polices | M | aucun | MT-05, MT-14 |
 | F59 | a17 | Partition des zones d'une fenêtre (hit-test) | A | [test_hit_table.c](host/a17/test_hit_table.c)<br>[test_hit_sweep.c](host/a17/test_hit_sweep.c)<br>[test_hit_meta.c](host/a17/test_hit_meta.c) | aucun |
 | F60 | a17 | Métriques et géométrie du thème | A | [test_metrics.c](host/a17/test_metrics.c)<br>[test_geo_table.c](host/a17/test_geo_table.c)<br>[test_geo_inv.c](host/a17/test_geo_inv.c) | aucun |
-| F61 | a17 | Fidélité visuelle au style Luna de référence | M | aucun | MT-04 |
+| F61 | a17 | Fidélité visuelle : ancien style Luna (MT-04) et maquette verre (MT-25) (Les tests a17 et a20 vérifient des valeurs calculées depuis la maquette, pas l'aspect d'ensemble.) | M | aucun | MT-04, MT-25 |
 | F62 | a18 | Protocole de fenêtres : validation et rejet des messages hostiles | A | [test_core_proto.c](host/a18/test_core_proto.c)<br>[test_srv_fuzz.c](host/a18/test_srv_fuzz.c)<br>[test_srv_faults.c](host/a18/test_srv_faults.c) | aucun |
 | F63 | a18 | Ordre Z, focus et activation | A | [test_core_z.c](host/a18/test_core_z.c)<br>[test_srv_focus.c](host/a18/test_srv_focus.c)<br>[test_srv_random.c](host/a18/test_srv_random.c) | aucun |
 | F64 | a18 | Composition incrémentale et zones sales | A | [test_core_geom.c](host/a18/test_core_geom.c)<br>[test_srv_random.c](host/a18/test_srv_random.c)<br>[test_srv_queue.c](host/a18/test_srv_queue.c) | aucun |
@@ -142,11 +142,11 @@ Inventaire des cas automatisés : 639 fichiers de tests unitaires contenant 1861
 | F70 | a19 | Accessibilité de la session entière au clavier seul | AM | [test_a11y.c](host/a19/test_a11y.c)<br>[a20_desktop.py](qemu/a20_desktop.py) | MT-13 |
 | F71 | a20 | Comptes, hachage PBKDF2 et limiteur d'essais | A | [test_acc_verify.c](host/a20/test_acc_verify.c)<br>[test_acc_hostile.c](host/a20/test_acc_hostile.c)<br>[test_auth.c](host/a20/test_auth.c)<br>[test_limiter.c](host/a20/test_limiter.c) | aucun |
 | F72 | a20 | Connexion à la souris, bureau, menu Démarrer, extinction | A | [a20_souris.py](qemu/a20_souris.py)<br>[a20_desktop.py](qemu/a20_desktop.py)<br>[int_session.py](qemu/int_session.py)<br>[int_captures.py](qemu/int_captures.py)<br>[test_programmes.c](host/a20/test_programmes.c) | aucun |
-| F73 | a20 | Barre des tâches et liste des fenêtres | AM | [test_taskbar.c](host/a20/test_taskbar.c)<br>[test_taskbar_sweep.c](host/a20/test_taskbar_sweep.c)<br>[test_tasklist.c](host/a20/test_tasklist.c) | MT-16 |
+| F73 | a20 | Dock en verre, tâches et liste des fenêtres | AM | [test_taskbar.c](host/a20/test_taskbar.c)<br>[test_taskbar_sweep.c](host/a20/test_taskbar_sweep.c)<br>[test_tasklist.c](host/a20/test_tasklist.c)<br>[test_tasklist_state.c](host/a20/test_tasklist_state.c)<br>[test_contrast.c](host/a20/test_contrast.c) | MT-16 |
 | F74 | a20 | Boîtes de dialogue (Exécuter, Éteindre l'ordinateur) | AM | [test_runcmd.c](host/a20/test_runcmd.c)<br>[test_logon_flow.c](host/a20/test_logon_flow.c)<br>[test_sm_model.c](host/a20/test_sm_model.c)<br>[test_typographie.py](host/a20/test_typographie.py) | MT-07, MT-08 |
 | F75 | a20 | Horloge de la zone de notification et formats de date | AM | [test_timefmt_clock.c](host/a20/test_timefmt_clock.c)<br>[test_timefmt_uptime.c](host/a20/test_timefmt_uptime.c) | MT-10 |
 | F76 | transverse | Construction du noyau, des applis et de l'image bootable (BIOS et UEFI) | A | [skel_boot.py](qemu/skel_boot.py)<br>[test_mkimage.py](tools/test_mkimage.py)<br>[Makefile](../Makefile) | aucun |
-| F77 | transverse | Qualité du code : norme, en-têtes autonomes, sécurité statique | A | [norme.sh](../tools/norme.sh)<br>[scan_securite.py](../tools/scan_securite.py)<br>[test.mk](../mk/test.mk) | aucun |
+| F77 | transverse | Qualité du code : en-têtes autonomes, sécurité statique | A | [scan_securite.py](../tools/scan_securite.py)<br>[test.mk](../mk/test.mk) | aucun |
 | F78 | transverse | Variantes de processeur (qemu64 sans SMEP ni SMAP) | A | [a01_boot_qemu64.py](qemu/a01_boot_qemu64.py) | aucun |
 | F79 | transverse | Démarrage et fonctionnement sur matériel réel | M | aucun | MT-02, MT-18 |
 | F80 | transverse | Endurance : exécution prolongée sans fuite ni gel | M | aucun | MT-17 |
@@ -164,3 +164,12 @@ Inventaire des cas automatisés : 639 fichiers de tests unitaires contenant 1861
 | F92 | apk | Registre des paquets et installation d'un APK sur /data | A | [test_install.c](host/d10/test_install.c)<br>[test_panne.c](host/d10/test_panne.c)<br>[test_registre.c](host/d10/test_registre.c)<br>[test_champs.c](host/d10/test_champs.c)<br>[test_fuzz.c](host/d10/test_fuzz.c)<br>[test_fs.c](host/d12/test_fs.c)<br>[test_fs_panne.c](host/d12/test_fs_panne.c)<br>[test_inspect.c](host/d12/test_inspect.c)<br>[int_apk_installation.py](qemu/int_apk_installation.py) | aucun |
 | F93 | apk | Appli APK lancée du menu Démarrer dans une fenêtre, clics, refus affiché | A | [int_apk_menu.py](qemu/int_apk_menu.py)<br>[int_apk_installation.py](qemu/int_apk_installation.py)<br>[test_lay.c](host/d12/test_lay.c)<br>[test_lay_hostile.c](host/d12/test_lay_hostile.c)<br>[test_programmes_arg.c](host/a20/test_programmes_arg.c)<br>[test_runcmd_apk.c](host/a20/test_runcmd_apk.c) | aucun |
 | F94 | apk | Outils de l'hôte : assembleur DEX, fabrication et signature d'APK (Outils et lecteurs écrits séparément depuis les mêmes spécifications.) | A | [test_dexasm.py](tools/test_dexasm.py)<br>[test_mkapk.py](tools/test_mkapk.py)<br>[test_croise_opcodes.py](tools/test_croise_opcodes.py) | aucun |
+| F95 | a17 | Verre : flou, saturation, teinte, reflet, liseré, repli opaque et bornes (Ombres de fenêtres non faites, flou du fond d'écran seulement (pas des fenêtres dessous).) | A | [test_glass.c](host/a17/test_glass.c)<br>[test_glass_blur.c](host/a17/test_glass_blur.c)<br>[test_glass_bounds.c](host/a17/test_glass_bounds.c)<br>[test_glass_edge.c](host/a17/test_glass_edge.c)<br>[test_glass_robust.c](host/a17/test_glass_robust.c)<br>[test_glass_robust_band.c](host/a17/test_glass_robust_band.c)<br>[test_glass_robust_corner.c](host/a17/test_glass_robust_corner.c)<br>[test_glass_robust_geo.c](host/a17/test_glass_robust_geo.c)<br>[test_glass_robust_lg.c](host/a17/test_glass_robust_lg.c)<br>[test_glass_robust_zone.c](host/a17/test_glass_robust_zone.c) | aucun |
+| F96 | a17 | Palette clair et sombre : jetons, accesseurs de couleur et contrastes (Aucune appli ne bascule le thème : le sombre n'est exercé que par les tests.) | A | [test_colors_ext.c](host/a17/test_colors_ext.c)<br>[test_contrast_bar.c](host/a17/test_contrast_bar.c)<br>[test_contrast_win.c](host/a17/test_contrast_win.c)<br>[test_contrast_fonds.c](host/a20/test_contrast_fonds.c)<br>[test_contrast_plates.c](host/a20/test_contrast_plates.c)<br>[test_uicolor.c](host/a20/test_uicolor.c) | aucun |
+| F97 | a17 | Contrôles luna : taille des cases, anneau de focus, dégradé du bouton, encre, symétrie du verre | A | [test_ctrl_bornes.c](host/a17/test_ctrl_bornes.c)<br>[test_ctrl_degrade.c](host/a17/test_ctrl_degrade.c)<br>[test_ctrl_glass.c](host/a17/test_ctrl_glass.c)<br>[test_ctrl_ink.c](host/a17/test_ctrl_ink.c)<br>[test_glass.c](host/a19/test_glass.c)<br>[test_glass_focus.c](host/a19/test_glass_focus.c)<br>[test_glass_font.c](host/a19/test_glass_font.c)<br>[test_ring.c](host/a19/test_ring.c)<br>[test_ring_ctl.c](host/a19/test_ring_ctl.c)<br>[test_ring_face.c](host/a19/test_ring_face.c) | aucun |
+| F98 | a17 | Lanceur : disposition de 540 px, zones cliquables, dessin et activation (Recherche factice, quatre tuiles au plus, pas de Récents ni de Toutes les apps.) | A | [test_launcher.c](host/a17/test_launcher.c)<br>[test_launcher_draw.c](host/a17/test_launcher_draw.c)<br>[test_launcher_hit.c](host/a17/test_launcher_hit.c)<br>[test_sm_layout.c](host/a20/test_sm_layout.c)<br>[test_sm_rect.c](host/a20/test_sm_rect.c)<br>[test_sm_activation.c](host/a20/test_sm_activation.c) | aucun |
+| F99 | a17 | Fond voile, rendus du bureau, de la connexion et du démarrage (galeries PNG) | A | [test_wallpaper.c](host/a17/test_wallpaper.c)<br>[test_desktop.c](host/a17/test_desktop.c)<br>[test_gallery.c](host/a17/test_gallery.c)<br>[test_glass_gallery.c](host/a17/test_glass_gallery.c) | aucun |
+| F100 | a16 | Polices Instrument Sans et JetBrains Mono : génération reproductible, jeu de caractères, budget (Rendu 1 bit, donc moins fin que la maquette.) | A | [test_genfont.py](host/a16/test_genfont.py)<br>[test_font_charset.c](host/a16/test_font_charset.c)<br>[test_font_cover.c](host/a16/test_font_cover.c)<br>[test_font_data.c](host/a16/test_font_data.c)<br>[test_font_budget.c](host/a16/test_font_budget.c) | aucun |
+| F101 | a18 | Verre dans le serveur de fenêtres : bandes sales, équivalence incrémental et complet, échec d'allocation | A | [test_core_glass.c](host/a18/test_core_glass.c)<br>[test_core_glass_chain.c](host/a18/test_core_glass_chain.c)<br>[test_core_glass_eq.c](host/a18/test_core_glass_eq.c)<br>[test_srv_glass.c](host/a18/test_srv_glass.c)<br>[test_srv_glass_ext.c](host/a18/test_srv_glass_ext.c) | aucun |
+| F102 | a20 | Connexion : mise en page de la maquette, puces, messages et flux invalides | A | [test_logon_layout.c](host/a20/test_logon_layout.c)<br>[test_logon_layout_mockup.c](host/a20/test_logon_layout_mockup.c)<br>[test_logon_layout_ring.c](host/a20/test_logon_layout_ring.c)<br>[test_logon_text.c](host/a20/test_logon_text.c)<br>[test_logon_flow_invalid.c](host/a20/test_logon_flow_invalid.c) | aucun |
+| F103 | a20 | Bureau : grille d'icônes, zones, sélection au clavier, double-clic et fenêtre Bonjour | A | [test_desktop.c](host/a20/test_desktop.c)<br>[test_desktop_zone.c](host/a20/test_desktop_zone.c)<br>[test_dblclick.c](host/a20/test_dblclick.c)<br>[test_hello_layout.c](host/a20/test_hello_layout.c) | aucun |

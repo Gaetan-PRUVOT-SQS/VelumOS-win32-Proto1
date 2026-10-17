@@ -2,6 +2,7 @@
 #include <string.h>
 #include "harness.h"
 #include "help.h"
+#include "velum/theme.h"
 
 #define SW 320
 #define SH 240
@@ -66,13 +67,12 @@ static void	client_matches(void)
 	t_point		p;
 	t_rect		cl;
 	int			bad;
-	int			slot;
 
 	hz_screen(&g_t);
-	slot = hz_add(&g_t, WS_DEFAULT);
-	g_t.w[slot].rect = rect_make(50, 60, 300, 200);
-	cl = wh_client(&g_t, slot);
-	wh_lunawin(&g_t, slot, &lw);
+	hz_add(&g_t, WS_DEFAULT);
+	g_t.w[0].rect = rect_make(50, 60, 300, 200);
+	cl = wh_client(&g_t, 0);
+	wh_lunawin(&g_t, 0, &lw);
 	bad = 0;
 	p.y = 59;
 	while (++p.y < 260)
@@ -80,11 +80,12 @@ static void	client_matches(void)
 		p.x = 49;
 		while (++p.x < 350)
 			bad += (luna_hit_test(&lw, p) == HT_CLIENT)
-				!= rect_contains(cl, p);
+				!= rect_contains(rect_make(cl.x + VT_RESIZE_ZONE, cl.y,
+						cl.w - 2 * VT_RESIZE_ZONE, cl.h - VT_RESIZE_ZONE), p);
 	}
-	h_eq_i64("HT_CLIENT = zone client", bad, 0);
-	h_true(wr_inside(g_t.w[slot].rect, cl) && cl.w > 0, "client inclus");
-	g_t.w[slot].state = WSTATE_MIN;
+	h_eq_i64("HT_CLIENT = client moins zone de bord", bad, 0);
+	h_true(wr_inside(g_t.w[0].rect, cl) && cl.w > 0, "client inclus");
+	g_t.w[0].state = WSTATE_MIN;
 	h_eq_i64("reduite non touchee", wh_window_at(&g_t, (t_point){60, 70}), -1);
 }
 

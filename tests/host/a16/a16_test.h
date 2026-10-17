@@ -25,6 +25,23 @@ typedef struct s_vec
 	uint32_t	cp;
 }	t_vec;
 
+typedef enum e_cset
+{
+	CS_FRENCH,
+	CS_DISPLAY,
+	CS_DIGITS
+}	t_cset;
+
+typedef struct s_csetdef
+{
+	const uint32_t	*list;
+	size_t			len;
+	int32_t			ascii;
+}	t_csetdef;
+
+t_cset			charset_of(t_fontid id);
+int				charset_has(t_cset set, uint32_t cp);
+int32_t			charset_count(t_cset set);
 uint64_t		rng_next(uint64_t *state);
 uint64_t		rng_seed(void);
 int64_t			model_width(const t_font *f, const char *s, size_t len);

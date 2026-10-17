@@ -54,3 +54,22 @@ int	ctl_set_rect(t_ctlroot *r, t_ctl *c, t_rect rect)
 		ctl_edt_scroll(c, c->priv);
 	return (0);
 }
+
+void	ctl_set_font(t_ctlroot *r, t_ctl *c, t_fontid font)
+{
+	uint32_t	next;
+
+	if (!r || !r->root || !c || !ctl_in_tree(r, c))
+		return ;
+	if ((uint32_t)font > CTL_FONT_AUTO)
+		return ;
+	next = 0;
+	if ((uint32_t)font < FONT_IDS)
+		next = (uint32_t)font + 1;
+	if (next == c->font)
+		return ;
+	c->font = next;
+	if (c->type == CT_EDIT)
+		ctl_edt_scroll(c, c->priv);
+	ctl_dirty_add(r, c->rect);
+}

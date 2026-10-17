@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#e8e9ee;font-family:'Instrument Sans',sans-serif;color:#141824;-webkit-font-smoothing:antialiased;}
+a{color:#0f7d83;text-decoration:none;}
+a:hover{color:#0a5f64;text-decoration:underline;}
+</style>
+</helmet>
+<section style="padding:64px;display:flex;flex-direction:column;gap:48px;">
+  <div style="display:flex;flex-wrap:wrap;gap:48px;align-items:flex-end;justify-content:space-between;max-width:2640px;">
+    <div style="display:flex;flex-direction:column;gap:12px;max-width:800px;">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <img src="icons/logo.svg" alt="" style="width:40px;height:40px;display:block;">
+        <span style="font-size:15px;font-weight:600;color:#4a5163;">VelumOS · proposition UX · v2 · <a href="VelumOS UX.dc.html">voir la v1</a></span>
+      </div>
+      <h1 style="margin:0;font-size:56px;line-height:1.05;letter-spacing:-0.02em;font-weight:700;">Une identité propre, en verre liquide.</h1>
+      <p style="margin:0;font-size:18px;line-height:1.5;color:#4a5163;text-wrap:pretty;">Seules les icônes de VelumOS sont conservées, redessinées en vectoriel depuis lib/luna. Tout le reste est neuf : lanceur rond, fond « voile » généré, palette lagune, commandes de fenêtre en capsule et un matériau de verre translucide avec reflet en haut et liseré lumineux.</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:16px;">
+      <div style="display:flex;gap:10px;flex-wrap:wrap;max-width:620px;">
+        <img src="icons/computer.svg" alt="" style="width:40px;height:40px;"><img src="icons/folder.svg" alt="" style="width:40px;height:40px;"><img src="icons/document.svg" alt="" style="width:40px;height:40px;"><img src="icons/recycle.svg" alt="" style="width:40px;height:40px;"><img src="icons/drive.svg" alt="" style="width:40px;height:40px;"><img src="icons/settings.svg" alt="" style="width:40px;height:40px;"><img src="icons/run.svg" alt="" style="width:40px;height:40px;"><img src="icons/search.svg" alt="" style="width:40px;height:40px;"><img src="icons/help.svg" alt="" style="width:40px;height:40px;"><img src="icons/power.svg" alt="" style="width:40px;height:40px;"><img src="icons/user.svg" alt="" style="width:40px;height:40px;"><img src="icons/program.svg" alt="" style="width:40px;height:40px;">
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,minmax(0,190px));gap:16px;">
+        <div style="display:flex;flex-direction:column;gap:8px;"><div style="height:48px;border-radius:14px;background:#0f7d83;"></div><span style="font-size:13px;font-weight:600;">Lagune · #0F7D83</span></div>
+        <div style="display:flex;flex-direction:column;gap:8px;"><div style="height:48px;border-radius:14px;background:rgba(255,255,255,0.55);box-shadow:inset 0 1px 0 #fff,inset 0 0 0 1px rgba(20,24,36,0.08);"></div><span style="font-size:13px;font-weight:600;">Verre clair · blanc 32–60 %</span></div>
+        <div style="display:flex;flex-direction:column;gap:8px;"><div style="height:48px;border-radius:14px;background:#161a26;box-shadow:inset 0 1px 0 rgba(255,255,255,0.18);"></div><span style="font-size:13px;font-weight:600;">Verre sombre · encre 42–70 %</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:flex;flex-wrap:wrap;gap:56px;">
+
+    <!-- 2a Connexion -->
+    <div id="2a" data-screen-label="01 Connexion" style="display:flex;flex-direction:column;gap:14px;">
+      <div style="display:flex;align-items:center;gap:12px;"><span style="padding:4px 10px;border-radius:8px;background:#141824;color:#fff;font-size:13px;font-weight:700;">2a</span><span style="font-size:20px;font-weight:600;">Connexion</span><span style="font-size:14px;color:#4a5163;">L'heure, puis une seule carte de verre centrée.</span></div>
+      <div style="position:relative;width:1280px;height:800px;border-radius:14px;overflow:hidden;box-shadow:0 20px 50px rgba(20,30,60,0.18);">
+        <dc-import name="Wallpaper" hint-size="1280px,800px" style="position:absolute;inset:0;"></dc-import>
+        <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;padding-top:100px;gap:6px;">
+          <span style="font-size:120px;font-weight:600;letter-spacing:-0.045em;line-height:1;">15:48</span>
+          <span style="font-size:22px;color:#2c3242;">mardi 6 octobre</span>
+          <div style="position:relative;margin-top:52px;width:380px;display:flex;flex-direction:column;align-items:center;gap:16px;padding:28px 24px 24px;border-radius:30px;background:rgba(255,255,255,0.34);backdrop-filter:blur(30px) saturate(1.8);-webkit-backdrop-filter:blur(30px) saturate(1.8);box-shadow:inset 0 1px 0 rgba(255,255,255,0.95),inset 0 -1px 0 rgba(255,255,255,0.3),inset 0 0 0 1px rgba(255,255,255,0.45),0 30px 70px rgba(40,40,90,0.22);box-sizing:border-box;">
+            <div style="position:absolute;inset:0;border-radius:30px;background:linear-gradient(165deg,rgba(255,255,255,0.5) 0%,rgba(255,255,255,0) 42%);pointer-events:none;"></div>
+            <div style="position:relative;width:88px;height:88px;border-radius:26px;background:rgba(255,255,255,0.6);box-shadow:inset 0 1px 0 #fff,0 8px 20px rgba(40,40,90,0.15);display:flex;align-items:center;justify-content:center;"><img src="icons/user.svg" alt="" style="width:68px;height:68px;"></div>
+            <span style="position:relative;font-size:22px;font-weight:600;">Utilisateur</span>
+            <div style="position:relative;width:100%;display:flex;align-items:center;gap:8px;height:48px;padding:0 5px 0 18px;border-radius:24px;background:rgba(255,255,255,0.72);box-shadow:inset 0 1px 2px rgba(20,24,36,0.08);box-sizing:border-box;">
+              <span style="flex:1;font-size:20px;letter-spacing:5px;">•••••</span>
+              <div style="width:38px;height:38px;border-radius:50%;background:linear-gradient(160deg,#2bb3b1,#0f7d83);color:#fff;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;box-shadow:inset 0 1px 0 rgba(255,255,255,0.5);">→</div>
+            </div>
+            <span style="position:relative;font-size:13px;color:#2c3242;">Mot de passe oublié ?</span>
+          </div>
+        </div>
+        <div style="position:absolute;left:28px;right:28px;bottom:28px;display:flex;justify-content:space-between;align-items:center;">
+          <div style="display:flex;gap:10px;">
+            <div style="display:flex;align-items:center;gap:10px;height:44px;padding:0 16px 0 6px;border-radius:22px;background:rgba(255,255,255,0.34);backdrop-filter:blur(24px);box-shadow:inset 0 1px 0 rgba(255,255,255,0.9),inset 0 0 0 1px rgba(255,255,255,0.4);font-size:14px;font-weight:600;"><img src="icons/user.svg" alt="" style="width:32px;height:32px;">Changer d'utilisateur</div>
+            <div style="display:flex;align-items:center;height:44px;padding:0 16px;border-radius:22px;background:rgba(255,255,255,0.34);backdrop-filter:blur(24px);box-shadow:inset 0 1px 0 rgba(255,255,255,0.9),inset 0 0 0 1px rgba(255,255,255,0.4);font-size:14px;font-weight:600;">FR</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;height:44px;padding:0 16px 0 6px;border-radius:22px;background:rgba(255,255,255,0.34);backdrop-filter:blur(24px);box-shadow:inset 0 1px 0 rgba(255,255,255,0.9),inset 0 0 0 1px rgba(255,255,255,0.4);font-size:14px;font-weight:600;"><img src="icons/power.svg" alt="" style="width:32px;height:32px;">Éteindre</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2b Bureau -->
+    <div id="2b" data-screen-label="02 Bureau" style="display:flex;flex-direction:column;gap:14px;">
+      <div style="display:flex;align-items:center;gap:12px;"><span style="padding:4px 10px;border-radius:8px;background:#141824;color:#fff;font-size:13px;font-weight:700;">2b</span><span style="font-size:20px;font-weight:600;">Bureau et barre</span><span style="font-size:14px;color:#4a5163;">Barre flottante en verre, commandes de fenêtre regroupées en capsule.</span></div>
+      <div style="position:relative;width:1280px;height:800px;border-radius:14px;overflow:hidden;box-shadow:0 20px 50px rgba(20,30,60,0.18);">
+        <dc-import name="Wallpaper" hint-size="1280px,800px" style="position:absolute;inset:0;"></dc-import>
+        <div style="position:absolute;left:24px;top:24px;display:flex;flex-direction:column;gap:18px;">
+          <div style="width:90px;display:flex;flex-direction:column;align-items:center;gap:6px;"><img src="icons/computer.svg" alt="" style="width:56px;height:56px;filter:drop-shadow(0 4px 8px rgba(40,40,90,0.25));"><span style="padding:2px 8px;border-radius:8px;background:rgba(255,255,255,0.5);font-size:12.5px;font-weight:600;">Ordinateur</span></div>
+          <div style="width:90px;display:flex;flex-direction:column;align-items:center;gap:6px;"><img src="icons/folder.svg" alt="" style="width:56px;height:56px;filter:drop-shadow(0 4px 8px rgba(40,40,90,0.25));"><span style="padding:2px 8px;border-radius:8px;background:rgba(255,255,255,0.5);font-size:12.5px;font-weight:600;">Documents</span></div>
+          <div style="width:90px;display:flex;flex-direction:column;align-items:center;gap:6px;"><img src="icons/recycle.svg" alt="" style="width:56px;height:56px;filter:drop-shadow(0 4px 8px rgba(40,40,90,0.25));"><span style="padding:2px 8px;border-radius:8px;background:rgba(255,255,255,0.5);font-size:12.5px;font-weight:600;">Corbeille</span></div>
+          <div style="width:90px;display:flex;flex-direction:column;align-items:center;gap:6px;"><img src="icons/program.svg" alt="" style="width:56px;height:56px;filter:drop-shadow(0 4px 8px rgba(40,40,90,0.25));"><span style="padding:2px 8px;border-radius:8px;background:rgba(255,255,255,0.5);font-size:12.5px;font-weight:600;">Bonjour</span></div>
+        </div>
+        <div style="position:absolute;left:330px;top:160px;width:480px;display:flex;flex-direction:column;border-radius:24px;overflow:hidden;background:rgba(255,255,255,0.56);backdrop-filter:blur(30px) saturate(1.8);-webkit-backdrop-filter:blur(30px) saturate(1.8);box-shadow:inset 0 1px 0 rgba(255,255,255,0.95),inset 0 0 0 1px rgba(255,255,255,0.5),0 30px 80px rgba(40,40,90,0.28);">
+          <div style="position:absolute;inset:0;background:linear-gradient(170deg,rgba(255,255,255,0.45) 0%,rgba(255,255,255,0) 35%);pointer-events:none;"></div>
+          <div style="position:relative;height:50px;display:flex;align-items:center;gap:10px;padding:0 10px 0 14px;">
+            <img src="icons/program.svg" alt="" style="width:22px;height:22px;">
+            <span style="flex:1;font-size:14px;font-weight:600;">Bonjour</span>
+            <div style="display:flex;gap:2px;padding:3px;border-radius:12px;background:rgba(255,255,255,0.55);box-shadow:inset 0 1px 0 #fff;">
+              <div style="width:28px;height:24px;border-radius:9px;display:flex;align-items:center;justify-content:center;"><div style="width:10px;height:2px;border-radius:1px;background:#4a5163;"></div></div>
+              <div style="width:28px;height:24px;border-radius:9px;display:flex;align-items:center;justify-content:center;"><div style="width:9px;height:9px;border-radius:3px;border:1.5px solid #4a5163;box-sizing:border-box;"></div></div>
+              <div style="width:28px;height:24px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;line-height:1;">×</div>
+            </div>
+          </div>
+          <div style="position:relative;display:flex;flex-direction:column;gap:10px;padding:10px 26px 26px;">
+            <span style="font-size:24px;font-weight:700;letter-spacing:-0.01em;">Bonjour de VelumOS !</span>
+            <span style="font-size:14px;color:#2c3242;">Temps de fonctionnement : 14 s</span>
+            <span style="font-size:14px;color:#2c3242;">Application de démonstration de la session.</span>
+            <div style="display:flex;justify-content:flex-end;margin-top:14px;">
+              <div style="height:40px;padding:0 24px;border-radius:20px;background:linear-gradient(160deg,#2bb3b1,#0f7d83);color:#fff;font-size:14px;font-weight:600;display:flex;align-items:center;box-shadow:inset 0 1px 0 rgba(255,255,255,0.45),0 6px 16px rgba(15,125,131,0.3);">Fermer</div>
+            </div>
+          </div>
+        </div>
+        <dc-import name="Dock" apps="{{ dBonjour }}" active="Bonjour" hint-size="100%,80px" style="position:absolute;left:0;right:0;bottom:0;height:80px;"></dc-import>
+      </div>
+    </div>
+
+    <!-- 2c Lanceur -->
+    <div id="2c" data-screen-label="03 Lanceur" style="display:flex;flex-direction:column;gap:14px;">
+      <div style="display:flex;align-items:center;gap:12px;"><span style="padding:4px 10px;border-radius:8px;background:#141824;color:#fff;font-size:13px;font-weight:700;">2c</span><span style="font-size:20px;font-weight:600;">Lanceur</span><span style="font-size:14px;color:#4a5163;">Recherche d'abord, grille d'apps, récents, session en pied.</span></div>
+      <div style="position:relative;width:1280px;height:800px;border-radius:14px;overflow:hidden;box-shadow:0 20px 50px rgba(20,30,60,0.18);">
+        <dc-import name="Wallpaper" hint-size="1280px,800px" style="position:absolute;inset:0;"></dc-import>
+        <div style="position:absolute;left:12px;bottom:80px;width:540px;display:flex;flex-direction:column;gap:18px;padding:18px;border-radius:30px;background:rgba(255,255,255,0.38);backdrop-filter:blur(34px) saturate(1.9);-webkit-backdrop-filter:blur(34px) saturate(1.9);box-shadow:inset 0 1px 0 rgba(255,255,255,0.95),inset 0 -1px 0 rgba(255,255,255,0.3),inset 0 0 0 1px rgba(255,255,255,0.45),0 30px 80px rgba(40,40,90,0.3);box-sizing:border-box;">
+          <div style="position:absolute;inset:0;border-radius:30px;background:linear-gradient(170deg,rgba(255,255,255,0.45) 0%,rgba(255,255,255,0) 30%);pointer-events:none;"></div>
+          <div style="position:relative;display:flex;align-items:center;gap:10px;height:48px;padding:0 18px 0 10px;border-radius:24px;background:rgba(255,255,255,0.72);box-shadow:inset 0 1px 2px rgba(20,24,36,0.08);font-size:15px;color:#4a5163;">
+            <img src="icons/search.svg" alt="" style="width:26px;height:26px;"><span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Rechercher une app, un fichier, un réglage</span>
+          </div>
+          <div style="position:relative;display:flex;flex-direction:column;gap:10px;">
+            <div style="display:flex;justify-content:space-between;padding:0 6px;"><span style="font-size:13px;font-weight:700;">Épinglées</span><span style="font-size:13px;font-weight:600;color:#0f7d83;">Toutes les apps ›</span></div>
+            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;">
+              <div style="display:flex;flex-direction:column;align-items:center;gap:8px;padding:14px 4px;border-radius:20px;background:rgba(255,255,255,0.62);box-shadow:inset 0 1px 0 #fff,0 4px 12px rgba(40,40,90,0.08);"><img src="icons/folder.svg" alt="" style="width:44px;height:44px;"><span style="font-size:13px;font-weight:600;">Fichiers</span></div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:8px;padding:14px 4px;border-radius:20px;"><img src="icons/run.svg" alt="" style="width:44px;height:44px;"><span style="font-size:13px;font-weight:600;">Console</span></div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:8px;padding:14px 4px;border-radius:20px;"><img src="icons/settings.svg" alt="" style="width:44px;height:44px;"><span style="font-size:13px;font-weight:600;">Réglages</span></div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:8px;padding:14px 4px;border-radius:20px;"><img src="icons/program.svg" alt="" style="width:44px;height:44px;"><span style="font-size:13px;font-weight:600;">Bonjour</span></div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:8px;padding:14px 4px;border-radius:20px;"><img src="icons/computer.svg" alt="" style="width:44px;height:44px;"><span style="font-size:13px;font-weight:600;">Ordinateur</span></div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:8px;padding:14px 4px;border-radius:20px;"><img src="icons/drive.svg" alt="" style="width:44px;height:44px;"><span style="font-size:13px;font-weight:600;">Disques</span></div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:8px;padding:14px 4px;border-radius:20px;"><img src="icons/recycle.svg" alt="" style="width:44px;height:44px;"><span style="font-size:13px;font-weight:600;">Corbeille</span></div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:8px;padding:14px 4px;border-radius:20px;"><img src="icons/help.svg" alt="" style="width:44px;height:44px;"><span style="font-size:13px;font-weight:600;">Aide</span></div>
+            </div>
+          </div>
+          <div style="position:relative;display:flex;flex-direction:column;gap:4px;">
+            <span style="font-size:13px;font-weight:700;padding:0 6px 4px;">Récents</span>
+            <div style="display:flex;align-items:center;gap:12px;padding:8px 10px;border-radius:14px;"><img src="icons/document.svg" alt="" style="width:28px;height:28px;"><span style="flex:1;font-size:14px;">notes-reunion.txt</span><span style="font-size:12.5px;color:#4a5163;">il y a 5 min</span></div>
+            <div style="display:flex;align-items:center;gap:12px;padding:8px 10px;border-radius:14px;"><img src="icons/document.svg" alt="" style="width:28px;height:28px;"><span style="flex:1;font-size:14px;">LISEZMOI.txt</span><span style="font-size:12.5px;color:#4a5163;">hier</span></div>
+          </div>
+          <div style="position:relative;display:flex;align-items:center;gap:10px;padding:10px 10px 0;border-top:1px solid rgba(255,255,255,0.6);">
+            <img src="icons/user.svg" alt="" style="width:34px;height:34px;">
+            <span style="flex:1;font-size:14px;font-weight:600;">Utilisateur</span>
+            <div style="height:36px;padding:0 14px;border-radius:18px;background:rgba(255,255,255,0.55);box-shadow:inset 0 1px 0 #fff;display:flex;align-items:center;font-size:13px;font-weight:600;">Fermer la session</div>
+            <div style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.55);box-shadow:inset 0 1px 0 #fff;display:flex;align-items:center;justify-content:center;"><img src="icons/power.svg" alt="" style="width:26px;height:26px;"></div>
+          </div>
+        </div>
+        <dc-import name="Dock" apps="{{ dBonjour }}" active="" launcher-open="{{ true }}" hint-size="100%,80px" style="position:absolute;left:0;right:0;bottom:0;height:80px;"></dc-import>
+      </div>
+    </div>
+
+    <!-- 2d Fichiers -->
+    <div id="2d" data-screen-label="04 Fichiers" style="display:flex;flex-direction:column;gap:14px;">
+      <div style="display:flex;align-items:center;gap:12px;"><span style="padding:4px 10px;border-radius:8px;background:#141824;color:#fff;font-size:13px;font-weight:700;">2d</span><span style="font-size:20px;font-weight:600;">Explorateur de fichiers</span><span style="font-size:14px;color:#4a5163;">Barre latérale en verre, actions dans une capsule flottante à la sélection.</span></div>
+      <div style="position:relative;width:1280px;height:800px;border-radius:14px;overflow:hidden;box-shadow:0 20px 50px rgba(20,30,60,0.18);">
+        <dc-import name="Wallpaper" hint-size="1280px,800px" style="position:absolute;inset:0;"></dc-import>
+        <div style="position:absolute;left:90px;top:36px;width:1100px;height:650px;display:grid;grid-template-columns:240px 1fr;border-radius:26px;overflow:hidden;background:rgba(255,255,255,0.3);backdrop-filter:blur(34px) saturate(1.9);-webkit-backdrop-filter:blur(34px) saturate(1.9);box-shadow:inset 0 1px 0 rgba(255,255,255,0.95),inset 0 0 0 1px rgba(255,255,255,0.5),0 30px 80px rgba(40,40,90,0.3);">
+          <div style="position:relative;display:flex;flex-direction:column;gap:18px;padding:16px 12px;">
+            <div style="position:absolute;inset:0;background:linear-gradient(170deg,rgba(255,255,255,0.4) 0%,rgba(255,255,255,0) 30%);pointer-events:none;"></div>
+            <div style="position:relative;display:flex;align-items:center;gap:8px;padding:0 6px;"><img src="icons/folder.svg" alt="" style="width:22px;height:22px;"><span style="font-size:14px;font-weight:700;">Fichiers</span></div>
+            <div style="position:relative;display:flex;flex-direction:column;gap:2px;">
+              <span style="font-size:12px;font-weight:600;color:#4a5163;padding:0 10px 6px;">Favoris</span>
+              <div style="display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:12px;font-size:14px;"><img src="icons/computer.svg" alt="" style="width:20px;height:20px;">Ordinateur</div>
+              <div style="display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:12px;font-size:14px;font-weight:600;background:rgba(255,255,255,0.7);box-shadow:inset 0 1px 0 #fff,0 2px 8px rgba(40,40,90,0.08);"><img src="icons/folder.svg" alt="" style="width:20px;height:20px;">Documents</div>
+              <div style="display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:12px;font-size:14px;"><img src="icons/recycle.svg" alt="" style="width:20px;height:20px;">Corbeille</div>
+            </div>
+            <div style="position:relative;display:flex;flex-direction:column;gap:12px;">
+              <span style="font-size:12px;font-weight:600;color:#4a5163;padding:0 10px;">Disques</span>
+              <div style="display:flex;gap:10px;padding:0 10px;"><img src="icons/drive.svg" alt="" style="width:26px;height:26px;"><div style="flex:1;display:flex;flex-direction:column;gap:5px;"><div style="display:flex;justify-content:space-between;font-size:13px;"><span>Disque (C:)</span><span style="color:#4a5163;">FAT32</span></div><div style="height:6px;border-radius:3px;background:rgba(20,24,36,0.1);"><div style="width:62%;height:6px;border-radius:3px;background:#0f7d83;"></div></div><span style="font-size:11.5px;color:#4a5163;">24,6 Mo libres sur 64 Mo</span></div></div>
+              <div style="display:flex;gap:10px;padding:0 10px;"><img src="icons/drive.svg" alt="" style="width:26px;height:26px;"><div style="flex:1;display:flex;flex-direction:column;gap:5px;"><div style="display:flex;justify-content:space-between;font-size:13px;"><span>initrd</span><span style="color:#4a5163;">lecture seule</span></div><div style="height:6px;border-radius:3px;background:rgba(20,24,36,0.1);"><div style="width:100%;height:6px;border-radius:3px;background:#8a93a8;"></div></div></div></div>
+            </div>
+          </div>
+          <div style="position:relative;display:flex;flex-direction:column;min-height:0;background:rgba(255,255,255,0.62);box-shadow:inset 1px 0 0 rgba(255,255,255,0.7);">
+            <div style="display:flex;align-items:center;gap:10px;padding:10px 10px 10px 16px;">
+              <div style="display:flex;gap:2px;padding:3px;border-radius:14px;background:rgba(20,24,36,0.05);">
+                <div style="width:32px;height:30px;border-radius:11px;background:#fff;box-shadow:0 1px 3px rgba(20,24,36,0.1);display:flex;align-items:center;justify-content:center;font-size:16px;">‹</div>
+                <div style="width:32px;height:30px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:16px;color:#aab2c3;">›</div>
+              </div>
+              <div style="flex:1;height:36px;border-radius:18px;background:rgba(20,24,36,0.05);display:flex;align-items:center;gap:8px;padding:0 14px;font-size:13.5px;">
+                <span style="color:#4a5163;">Ordinateur</span><span style="color:#aab2c3;">/</span><span style="color:#4a5163;">Disque (C:)</span><span style="color:#aab2c3;">/</span><span style="font-weight:600;">Documents</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:6px;width:200px;height:36px;border-radius:18px;background:rgba(20,24,36,0.05);padding:0 12px 0 6px;font-size:13.5px;color:#4a5163;box-sizing:border-box;"><img src="icons/search.svg" alt="" style="width:22px;height:22px;">Rechercher</div>
+              <div style="display:flex;gap:2px;padding:3px;border-radius:12px;background:rgba(255,255,255,0.55);box-shadow:inset 0 1px 0 #fff,inset 0 0 0 1px rgba(20,24,36,0.05);">
+                <div style="width:28px;height:24px;border-radius:9px;display:flex;align-items:center;justify-content:center;"><div style="width:10px;height:2px;border-radius:1px;background:#4a5163;"></div></div>
+                <div style="width:28px;height:24px;border-radius:9px;display:flex;align-items:center;justify-content:center;"><div style="width:9px;height:9px;border-radius:3px;border:1.5px solid #4a5163;box-sizing:border-box;"></div></div>
+                <div style="width:28px;height:24px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;line-height:1;">×</div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:baseline;justify-content:space-between;padding:10px 24px 4px;"><span style="font-size:26px;font-weight:700;letter-spacing:-0.01em;">Documents</span><span style="font-size:13px;color:#4a5163;">7 éléments</span></div>
+            <div style="flex:1;display:grid;grid-template-columns:repeat(6,1fr);grid-auto-rows:124px;gap:8px;padding:12px 20px;align-content:start;">
+              <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;border-radius:18px;background:rgba(15,125,131,0.12);box-shadow:inset 0 0 0 1.5px rgba(15,125,131,0.45);"><img src="icons/folder.svg" alt="" style="width:60px;height:60px;"><span style="font-size:13px;font-weight:600;">Projets</span></div>
+              <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;border-radius:18px;"><img src="icons/folder.svg" alt="" style="width:60px;height:60px;"><span style="font-size:13px;">Images</span></div>
+              <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;border-radius:18px;"><img src="icons/folder.svg" alt="" style="width:60px;height:60px;"><span style="font-size:13px;">Musique</span></div>
+              <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;border-radius:18px;"><img src="icons/document.svg" alt="" style="width:60px;height:60px;"><span style="font-size:13px;">notes-reunion.txt</span></div>
+              <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;border-radius:18px;"><img src="icons/document.svg" alt="" style="width:60px;height:60px;"><span style="font-size:13px;">capture.png</span></div>
+              <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;border-radius:18px;"><img src="icons/run.svg" alt="" style="width:60px;height:60px;"><span style="font-size:13px;">demarrage.sh</span></div>
+              <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;border-radius:18px;"><img src="icons/document.svg" alt="" style="width:60px;height:60px;"><span style="font-size:13px;">LISEZMOI.txt</span></div>
+            </div>
+            <div style="position:absolute;left:50%;bottom:18px;transform:translateX(-50%);display:flex;align-items:center;gap:4px;padding:5px;border-radius:22px;background:rgba(255,255,255,0.5);backdrop-filter:blur(24px) saturate(1.8);-webkit-backdrop-filter:blur(24px) saturate(1.8);box-shadow:inset 0 1px 0 #fff,inset 0 0 0 1px rgba(255,255,255,0.6),0 12px 30px rgba(40,40,90,0.2);font-size:13px;font-weight:600;white-space:nowrap;">
+              <span style="padding:0 12px;color:#0f7d83;">1 sélectionné</span>
+              <div style="height:32px;padding:0 14px;border-radius:16px;display:flex;align-items:center;">Ouvrir</div>
+              <div style="height:32px;padding:0 14px;border-radius:16px;display:flex;align-items:center;">Renommer</div>
+              <div style="height:32px;padding:0 14px;border-radius:16px;display:flex;align-items:center;">Copier vers…</div>
+              <div style="height:32px;padding:0 14px;border-radius:16px;display:flex;align-items:center;background:rgba(255,255,255,0.7);box-shadow:inset 0 1px 0 #fff;color:#b3361f;">Supprimer</div>
+            </div>
+          </div>
+        </div>
+        <dc-import name="Dock" apps="{{ dFiles }}" active="Fichiers" hint-size="100%,80px" style="position:absolute;left:0;right:0;bottom:0;height:80px;"></dc-import>
+      </div>
+    </div>
+
+    <!-- 2e Réglages -->
+    <div id="2e" data-screen-label="05 Réglages" style="display:flex;flex-direction:column;gap:14px;">
+      <div style="display:flex;align-items:center;gap:12px;"><span style="padding:4px 10px;border-radius:8px;background:#141824;color:#fff;font-size:13px;font-weight:700;">2e</span><span style="font-size:20px;font-weight:600;">Paramètres</span><span style="font-size:14px;color:#4a5163;">Le verre devient un réglage : intensité, teinte, transparence réduite.</span></div>
+      <div style="position:relative;width:1280px;height:800px;border-radius:14px;overflow:hidden;box-shadow:0 20px 50px rgba(20,30,60,0.18);">
+        <dc-import name="Wallpaper" hint-size="1280px,800px" style="position:absolute;inset:0;"></dc-import>
+        <div style="position:absolute;left:150px;top:36px;width:980px;height:650px;display:grid;grid-template-columns:230px 1fr;border-radius:26px;overflow:hidden;background:rgba(255,255,255,0.3);backdrop-filter:blur(34px) saturate(1.9);-webkit-backdrop-filter:blur(34px) saturate(1.9);box-shadow:inset 0 1px 0 rgba(255,255,255,0.95),inset 0 0 0 1px rgba(255,255,255,0.5),0 30px 80px rgba(40,40,90,0.3);">
+          <div style="position:relative;display:flex;flex-direction:column;gap:2px;padding:16px 12px;">
+            <div style="position:absolute;inset:0;background:linear-gradient(170deg,rgba(255,255,255,0.4) 0%,rgba(255,255,255,0) 30%);pointer-events:none;"></div>
+            <div style="position:relative;display:flex;align-items:center;gap:8px;padding:0 6px 12px;"><img src="icons/settings.svg" alt="" style="width:22px;height:22px;"><span style="font-size:14px;font-weight:700;">Réglages</span></div>
+            <div style="position:relative;display:flex;align-items:center;gap:6px;height:36px;border-radius:18px;background:rgba(255,255,255,0.55);box-shadow:inset 0 1px 0 #fff;padding:0 12px 0 6px;font-size:13px;color:#4a5163;margin-bottom:10px;"><img src="icons/search.svg" alt="" style="width:22px;height:22px;">Rechercher</div>
+            <div style="position:relative;display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:12px;font-size:14px;"><img src="icons/computer.svg" alt="" style="width:20px;height:20px;">Système</div>
+            <div style="position:relative;display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:12px;font-size:14px;font-weight:600;background:rgba(255,255,255,0.7);box-shadow:inset 0 1px 0 #fff,0 2px 8px rgba(40,40,90,0.08);"><img src="icons/program.svg" alt="" style="width:20px;height:20px;">Apparence</div>
+            <div style="position:relative;display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:12px;font-size:14px;"><img src="icons/drive.svg" alt="" style="width:20px;height:20px;">Stockage</div>
+            <div style="position:relative;display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:12px;font-size:14px;"><img src="icons/user.svg" alt="" style="width:20px;height:20px;">Utilisateurs</div>
+            <div style="position:relative;flex:1;"></div>
+            <div style="position:relative;display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:12px;font-size:14px;color:#2c3242;"><img src="icons/help.svg" alt="" style="width:20px;height:20px;">À propos de VelumOS</div>
+          </div>
+          <div style="position:relative;display:flex;flex-direction:column;gap:22px;padding:18px 32px;background:rgba(255,255,255,0.62);box-shadow:inset 1px 0 0 rgba(255,255,255,0.7);">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+              <div style="display:flex;flex-direction:column;gap:4px;padding-top:6px;"><span style="font-size:28px;font-weight:700;letter-spacing:-0.01em;">Apparence</span><span style="font-size:14px;color:#4a5163;">Thème, matériau et couleur d'accent.</span></div>
+              <div style="display:flex;gap:2px;padding:3px;border-radius:12px;background:rgba(255,255,255,0.55);box-shadow:inset 0 1px 0 #fff,inset 0 0 0 1px rgba(20,24,36,0.05);">
+                <div style="width:28px;height:24px;border-radius:9px;display:flex;align-items:center;justify-content:center;"><div style="width:10px;height:2px;border-radius:1px;background:#4a5163;"></div></div>
+                <div style="width:28px;height:24px;border-radius:9px;display:flex;align-items:center;justify-content:center;"><div style="width:9px;height:9px;border-radius:3px;border:1.5px solid #4a5163;box-sizing:border-box;"></div></div>
+                <div style="width:28px;height:24px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;line-height:1;">×</div>
+              </div>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;">
+              <div style="display:flex;flex-direction:column;gap:8px;padding:8px;border-radius:18px;box-shadow:0 0 0 2px #0f7d83;">
+                <div style="position:relative;height:96px;border-radius:12px;overflow:hidden;background:radial-gradient(60% 80% at 15% 20%,#8fd6d2 0%,rgba(143,214,210,0) 62%),radial-gradient(55% 70% at 88% 12%,#bcaaf2 0%,rgba(188,170,242,0) 62%),radial-gradient(70% 70% at 72% 95%,#f6c890 0%,rgba(246,200,144,0) 62%),#e3e6f0;"><div style="position:absolute;left:14px;top:14px;width:96px;height:56px;border-radius:10px;background:rgba(255,255,255,0.65);box-shadow:inset 0 1px 0 #fff;"></div><div style="position:absolute;left:8px;right:8px;bottom:6px;height:10px;border-radius:5px;background:rgba(255,255,255,0.6);"></div></div>
+                <div style="display:flex;align-items:center;gap:8px;padding:0 4px;font-size:13.5px;font-weight:600;"><div style="width:14px;height:14px;border-radius:50%;border:4px solid #0f7d83;box-sizing:border-box;"></div>Clair</div>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:8px;padding:8px;border-radius:18px;box-shadow:0 0 0 1px rgba(20,24,36,0.12);">
+                <div style="position:relative;height:96px;border-radius:12px;overflow:hidden;background:radial-gradient(60% 80% at 15% 20%,#1f6f72 0%,rgba(31,111,114,0) 62%),radial-gradient(55% 70% at 88% 12%,#4b3c8f 0%,rgba(75,60,143,0) 62%),radial-gradient(70% 70% at 72% 95%,#8a5a2a 0%,rgba(138,90,42,0) 62%),#0d1120;"><div style="position:absolute;left:14px;top:14px;width:96px;height:56px;border-radius:10px;background:rgba(30,34,48,0.7);box-shadow:inset 0 1px 0 rgba(255,255,255,0.2);"></div><div style="position:absolute;left:8px;right:8px;bottom:6px;height:10px;border-radius:5px;background:rgba(30,34,48,0.7);"></div></div>
+                <div style="display:flex;align-items:center;gap:8px;padding:0 4px;font-size:13.5px;"><div style="width:14px;height:14px;border-radius:50%;border:1.5px solid #8a93a8;box-sizing:border-box;"></div>Sombre</div>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:8px;padding:8px;border-radius:18px;box-shadow:0 0 0 1px rgba(20,24,36,0.12);">
+                <div style="position:relative;height:96px;border-radius:12px;overflow:hidden;background:linear-gradient(90deg,#e3e6f0 50%,#0d1120 50%);"><div style="position:absolute;inset:0;background:radial-gradient(60% 80% at 25% 30%,rgba(143,214,210,0.9) 0%,rgba(143,214,210,0) 60%),radial-gradient(50% 70% at 80% 70%,rgba(75,60,143,0.9) 0%,rgba(75,60,143,0) 60%);"></div></div>
+                <div style="display:flex;align-items:center;gap:8px;padding:0 4px;font-size:13.5px;"><div style="width:14px;height:14px;border-radius:50%;border:1.5px solid #8a93a8;box-sizing:border-box;"></div>Selon l'heure</div>
+              </div>
+            </div>
+            <div style="display:flex;flex-direction:column;border-radius:18px;background:rgba(255,255,255,0.7);box-shadow:inset 0 1px 0 #fff,0 0 0 1px rgba(20,24,36,0.06);">
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:24px;padding:14px 18px;">
+                <div style="display:flex;flex-direction:column;gap:2px;"><span style="font-size:14px;font-weight:600;">Intensité du verre</span><span style="font-size:12.5px;color:#4a5163;">Flou et réfraction derrière les fenêtres</span></div>
+                <div style="width:220px;height:6px;border-radius:3px;background:rgba(20,24,36,0.1);position:relative;"><div style="width:70%;height:6px;border-radius:3px;background:#0f7d83;"></div><div style="position:absolute;left:70%;top:-8px;width:22px;height:22px;margin-left:-11px;border-radius:50%;background:rgba(255,255,255,0.9);box-shadow:inset 0 1px 0 #fff,0 2px 6px rgba(20,24,36,0.25);"></div></div>
+              </div>
+              <div style="height:1px;background:rgba(20,24,36,0.06);margin:0 18px;"></div>
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 18px;">
+                <div style="display:flex;flex-direction:column;gap:2px;"><span style="font-size:14px;font-weight:600;">Teinte du verre</span><span style="font-size:12.5px;color:#4a5163;">Couleur prise au fond d'écran ou neutre</span></div>
+                <div style="display:flex;gap:2px;padding:3px;border-radius:14px;background:rgba(20,24,36,0.06);font-size:13px;">
+                  <div style="height:30px;padding:0 14px;border-radius:11px;display:flex;align-items:center;">Neutre</div>
+                  <div style="height:30px;padding:0 14px;border-radius:11px;display:flex;align-items:center;background:#fff;box-shadow:0 1px 3px rgba(20,24,36,0.12);font-weight:600;">Teintée</div>
+                  <div style="height:30px;padding:0 14px;border-radius:11px;display:flex;align-items:center;">Givrée</div>
+                </div>
+              </div>
+              <div style="height:1px;background:rgba(20,24,36,0.06);margin:0 18px;"></div>
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 18px;">
+                <div style="display:flex;flex-direction:column;gap:2px;"><span style="font-size:14px;font-weight:600;">Couleur d'accent</span><span style="font-size:12.5px;color:#4a5163;">Sélection, boutons principaux, indicateurs</span></div>
+                <div style="display:flex;gap:8px;">
+                  <div style="width:26px;height:26px;border-radius:50%;background:#0f7d83;box-shadow:0 0 0 2px #fff,0 0 0 4px #0f7d83;"></div>
+                  <div style="width:26px;height:26px;border-radius:50%;background:#3d6fd9;"></div>
+                  <div style="width:26px;height:26px;border-radius:50%;background:#7a5ad6;"></div>
+                  <div style="width:26px;height:26px;border-radius:50%;background:#c4643a;"></div>
+                  <div style="width:26px;height:26px;border-radius:50%;background:#4a5163;"></div>
+                </div>
+              </div>
+              <div style="height:1px;background:rgba(20,24,36,0.06);margin:0 18px;"></div>
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 18px;">
+                <div style="display:flex;flex-direction:column;gap:2px;"><span style="font-size:14px;font-weight:600;">Réduire la transparence</span><span style="font-size:12.5px;color:#4a5163;">Surfaces opaques, recommandé sur machine modeste</span></div>
+                <div style="width:46px;height:28px;border-radius:14px;background:rgba(20,24,36,0.14);position:relative;"><div style="position:absolute;left:3px;top:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,0.2);"></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <dc-import name="Dock" apps="{{ dSettings }}" active="Réglages" hint-size="100%,80px" style="position:absolute;left:0;right:0;bottom:0;height:80px;"></dc-import>
+      </div>
+    </div>
+
+    <!-- 2f Notifications -->
+    <div id="2f" data-screen-label="06 Notifications" style="display:flex;flex-direction:column;gap:14px;">
+      <div style="display:flex;align-items:center;gap:12px;"><span style="padding:4px 10px;border-radius:8px;background:#141824;color:#fff;font-size:13px;font-weight:700;">2f</span><span style="font-size:20px;font-weight:600;">Centre de notifications</span><span style="font-size:14px;color:#4a5163;">Deux plaques de verre : réglages rapides, puis messages.</span></div>
+      <div style="position:relative;width:1280px;height:800px;border-radius:14px;overflow:hidden;box-shadow:0 20px 50px rgba(20,30,60,0.18);">
+        <dc-import name="Wallpaper" hint-size="1280px,800px" style="position:absolute;inset:0;"></dc-import>
+        <div style="position:absolute;right:12px;top:12px;bottom:80px;width:380px;display:flex;flex-direction:column;gap:12px;">
+          <div style="position:relative;display:flex;flex-direction:column;gap:14px;padding:14px;border-radius:26px;background:rgba(255,255,255,0.38);backdrop-filter:blur(34px) saturate(1.9);-webkit-backdrop-filter:blur(34px) saturate(1.9);box-shadow:inset 0 1px 0 rgba(255,255,255,0.95),inset 0 0 0 1px rgba(255,255,255,0.45),0 20px 50px rgba(40,40,90,0.25);">
+            <div style="position:absolute;inset:0;border-radius:26px;background:linear-gradient(170deg,rgba(255,255,255,0.45) 0%,rgba(255,255,255,0) 35%);pointer-events:none;"></div>
+            <div style="position:relative;display:grid;grid-template-columns:repeat(2,1fr);gap:8px;">
+              <div style="display:flex;flex-direction:column;gap:2px;padding:12px 14px;border-radius:18px;background:linear-gradient(160deg,#2bb3b1,#0f7d83);color:#fff;box-shadow:inset 0 1px 0 rgba(255,255,255,0.45);"><span style="font-size:13.5px;font-weight:600;">Réseau</span><span style="font-size:12px;">virtio-net · connecté</span></div>
+              <div style="display:flex;flex-direction:column;gap:2px;padding:12px 14px;border-radius:18px;background:rgba(255,255,255,0.6);box-shadow:inset 0 1px 0 #fff;"><span style="font-size:13.5px;font-weight:600;">Ne pas déranger</span><span style="font-size:12px;color:#4a5163;">Désactivé</span></div>
+              <div style="display:flex;flex-direction:column;gap:2px;padding:12px 14px;border-radius:18px;background:rgba(255,255,255,0.6);box-shadow:inset 0 1px 0 #fff;"><span style="font-size:13.5px;font-weight:600;">Thème sombre</span><span style="font-size:12px;color:#4a5163;">Désactivé</span></div>
+              <div style="display:flex;flex-direction:column;gap:2px;padding:12px 14px;border-radius:18px;background:linear-gradient(160deg,#2bb3b1,#0f7d83);color:#fff;box-shadow:inset 0 1px 0 rgba(255,255,255,0.45);"><span style="font-size:13.5px;font-weight:600;">Verre</span><span style="font-size:12px;">Teinté · 70 %</span></div>
+            </div>
+            <div style="position:relative;display:flex;align-items:center;gap:12px;padding:0 4px;"><span style="width:72px;font-size:12.5px;color:#2c3242;">Volume</span><div style="flex:1;height:6px;border-radius:3px;background:rgba(20,24,36,0.12);position:relative;"><div style="width:65%;height:6px;border-radius:3px;background:#0f7d83;"></div><div style="position:absolute;left:65%;top:-7px;width:20px;height:20px;margin-left:-10px;border-radius:50%;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,0.25);"></div></div></div>
+            <div style="position:relative;display:flex;align-items:center;gap:12px;padding:0 4px 4px;"><span style="width:72px;font-size:12.5px;color:#2c3242;">Luminosité</span><div style="flex:1;height:6px;border-radius:3px;background:rgba(20,24,36,0.12);position:relative;"><div style="width:80%;height:6px;border-radius:3px;background:#0f7d83;"></div><div style="position:absolute;left:80%;top:-7px;width:20px;height:20px;margin-left:-10px;border-radius:50%;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,0.25);"></div></div></div>
+          </div>
+          <div style="position:relative;flex:1;display:flex;flex-direction:column;gap:8px;padding:14px;border-radius:26px;background:rgba(255,255,255,0.38);backdrop-filter:blur(34px) saturate(1.9);-webkit-backdrop-filter:blur(34px) saturate(1.9);box-shadow:inset 0 1px 0 rgba(255,255,255,0.95),inset 0 0 0 1px rgba(255,255,255,0.45),0 20px 50px rgba(40,40,90,0.25);min-height:0;">
+            <div style="position:relative;display:flex;justify-content:space-between;align-items:center;padding:2px 6px 6px;"><span style="font-size:15px;font-weight:700;">Notifications</span><span style="font-size:13px;color:#0f7d83;font-weight:600;">Tout effacer</span></div>
+            <div style="position:relative;display:flex;gap:12px;padding:12px;border-radius:18px;background:rgba(255,255,255,0.7);box-shadow:inset 0 1px 0 #fff;">
+              <img src="icons/drive.svg" alt="" style="width:34px;height:34px;flex:none;">
+              <div style="display:flex;flex-direction:column;gap:3px;flex:1;"><div style="display:flex;justify-content:space-between;"><span style="font-size:13.5px;font-weight:600;">Stockage</span><span style="font-size:12px;color:#4a5163;">il y a 2 min</span></div><span style="font-size:13px;color:#2c3242;line-height:1.4;">Le disque (C:) est rempli à 62 %.</span></div>
+            </div>
+            <div style="position:relative;display:flex;gap:12px;padding:12px;border-radius:18px;background:rgba(255,255,255,0.7);box-shadow:inset 0 1px 0 #fff;">
+              <img src="icons/program.svg" alt="" style="width:34px;height:34px;flex:none;">
+              <div style="display:flex;flex-direction:column;gap:8px;flex:1;"><div style="display:flex;justify-content:space-between;"><span style="font-size:13.5px;font-weight:600;">Bonjour</span><span style="font-size:12px;color:#4a5163;">il y a 14 s</span></div><span style="font-size:13px;color:#2c3242;line-height:1.4;">Session ouverte pour Utilisateur.</span><div style="display:flex;gap:6px;"><div style="height:30px;padding:0 14px;border-radius:15px;background:linear-gradient(160deg,#2bb3b1,#0f7d83);color:#fff;font-size:12.5px;font-weight:600;display:flex;align-items:center;">Ouvrir</div><div style="height:30px;padding:0 14px;border-radius:15px;background:rgba(20,24,36,0.06);font-size:12.5px;font-weight:600;display:flex;align-items:center;">Ignorer</div></div></div>
+            </div>
+            <div style="position:relative;display:flex;gap:12px;padding:12px;border-radius:18px;background:rgba(255,255,255,0.7);box-shadow:inset 0 1px 0 #fff;">
+              <img src="icons/computer.svg" alt="" style="width:34px;height:34px;flex:none;">
+              <div style="display:flex;flex-direction:column;gap:3px;flex:1;"><div style="display:flex;justify-content:space-between;"><span style="font-size:13.5px;font-weight:600;">Système</span><span style="font-size:12px;color:#4a5163;">08:12</span></div><span style="font-size:13px;color:#2c3242;line-height:1.4;">Nouveau périphérique : souris PS/2.</span></div>
+            </div>
+          </div>
+        </div>
+        <dc-import name="Dock" apps="{{ dBonjour }}" active="" hint-size="100%,80px" style="position:absolute;left:0;right:0;bottom:0;height:80px;"></dc-import>
+      </div>
+    </div>
+
+    <!-- 2g Console -->
+    <div id="2g" data-screen-label="07 Terminal" style="display:flex;flex-direction:column;gap:14px;">
+      <div style="display:flex;align-items:center;gap:12px;"><span style="padding:4px 10px;border-radius:8px;background:#141824;color:#fff;font-size:13px;font-weight:700;">2g</span><span style="font-size:20px;font-weight:600;">Terminal (Console)</span><span style="font-size:14px;color:#4a5163;">Verre fumé, toujours sombre, onglets en capsule.</span></div>
+      <div style="position:relative;width:1280px;height:800px;border-radius:14px;overflow:hidden;box-shadow:0 20px 50px rgba(20,30,60,0.18);">
+        <dc-import name="Wallpaper" hint-size="1280px,800px" style="position:absolute;inset:0;"></dc-import>
+        <div style="position:absolute;left:200px;top:70px;width:880px;height:560px;display:flex;flex-direction:column;border-radius:24px;overflow:hidden;background:rgba(14,17,26,0.78);backdrop-filter:blur(30px) saturate(1.6);-webkit-backdrop-filter:blur(30px) saturate(1.6);box-shadow:inset 0 1px 0 rgba(255,255,255,0.22),inset 0 0 0 1px rgba(255,255,255,0.08),0 30px 80px rgba(10,10,40,0.45);">
+          <div style="position:absolute;inset:0;background:linear-gradient(170deg,rgba(255,255,255,0.1) 0%,rgba(255,255,255,0) 30%);pointer-events:none;"></div>
+          <div style="position:relative;height:50px;display:flex;align-items:center;gap:6px;padding:0 10px 0 12px;">
+            <div style="display:flex;align-items:center;gap:8px;height:32px;padding:0 14px 0 8px;border-radius:16px;background:rgba(255,255,255,0.12);box-shadow:inset 0 1px 0 rgba(255,255,255,0.15);color:#f1f3f8;font-size:13px;font-weight:600;"><img src="icons/run.svg" alt="" style="width:20px;height:20px;">shell</div>
+            <div style="display:flex;align-items:center;height:32px;padding:0 14px;border-radius:16px;color:#aab2c3;font-size:13px;">C:\Documents</div>
+            <div style="width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#aab2c3;font-size:18px;">+</div>
+            <div style="flex:1;"></div>
+            <div style="display:flex;gap:2px;padding:3px;border-radius:12px;background:rgba(255,255,255,0.08);box-shadow:inset 0 1px 0 rgba(255,255,255,0.12);color:#f1f3f8;">
+              <div style="width:28px;height:24px;border-radius:9px;display:flex;align-items:center;justify-content:center;"><div style="width:10px;height:2px;border-radius:1px;background:#aab2c3;"></div></div>
+              <div style="width:28px;height:24px;border-radius:9px;display:flex;align-items:center;justify-content:center;"><div style="width:9px;height:9px;border-radius:3px;border:1.5px solid #aab2c3;box-sizing:border-box;"></div></div>
+              <div style="width:28px;height:24px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;line-height:1;">×</div>
+            </div>
+          </div>
+          <div style="position:relative;flex:1;display:flex;flex-direction:column;gap:4px;padding:14px 24px;font-family:'JetBrains Mono',monospace;font-size:14px;line-height:1.6;color:#d6dce7;">
+            <span style="color:#aab2c3;">VelumOS · shell</span>
+            <span style="height:8px;"></span>
+            <span><span style="color:#4fd1cc;">utilisateur</span><span style="color:#aab2c3;">@velum</span> <span style="color:#a99cf0;">C:\Documents</span> <span style="color:#aab2c3;">›</span> ls</span>
+            <span><span style="color:#f3cd68;">Projets/  Images/  Musique/</span>  notes-reunion.txt  capture.png  <span style="color:#7de673;">demarrage.sh</span></span>
+            <span style="height:8px;"></span>
+            <span><span style="color:#4fd1cc;">utilisateur</span><span style="color:#aab2c3;">@velum</span> <span style="color:#a99cf0;">C:\Documents</span> <span style="color:#aab2c3;">›</span> uptime</span>
+            <span>en marche depuis 14 s · 3 processus · mémoire 41 / 128 Mo</span>
+            <span style="height:8px;"></span>
+            <span><span style="color:#4fd1cc;">utilisateur</span><span style="color:#aab2c3;">@velum</span> <span style="color:#a99cf0;">C:\Documents</span> <span style="color:#aab2c3;">›</span> <span style="display:inline-block;width:9px;height:17px;background:#4fd1cc;vertical-align:-3px;"></span></span>
+          </div>
+          <div style="position:relative;height:32px;display:flex;align-items:center;justify-content:space-between;padding:0 18px;border-top:1px solid rgba(255,255,255,0.06);font-family:'JetBrains Mono',monospace;font-size:12px;color:#8a93a8;"><span>UTF-8 · 100×28</span><span>Ctrl+Maj+T nouvel onglet</span></div>
+        </div>
+        <dc-import name="Dock" apps="{{ dConsole }}" active="Console" hint-size="100%,80px" style="position:absolute;left:0;right:0;bottom:0;height:80px;"></dc-import>
+      </div>
+    </div>
+
+    <!-- 2h Lanceur sombre -->
+    <div id="2h" data-screen-label="08 Lanceur sombre" style="display:flex;flex-direction:column;gap:14px;">
+      <div style="display:flex;align-items:center;gap:12px;"><span style="padding:4px 10px;border-radius:8px;background:#141824;color:#fff;font-size:13px;font-weight:700;">2h</span><span style="font-size:20px;font-weight:600;">Thème sombre · Lanceur</span><span style="font-size:14px;color:#4a5163;">Même structure que <a href="#2c">2c</a>, verre fumé.</span></div>
+      <div style="position:relative;width:1280px;height:800px;border-radius:14px;overflow:hidden;box-shadow:0 20px 50px rgba(20,30,60,0.18);">
+        <dc-import name="Wallpaper" dark="{{ true }}" hint-size="1280px,800px" style="position:absolute;inset:0;"></dc-import>
+        <div style="position:absolute;left:12px;bottom:80px;width:540px;display:flex;flex-direction:column;gap:18px;padding:18px;border-radius:30px;background:rgba(22,26,38,0.5);backdrop-filter:blur(34px) saturate(1.7);-webkit-backdrop-filter:blur(34px) saturate(1.7);box-shadow:inset 0 1px 0 rgba(255,255,255,0.22),inset 0 0 0 1px rgba(255,255,255,0.08),0 30px 80px rgba(0,0,0,0.5);box-sizing:border-box;color:#f1f3f8;">
+          <div style="position:absolute;inset:0;border-radius:30px;background:linear-gradient(170deg,rgba(255,255,255,0.12) 0%,rgba(255,255,255,0) 30%);pointer-events:none;"></div>
+          <div style="position:relative;display:flex;align-items:center;gap:10px;height:48px;padding:0 18px 0 10px;border-radius:24px;background:rgba(255,255,255,0.08);box-shadow:inset 0 1px 0 rgba(255,255,255,0.1);font-size:15px;color:#aab2c3;">
+            <img src="icons/search.svg" alt="" style="width:26px;height:26px;"><span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Rechercher une app, un fichier, un réglage</span>
+          </div>
+          <div style="position:relative;display:flex;flex-direction:column;gap:10px;">
+            <div style="display:flex;justify-content:space-between;padding:0 6px;"><span style="font-size:13px;font-weight:700;">Épinglées</span><span style="font-size:13px;font-weight:600;color:#4fd1cc;">Toutes les apps ›</span></div>
+            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;">
+              <div style="display:flex;flex-direction:column;align-items:center;gap:8px;padding:14px 4px;border-radius:20px;background:rgba(255,255,255,0.1);box-shadow:inset 0 1px 0 rgba(255,255,255,0.15);"><img src="icons/folder.svg" alt="" style="width:44px;height:44px;"><span style="font-size:13px;font-weight:600;">Fichiers</span></div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:8px;padding:14px 4px;border-radius:20px;"><img src="icons/run.svg" alt="" style="width:44px;height:44px;"><span style="font-size:13px;font-weight:600;">Console</span></div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:8px;padding:14px 4px;border-radius:20px;"><img src="icons/settings.svg" alt="" style="width:44px;height:44px;"><span style="font-size:13px;font-weight:600;">Réglages</span></div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:8px;padding:14px 4px;border-radius:20px;"><img src="icons/program.svg" alt="" style="width:44px;height:44px;"><span style="font-size:13px;font-weight:600;">Bonjour</span></div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:8px;padding:14px 4px;border-radius:20px;"><img src="icons/computer.svg" alt="" style="width:44px;height:44px;"><span style="font-size:13px;font-weight:600;">Ordinateur</span></div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:8px;padding:14px 4px;border-radius:20px;"><img src="icons/drive.svg" alt="" style="width:44px;height:44px;"><span style="font-size:13px;font-weight:600;">Disques</span></div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:8px;padding:14px 4px;border-radius:20px;"><img src="icons/recycle.svg" alt="" style="width:44px;height:44px;"><span style="font-size:13px;font-weight:600;">Corbeille</span></div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:8px;padding:14px 4px;border-radius:20px;"><img src="icons/help.svg" alt="" style="width:44px;height:44px;"><span style="font-size:13px;font-weight:600;">Aide</span></div>
+            </div>
+          </div>
+          <div style="position:relative;display:flex;flex-direction:column;gap:4px;">
+            <span style="font-size:13px;font-weight:700;padding:0 6px 4px;">Récents</span>
+            <div style="display:flex;align-items:center;gap:12px;padding:8px 10px;border-radius:14px;"><img src="icons/document.svg" alt="" style="width:28px;height:28px;"><span style="flex:1;font-size:14px;">notes-reunion.txt</span><span style="font-size:12.5px;color:#aab2c3;">il y a 5 min</span></div>
+            <div style="display:flex;align-items:center;gap:12px;padding:8px 10px;border-radius:14px;"><img src="icons/document.svg" alt="" style="width:28px;height:28px;"><span style="flex:1;font-size:14px;">LISEZMOI.txt</span><span style="font-size:12.5px;color:#aab2c3;">hier</span></div>
+          </div>
+          <div style="position:relative;display:flex;align-items:center;gap:10px;padding:10px 10px 0;border-top:1px solid rgba(255,255,255,0.08);">
+            <img src="icons/user.svg" alt="" style="width:34px;height:34px;">
+            <span style="flex:1;font-size:14px;font-weight:600;">Utilisateur</span>
+            <div style="height:36px;padding:0 14px;border-radius:18px;background:rgba(255,255,255,0.08);box-shadow:inset 0 1px 0 rgba(255,255,255,0.12);display:flex;align-items:center;font-size:13px;font-weight:600;">Fermer la session</div>
+            <div style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.08);box-shadow:inset 0 1px 0 rgba(255,255,255,0.12);display:flex;align-items:center;justify-content:center;"><img src="icons/power.svg" alt="" style="width:26px;height:26px;"></div>
+          </div>
+        </div>
+        <dc-import name="Dock" dark="{{ true }}" apps="{{ dBonjour }}" active="" launcher-open="{{ true }}" hint-size="100%,80px" style="position:absolute;left:0;right:0;bottom:0;height:80px;"></dc-import>
+      </div>
+    </div>
+
+    <!-- 2i Fichiers sombre -->
+    <div id="2i" data-screen-label="09 Fichiers sombre" style="display:flex;flex-direction:column;gap:14px;">
+      <div style="display:flex;align-items:center;gap:12px;"><span style="padding:4px 10px;border-radius:8px;background:#141824;color:#fff;font-size:13px;font-weight:700;">2i</span><span style="font-size:20px;font-weight:600;">Thème sombre · Fichiers</span><span style="font-size:14px;color:#4a5163;">Même structure que <a href="#2d">2d</a>.</span></div>
+      <div style="position:relative;width:1280px;height:800px;border-radius:14px;overflow:hidden;box-shadow:0 20px 50px rgba(20,30,60,0.18);">
+        <dc-import name="Wallpaper" dark="{{ true }}" hint-size="1280px,800px" style="position:absolute;inset:0;"></dc-import>
+        <div style="position:absolute;left:90px;top:36px;width:1100px;height:650px;display:grid;grid-template-columns:240px 1fr;border-radius:26px;overflow:hidden;background:rgba(22,26,38,0.42);backdrop-filter:blur(34px) saturate(1.7);-webkit-backdrop-filter:blur(34px) saturate(1.7);box-shadow:inset 0 1px 0 rgba(255,255,255,0.22),inset 0 0 0 1px rgba(255,255,255,0.08),0 30px 80px rgba(0,0,0,0.5);color:#f1f3f8;">
+          <div style="position:relative;display:flex;flex-direction:column;gap:18px;padding:16px 12px;">
+            <div style="position:absolute;inset:0;background:linear-gradient(170deg,rgba(255,255,255,0.1) 0%,rgba(255,255,255,0) 30%);pointer-events:none;"></div>
+            <div style="position:relative;display:flex;align-items:center;gap:8px;padding:0 6px;"><img src="icons/folder.svg" alt="" style="width:22px;height:22px;"><span style="font-size:14px;font-weight:700;">Fichiers</span></div>
+            <div style="position:relative;display:flex;flex-direction:column;gap:2px;">
+              <span style="font-size:12px;font-weight:600;color:#aab2c3;padding:0 10px 6px;">Favoris</span>
+              <div style="display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:12px;font-size:14px;"><img src="icons/computer.svg" alt="" style="width:20px;height:20px;">Ordinateur</div>
+              <div style="display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:12px;font-size:14px;font-weight:600;background:rgba(255,255,255,0.12);box-shadow:inset 0 1px 0 rgba(255,255,255,0.15);"><img src="icons/folder.svg" alt="" style="width:20px;height:20px;">Documents</div>
+              <div style="display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:12px;font-size:14px;"><img src="icons/recycle.svg" alt="" style="width:20px;height:20px;">Corbeille</div>
+            </div>
+            <div style="position:relative;display:flex;flex-direction:column;gap:12px;">
+              <span style="font-size:12px;font-weight:600;color:#aab2c3;padding:0 10px;">Disques</span>
+              <div style="display:flex;gap:10px;padding:0 10px;"><img src="icons/drive.svg" alt="" style="width:26px;height:26px;"><div style="flex:1;display:flex;flex-direction:column;gap:5px;"><div style="display:flex;justify-content:space-between;font-size:13px;"><span>Disque (C:)</span><span style="color:#aab2c3;">FAT32</span></div><div style="height:6px;border-radius:3px;background:rgba(255,255,255,0.1);"><div style="width:62%;height:6px;border-radius:3px;background:#4fd1cc;"></div></div><span style="font-size:11.5px;color:#aab2c3;">24,6 Mo libres sur 64 Mo</span></div></div>
+              <div style="display:flex;gap:10px;padding:0 10px;"><img src="icons/drive.svg" alt="" style="width:26px;height:26px;"><div style="flex:1;display:flex;flex-direction:column;gap:5px;"><div style="display:flex;justify-content:space-between;font-size:13px;"><span>initrd</span><span style="color:#aab2c3;">lecture seule</span></div><div style="height:6px;border-radius:3px;background:rgba(255,255,255,0.1);"><div style="width:100%;height:6px;border-radius:3px;background:#5d667a;"></div></div></div></div>
+            </div>
+          </div>
+          <div style="position:relative;display:flex;flex-direction:column;min-height:0;background:rgba(16,19,28,0.6);box-shadow:inset 1px 0 0 rgba(255,255,255,0.06);">
+            <div style="display:flex;align-items:center;gap:10px;padding:10px 10px 10px 16px;">
+              <div style="display:flex;gap:2px;padding:3px;border-radius:14px;background:rgba(255,255,255,0.06);">
+                <div style="width:32px;height:30px;border-radius:11px;background:rgba(255,255,255,0.12);display:flex;align-items:center;justify-content:center;font-size:16px;">‹</div>
+                <div style="width:32px;height:30px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:16px;color:#5d667a;">›</div>
+              </div>
+              <div style="flex:1;height:36px;border-radius:18px;background:rgba(255,255,255,0.06);display:flex;align-items:center;gap:8px;padding:0 14px;font-size:13.5px;">
+                <span style="color:#aab2c3;">Ordinateur</span><span style="color:#5d667a;">/</span><span style="color:#aab2c3;">Disque (C:)</span><span style="color:#5d667a;">/</span><span style="font-weight:600;">Documents</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:6px;width:200px;height:36px;border-radius:18px;background:rgba(255,255,255,0.06);padding:0 12px 0 6px;font-size:13.5px;color:#aab2c3;box-sizing:border-box;"><img src="icons/search.svg" alt="" style="width:22px;height:22px;">Rechercher</div>
+              <div style="display:flex;gap:2px;padding:3px;border-radius:12px;background:rgba(255,255,255,0.08);box-shadow:inset 0 1px 0 rgba(255,255,255,0.12);">
+                <div style="width:28px;height:24px;border-radius:9px;display:flex;align-items:center;justify-content:center;"><div style="width:10px;height:2px;border-radius:1px;background:#aab2c3;"></div></div>
+                <div style="width:28px;height:24px;border-radius:9px;display:flex;align-items:center;justify-content:center;"><div style="width:9px;height:9px;border-radius:3px;border:1.5px solid #aab2c3;box-sizing:border-box;"></div></div>
+                <div style="width:28px;height:24px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;line-height:1;">×</div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:baseline;justify-content:space-between;padding:10px 24px 4px;"><span style="font-size:26px;font-weight:700;letter-spacing:-0.01em;">Documents</span><span style="font-size:13px;color:#aab2c3;">7 éléments</span></div>
+            <div style="flex:1;display:grid;grid-template-columns:repeat(6,1fr);grid-auto-rows:124px;gap:8px;padding:12px 20px;align-content:start;">
+              <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;border-radius:18px;background:rgba(79,209,204,0.12);box-shadow:inset 0 0 0 1.5px rgba(79,209,204,0.5);"><img src="icons/folder.svg" alt="" style="width:60px;height:60px;"><span style="font-size:13px;font-weight:600;">Projets</span></div>
+              <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;border-radius:18px;"><img src="icons/folder.svg" alt="" style="width:60px;height:60px;"><span style="font-size:13px;">Images</span></div>
+              <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;border-radius:18px;"><img src="icons/folder.svg" alt="" style="width:60px;height:60px;"><span style="font-size:13px;">Musique</span></div>
+              <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;border-radius:18px;"><img src="icons/document.svg" alt="" style="width:60px;height:60px;"><span style="font-size:13px;">notes-reunion.txt</span></div>
+              <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;border-radius:18px;"><img src="icons/document.svg" alt="" style="width:60px;height:60px;"><span style="font-size:13px;">capture.png</span></div>
+              <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;border-radius:18px;"><img src="icons/run.svg" alt="" style="width:60px;height:60px;"><span style="font-size:13px;">demarrage.sh</span></div>
+              <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;border-radius:18px;"><img src="icons/document.svg" alt="" style="width:60px;height:60px;"><span style="font-size:13px;">LISEZMOI.txt</span></div>
+            </div>
+            <div style="position:absolute;left:50%;bottom:18px;transform:translateX(-50%);display:flex;align-items:center;gap:4px;padding:5px;border-radius:22px;background:rgba(40,46,62,0.6);backdrop-filter:blur(24px) saturate(1.6);-webkit-backdrop-filter:blur(24px) saturate(1.6);box-shadow:inset 0 1px 0 rgba(255,255,255,0.18),inset 0 0 0 1px rgba(255,255,255,0.08),0 12px 30px rgba(0,0,0,0.4);font-size:13px;font-weight:600;white-space:nowrap;">
+              <span style="padding:0 12px;color:#4fd1cc;">1 sélectionné</span>
+              <div style="height:32px;padding:0 14px;border-radius:16px;display:flex;align-items:center;">Ouvrir</div>
+              <div style="height:32px;padding:0 14px;border-radius:16px;display:flex;align-items:center;">Renommer</div>
+              <div style="height:32px;padding:0 14px;border-radius:16px;display:flex;align-items:center;">Copier vers…</div>
+              <div style="height:32px;padding:0 14px;border-radius:16px;display:flex;align-items:center;background:rgba(255,255,255,0.1);box-shadow:inset 0 1px 0 rgba(255,255,255,0.14);color:#ff9a7a;">Supprimer</div>
+            </div>
+          </div>
+        </div>
+        <dc-import name="Dock" dark="{{ true }}" apps="{{ dFiles }}" active="Fichiers" hint-size="100%,80px" style="position:absolute;left:0;right:0;bottom:0;height:80px;"></dc-import>
+      </div>
+    </div>
+
+    <!-- 2j Thème sombre · Connexion -->
+    <div id="2j" data-screen-label="10 Connexion sombre" style="display:flex;flex-direction:column;gap:14px;">
+      <div style="display:flex;align-items:center;gap:12px;"><span style="padding:4px 10px;border-radius:8px;background:#141824;color:#fff;font-size:13px;font-weight:700;">2j</span><span style="font-size:20px;font-weight:600;">Thème sombre · Connexion</span><span style="font-size:14px;color:#4a5163;">Même structure que <a href="#2a">2a</a>.</span></div>
+      <div style="position:relative;width:1280px;height:800px;color:#f1f3f8;border-radius:14px;overflow:hidden;box-shadow:0 20px 50px rgba(20,30,60,0.18);">
+        <dc-import name="Wallpaper" dark="{{ true }}" hint-size="1280px,800px" style="position:absolute;inset:0;"></dc-import>
+        <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;padding-top:100px;gap:6px;">
+          <span style="font-size:120px;font-weight:600;letter-spacing:-0.045em;line-height:1;">15:48</span>
+          <span style="font-size:22px;color:#c9d0dc;">mardi 6 octobre</span>
+          <div style="position:relative;margin-top:52px;width:380px;display:flex;flex-direction:column;align-items:center;gap:16px;padding:28px 24px 24px;border-radius:30px;background:rgba(22,26,38,0.45);backdrop-filter:blur(30px) saturate(1.8);-webkit-backdrop-filter:blur(30px) saturate(1.8);box-shadow:inset 0 1px 0 rgba(255,255,255,0.22),inset 0 -1px 0 rgba(255,255,255,0.08),inset 0 0 0 1px rgba(255,255,255,0.12),0 30px 70px rgba(0,0,0,0.22);box-sizing:border-box;">
+            <div style="position:absolute;inset:0;border-radius:30px;background:linear-gradient(165deg,rgba(255,255,255,0.1) 0%,rgba(255,255,255,0) 42%);pointer-events:none;"></div>
+            <div style="position:relative;width:88px;height:88px;border-radius:26px;background:rgba(255,255,255,0.1);box-shadow:inset 0 1px 0 rgba(255,255,255,0.15),0 8px 20px rgba(0,0,0,0.15);display:flex;align-items:center;justify-content:center;"><img src="icons/user.svg" alt="" style="width:68px;height:68px;"></div>
+            <span style="position:relative;font-size:22px;font-weight:600;">Utilisateur</span>
+            <div style="position:relative;width:100%;display:flex;align-items:center;gap:8px;height:48px;padding:0 5px 0 18px;border-radius:24px;background:rgba(255,255,255,0.08);box-shadow:inset 0 1px 2px rgba(255,255,255,0.06);box-sizing:border-box;">
+              <span style="flex:1;font-size:20px;letter-spacing:5px;">•••••</span>
+              <div style="width:38px;height:38px;border-radius:50%;background:linear-gradient(160deg,#2bb3b1,#0f7d83);color:#fff;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;box-shadow:inset 0 1px 0 rgba(255,255,255,0.1);">→</div>
+            </div>
+            <span style="position:relative;font-size:13px;color:#c9d0dc;">Mot de passe oublié ?</span>
+          </div>
+        </div>
+        <div style="position:absolute;left:28px;right:28px;bottom:28px;display:flex;justify-content:space-between;align-items:center;">
+          <div style="display:flex;gap:10px;">
+            <div style="display:flex;align-items:center;gap:10px;height:44px;padding:0 16px 0 6px;border-radius:22px;background:rgba(22,26,38,0.45);backdrop-filter:blur(24px);box-shadow:inset 0 1px 0 rgba(255,255,255,0.2),inset 0 0 0 1px rgba(255,255,255,0.1);font-size:14px;font-weight:600;"><img src="icons/user.svg" alt="" style="width:32px;height:32px;">Changer d'utilisateur</div>
+            <div style="display:flex;align-items:center;height:44px;padding:0 16px;border-radius:22px;background:rgba(22,26,38,0.45);backdrop-filter:blur(24px);box-shadow:inset 0 1px 0 rgba(255,255,255,0.2),inset 0 0 0 1px rgba(255,255,255,0.1);font-size:14px;font-weight:600;">FR</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;height:44px;padding:0 16px 0 6px;border-radius:22px;background:rgba(22,26,38,0.45);backdrop-filter:blur(24px);box-shadow:inset 0 1px 0 rgba(255,255,255,0.2),inset 0 0 0 1px rgba(255,255,255,0.1);font-size:14px;font-weight:600;"><img src="icons/power.svg" alt="" style="width:32px;height:32px;">Éteindre</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2k Thème sombre · Bureau -->
+    <div id="2k" data-screen-label="11 Bureau sombre" style="display:flex;flex-direction:column;gap:14px;">
+      <div style="display:flex;align-items:center;gap:12px;"><span style="padding:4px 10px;border-radius:8px;background:#141824;color:#fff;font-size:13px;font-weight:700;">2k</span><span style="font-size:20px;font-weight:600;">Thème sombre · Bureau</span><span style="font-size:14px;color:#4a5163;">Même structure que <a href="#2b">2b</a>.</span></div>
+      <div style="position:relative;width:1280px;height:800px;color:#f1f3f8;border-radius:14px;overflow:hidden;box-shadow:0 20px 50px rgba(20,30,60,0.18);">
+        <dc-import name="Wallpaper" dark="{{ true }}" hint-size="1280px,800px" style="position:absolute;inset:0;"></dc-import>
+        <div style="position:absolute;left:24px;top:24px;display:flex;flex-direction:column;gap:18px;">
+          <div style="width:90px;display:flex;flex-direction:column;align-items:center;gap:6px;"><img src="icons/computer.svg" alt="" style="width:56px;height:56px;filter:drop-shadow(0 4px 8px rgba(0,0,0,0.25));"><span style="padding:2px 8px;border-radius:8px;background:rgba(20,24,36,0.5);font-size:12.5px;font-weight:600;">Ordinateur</span></div>
+          <div style="width:90px;display:flex;flex-direction:column;align-items:center;gap:6px;"><img src="icons/folder.svg" alt="" style="width:56px;height:56px;filter:drop-shadow(0 4px 8px rgba(0,0,0,0.25));"><span style="padding:2px 8px;border-radius:8px;background:rgba(20,24,36,0.5);font-size:12.5px;font-weight:600;">Documents</span></div>
+          <div style="width:90px;display:flex;flex-direction:column;align-items:center;gap:6px;"><img src="icons/recycle.svg" alt="" style="width:56px;height:56px;filter:drop-shadow(0 4px 8px rgba(0,0,0,0.25));"><span style="padding:2px 8px;border-radius:8px;background:rgba(20,24,36,0.5);font-size:12.5px;font-weight:600;">Corbeille</span></div>
+          <div style="width:90px;display:flex;flex-direction:column;align-items:center;gap:6px;"><img src="icons/program.svg" alt="" style="width:56px;height:56px;filter:drop-shadow(0 4px 8px rgba(0,0,0,0.25));"><span style="padding:2px 8px;border-radius:8px;background:rgba(20,24,36,0.5);font-size:12.5px;font-weight:600;">Bonjour</span></div>
+        </div>
+        <div style="position:absolute;left:330px;top:160px;width:480px;display:flex;flex-direction:column;border-radius:24px;overflow:hidden;background:rgba(26,30,44,0.62);backdrop-filter:blur(30px) saturate(1.8);-webkit-backdrop-filter:blur(30px) saturate(1.8);box-shadow:inset 0 1px 0 rgba(255,255,255,0.22),inset 0 0 0 1px rgba(255,255,255,0.1),0 30px 80px rgba(0,0,0,0.28);">
+          <div style="position:absolute;inset:0;background:linear-gradient(170deg,rgba(255,255,255,0.12) 0%,rgba(255,255,255,0) 35%);pointer-events:none;"></div>
+          <div style="position:relative;height:50px;display:flex;align-items:center;gap:10px;padding:0 10px 0 14px;">
+            <img src="icons/program.svg" alt="" style="width:22px;height:22px;">
+            <span style="flex:1;font-size:14px;font-weight:600;">Bonjour</span>
+            <div style="display:flex;gap:2px;padding:3px;border-radius:12px;background:rgba(255,255,255,0.08);box-shadow:inset 0 1px 0 rgba(255,255,255,0.15);">
+              <div style="width:28px;height:24px;border-radius:9px;display:flex;align-items:center;justify-content:center;"><div style="width:10px;height:2px;border-radius:1px;background:#aab2c3;"></div></div>
+              <div style="width:28px;height:24px;border-radius:9px;display:flex;align-items:center;justify-content:center;"><div style="width:9px;height:9px;border-radius:3px;border:1.5px solid #aab2c3;box-sizing:border-box;"></div></div>
+              <div style="width:28px;height:24px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;line-height:1;">×</div>
+            </div>
+          </div>
+          <div style="position:relative;display:flex;flex-direction:column;gap:10px;padding:10px 26px 26px;">
+            <span style="font-size:24px;font-weight:700;letter-spacing:-0.01em;">Bonjour de VelumOS !</span>
+            <span style="font-size:14px;color:#c9d0dc;">Temps de fonctionnement : 14 s</span>
+            <span style="font-size:14px;color:#c9d0dc;">Application de démonstration de la session.</span>
+            <div style="display:flex;justify-content:flex-end;margin-top:14px;">
+              <div style="height:40px;padding:0 24px;border-radius:20px;background:linear-gradient(160deg,#2bb3b1,#0f7d83);color:#fff;font-size:14px;font-weight:600;display:flex;align-items:center;box-shadow:inset 0 1px 0 rgba(255,255,255,0.12),0 6px 16px rgba(15,125,131,0.3);">Fermer</div>
+            </div>
+          </div>
+        </div>
+        <dc-import name="Dock" dark="{{ true }}" apps="{{ dBonjour }}" active="Bonjour" hint-size="100%,80px" style="position:absolute;left:0;right:0;bottom:0;height:80px;"></dc-import>
+      </div>
+    </div>
+
+    <!-- 2l Thème sombre · Paramètres -->
+    <div id="2l" data-screen-label="12 Réglages sombre" style="display:flex;flex-direction:column;gap:14px;">
+      <div style="display:flex;align-items:center;gap:12px;"><span style="padding:4px 10px;border-radius:8px;background:#141824;color:#fff;font-size:13px;font-weight:700;">2l</span><span style="font-size:20px;font-weight:600;">Thème sombre · Paramètres</span><span style="font-size:14px;color:#4a5163;">Même structure que <a href="#2e">2e</a>, thème Sombre sélectionné.</span></div>
+      <div style="position:relative;width:1280px;height:800px;color:#f1f3f8;border-radius:14px;overflow:hidden;box-shadow:0 20px 50px rgba(20,30,60,0.18);">
+        <dc-import name="Wallpaper" dark="{{ true }}" hint-size="1280px,800px" style="position:absolute;inset:0;"></dc-import>
+        <div style="position:absolute;left:150px;top:36px;width:980px;height:650px;display:grid;grid-template-columns:230px 1fr;border-radius:26px;overflow:hidden;background:rgba(22,26,38,0.42);backdrop-filter:blur(34px) saturate(1.9);-webkit-backdrop-filter:blur(34px) saturate(1.9);box-shadow:inset 0 1px 0 rgba(255,255,255,0.22),inset 0 0 0 1px rgba(255,255,255,0.1),0 30px 80px rgba(0,0,0,0.3);">
+          <div style="position:relative;display:flex;flex-direction:column;gap:2px;padding:16px 12px;">
+            <div style="position:absolute;inset:0;background:linear-gradient(170deg,rgba(255,255,255,0.1) 0%,rgba(255,255,255,0) 30%);pointer-events:none;"></div>
+            <div style="position:relative;display:flex;align-items:center;gap:8px;padding:0 6px 12px;"><img src="icons/settings.svg" alt="" style="width:22px;height:22px;"><span style="font-size:14px;font-weight:700;">Réglages</span></div>
+            <div style="position:relative;display:flex;align-items:center;gap:6px;height:36px;border-radius:18px;background:rgba(255,255,255,0.08);box-shadow:inset 0 1px 0 rgba(255,255,255,0.15);padding:0 12px 0 6px;font-size:13px;color:#aab2c3;margin-bottom:10px;"><img src="icons/search.svg" alt="" style="width:22px;height:22px;">Rechercher</div>
+            <div style="position:relative;display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:12px;font-size:14px;"><img src="icons/computer.svg" alt="" style="width:20px;height:20px;">Système</div>
+            <div style="position:relative;display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:12px;font-size:14px;font-weight:600;background:rgba(255,255,255,0.1);box-shadow:inset 0 1px 0 rgba(255,255,255,0.15),0 2px 8px rgba(0,0,0,0.08);"><img src="icons/program.svg" alt="" style="width:20px;height:20px;">Apparence</div>
+            <div style="position:relative;display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:12px;font-size:14px;"><img src="icons/drive.svg" alt="" style="width:20px;height:20px;">Stockage</div>
+            <div style="position:relative;display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:12px;font-size:14px;"><img src="icons/user.svg" alt="" style="width:20px;height:20px;">Utilisateurs</div>
+            <div style="position:relative;flex:1;"></div>
+            <div style="position:relative;display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:12px;font-size:14px;color:#c9d0dc;"><img src="icons/help.svg" alt="" style="width:20px;height:20px;">À propos de VelumOS</div>
+          </div>
+          <div style="position:relative;display:flex;flex-direction:column;gap:22px;padding:18px 32px;background:rgba(16,19,28,0.6);box-shadow:inset 1px 0 0 rgba(255,255,255,0.1);">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+              <div style="display:flex;flex-direction:column;gap:4px;padding-top:6px;"><span style="font-size:28px;font-weight:700;letter-spacing:-0.01em;">Apparence</span><span style="font-size:14px;color:#aab2c3;">Thème, matériau et couleur d'accent.</span></div>
+              <div style="display:flex;gap:2px;padding:3px;border-radius:12px;background:rgba(255,255,255,0.08);box-shadow:inset 0 1px 0 rgba(255,255,255,0.15),inset 0 0 0 1px rgba(255,255,255,0.06);">
+                <div style="width:28px;height:24px;border-radius:9px;display:flex;align-items:center;justify-content:center;"><div style="width:10px;height:2px;border-radius:1px;background:#aab2c3;"></div></div>
+                <div style="width:28px;height:24px;border-radius:9px;display:flex;align-items:center;justify-content:center;"><div style="width:9px;height:9px;border-radius:3px;border:1.5px solid #aab2c3;box-sizing:border-box;"></div></div>
+                <div style="width:28px;height:24px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;line-height:1;">×</div>
+              </div>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;">
+              <div style="display:flex;flex-direction:column;gap:8px;padding:8px;border-radius:18px;box-shadow:0 0 0 1px rgba(255,255,255,0.12);">
+                <div style="position:relative;height:96px;border-radius:12px;overflow:hidden;background:radial-gradient(60% 80% at 15% 20%,#8fd6d2 0%,rgba(143,214,210,0) 62%),radial-gradient(55% 70% at 88% 12%,#bcaaf2 0%,rgba(188,170,242,0) 62%),radial-gradient(70% 70% at 72% 95%,#f6c890 0%,rgba(246,200,144,0) 62%),#e3e6f0;"><div style="position:absolute;left:14px;top:14px;width:96px;height:56px;border-radius:10px;background:rgba(255,255,255,0.1);box-shadow:inset 0 1px 0 rgba(255,255,255,0.15);"></div><div style="position:absolute;left:8px;right:8px;bottom:6px;height:10px;border-radius:5px;background:rgba(255,255,255,0.1);"></div></div>
+                <div style="display:flex;align-items:center;gap:8px;padding:0 4px;font-size:13.5px;"><div style="width:14px;height:14px;border-radius:50%;border:1.5px solid #5d667a;box-sizing:border-box;"></div>Clair</div>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:8px;padding:8px;border-radius:18px;box-shadow:0 0 0 2px #2bb3b1;">
+                <div style="position:relative;height:96px;border-radius:12px;overflow:hidden;background:radial-gradient(60% 80% at 15% 20%,#1f6f72 0%,rgba(31,111,114,0) 62%),radial-gradient(55% 70% at 88% 12%,#4b3c8f 0%,rgba(75,60,143,0) 62%),radial-gradient(70% 70% at 72% 95%,#8a5a2a 0%,rgba(138,90,42,0) 62%),#0d1120;"><div style="position:absolute;left:14px;top:14px;width:96px;height:56px;border-radius:10px;background:rgba(30,34,48,0.7);box-shadow:inset 0 1px 0 rgba(255,255,255,0.2);"></div><div style="position:absolute;left:8px;right:8px;bottom:6px;height:10px;border-radius:5px;background:rgba(30,34,48,0.7);"></div></div>
+                <div style="display:flex;align-items:center;gap:8px;padding:0 4px;font-size:13.5px;"><div style="width:14px;height:14px;border-radius:50%;border:4px solid #2bb3b1;box-sizing:border-box;"></div>Sombre</div>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:8px;padding:8px;border-radius:18px;box-shadow:0 0 0 1px rgba(255,255,255,0.12);">
+                <div style="position:relative;height:96px;border-radius:12px;overflow:hidden;background:linear-gradient(90deg,#e3e6f0 50%,#0d1120 50%);"><div style="position:absolute;inset:0;background:radial-gradient(60% 80% at 25% 30%,rgba(143,214,210,0.9) 0%,rgba(143,214,210,0) 60%),radial-gradient(50% 70% at 80% 70%,rgba(75,60,143,0.9) 0%,rgba(75,60,143,0) 60%);"></div></div>
+                <div style="display:flex;align-items:center;gap:8px;padding:0 4px;font-size:13.5px;"><div style="width:14px;height:14px;border-radius:50%;border:1.5px solid #5d667a;box-sizing:border-box;"></div>Selon l'heure</div>
+              </div>
+            </div>
+            <div style="display:flex;flex-direction:column;border-radius:18px;background:rgba(255,255,255,0.1);box-shadow:inset 0 1px 0 rgba(255,255,255,0.15),0 0 0 1px rgba(255,255,255,0.07);">
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:24px;padding:14px 18px;">
+                <div style="display:flex;flex-direction:column;gap:2px;"><span style="font-size:14px;font-weight:600;">Intensité du verre</span><span style="font-size:12.5px;color:#aab2c3;">Flou et réfraction derrière les fenêtres</span></div>
+                <div style="width:220px;height:6px;border-radius:3px;background:rgba(255,255,255,0.1);position:relative;"><div style="width:70%;height:6px;border-radius:3px;background:#2bb3b1;"></div><div style="position:absolute;left:70%;top:-8px;width:22px;height:22px;margin-left:-11px;border-radius:50%;background:rgba(255,255,255,0.2);box-shadow:inset 0 1px 0 rgba(255,255,255,0.15),0 2px 6px rgba(20,24,36,0.25);"></div></div>
+              </div>
+              <div style="height:1px;background:rgba(255,255,255,0.07);margin:0 18px;"></div>
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 18px;">
+                <div style="display:flex;flex-direction:column;gap:2px;"><span style="font-size:14px;font-weight:600;">Teinte du verre</span><span style="font-size:12.5px;color:#aab2c3;">Couleur prise au fond d'écran ou neutre</span></div>
+                <div style="display:flex;gap:2px;padding:3px;border-radius:14px;background:rgba(255,255,255,0.07);font-size:13px;">
+                  <div style="height:30px;padding:0 14px;border-radius:11px;display:flex;align-items:center;">Neutre</div>
+                  <div style="height:30px;padding:0 14px;border-radius:11px;display:flex;align-items:center;background:rgba(255,255,255,0.16);box-shadow:inset 0 1px 0 rgba(255,255,255,0.15);font-weight:600;">Teintée</div>
+                  <div style="height:30px;padding:0 14px;border-radius:11px;display:flex;align-items:center;">Givrée</div>
+                </div>
+              </div>
+              <div style="height:1px;background:rgba(255,255,255,0.07);margin:0 18px;"></div>
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 18px;">
+                <div style="display:flex;flex-direction:column;gap:2px;"><span style="font-size:14px;font-weight:600;">Couleur d'accent</span><span style="font-size:12.5px;color:#aab2c3;">Sélection, boutons principaux, indicateurs</span></div>
+                <div style="display:flex;gap:8px;">
+                  <div style="width:26px;height:26px;border-radius:50%;background:#2bb3b1;box-shadow:0 0 0 2px #1a1f2a,0 0 0 4px #2bb3b1;"></div>
+                  <div style="width:26px;height:26px;border-radius:50%;background:#3d6fd9;"></div>
+                  <div style="width:26px;height:26px;border-radius:50%;background:#7a5ad6;"></div>
+                  <div style="width:26px;height:26px;border-radius:50%;background:#c4643a;"></div>
+                  <div style="width:26px;height:26px;border-radius:50%;background:#aab2c3;"></div>
+                </div>
+              </div>
+              <div style="height:1px;background:rgba(255,255,255,0.07);margin:0 18px;"></div>
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 18px;">
+                <div style="display:flex;flex-direction:column;gap:2px;"><span style="font-size:14px;font-weight:600;">Réduire la transparence</span><span style="font-size:12.5px;color:#aab2c3;">Surfaces opaques, recommandé sur machine modeste</span></div>
+                <div style="width:46px;height:28px;border-radius:14px;background:rgba(255,255,255,0.16);position:relative;"><div style="position:absolute;left:3px;top:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,0.2);"></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <dc-import name="Dock" dark="{{ true }}" apps="{{ dSettings }}" active="Réglages" hint-size="100%,80px" style="position:absolute;left:0;right:0;bottom:0;height:80px;"></dc-import>
+      </div>
+    </div>
+
+    <!-- 2m Thème sombre · Notifications -->
+    <div id="2m" data-screen-label="13 Notifications sombre" style="display:flex;flex-direction:column;gap:14px;">
+      <div style="display:flex;align-items:center;gap:12px;"><span style="padding:4px 10px;border-radius:8px;background:#141824;color:#fff;font-size:13px;font-weight:700;">2m</span><span style="font-size:20px;font-weight:600;">Thème sombre · Notifications</span><span style="font-size:14px;color:#4a5163;">Même structure que <a href="#2f">2f</a>.</span></div>
+      <div style="position:relative;width:1280px;height:800px;color:#f1f3f8;border-radius:14px;overflow:hidden;box-shadow:0 20px 50px rgba(20,30,60,0.18);">
+        <dc-import name="Wallpaper" dark="{{ true }}" hint-size="1280px,800px" style="position:absolute;inset:0;"></dc-import>
+        <div style="position:absolute;right:12px;top:12px;bottom:80px;width:380px;display:flex;flex-direction:column;gap:12px;">
+          <div style="position:relative;display:flex;flex-direction:column;gap:14px;padding:14px;border-radius:26px;background:rgba(22,26,38,0.5);backdrop-filter:blur(34px) saturate(1.9);-webkit-backdrop-filter:blur(34px) saturate(1.9);box-shadow:inset 0 1px 0 rgba(255,255,255,0.22),inset 0 0 0 1px rgba(255,255,255,0.12),0 20px 50px rgba(0,0,0,0.25);">
+            <div style="position:absolute;inset:0;border-radius:26px;background:linear-gradient(170deg,rgba(255,255,255,0.12) 0%,rgba(255,255,255,0) 35%);pointer-events:none;"></div>
+            <div style="position:relative;display:grid;grid-template-columns:repeat(2,1fr);gap:8px;">
+              <div style="display:flex;flex-direction:column;gap:2px;padding:12px 14px;border-radius:18px;background:linear-gradient(160deg,#2bb3b1,#0f7d83);color:#fff;box-shadow:inset 0 1px 0 rgba(255,255,255,0.12);"><span style="font-size:13.5px;font-weight:600;">Réseau</span><span style="font-size:12px;">virtio-net · connecté</span></div>
+              <div style="display:flex;flex-direction:column;gap:2px;padding:12px 14px;border-radius:18px;background:rgba(255,255,255,0.1);box-shadow:inset 0 1px 0 rgba(255,255,255,0.15);"><span style="font-size:13.5px;font-weight:600;">Ne pas déranger</span><span style="font-size:12px;color:#aab2c3;">Désactivé</span></div>
+              <div style="display:flex;flex-direction:column;gap:2px;padding:12px 14px;border-radius:18px;background:linear-gradient(160deg,#2bb3b1,#0f7d83);color:#fff;box-shadow:inset 0 1px 0 rgba(255,255,255,0.12);"><span style="font-size:13.5px;font-weight:600;">Thème sombre</span><span style="font-size:12px;">Activé</span></div>
+              <div style="display:flex;flex-direction:column;gap:2px;padding:12px 14px;border-radius:18px;background:linear-gradient(160deg,#2bb3b1,#0f7d83);color:#fff;box-shadow:inset 0 1px 0 rgba(255,255,255,0.12);"><span style="font-size:13.5px;font-weight:600;">Verre</span><span style="font-size:12px;">Teinté · 70 %</span></div>
+            </div>
+            <div style="position:relative;display:flex;align-items:center;gap:12px;padding:0 4px;"><span style="width:72px;font-size:12.5px;color:#c9d0dc;">Volume</span><div style="flex:1;height:6px;border-radius:3px;background:rgba(255,255,255,0.12);position:relative;"><div style="width:65%;height:6px;border-radius:3px;background:#2bb3b1;"></div><div style="position:absolute;left:65%;top:-7px;width:20px;height:20px;margin-left:-10px;border-radius:50%;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,0.25);"></div></div></div>
+            <div style="position:relative;display:flex;align-items:center;gap:12px;padding:0 4px 4px;"><span style="width:72px;font-size:12.5px;color:#c9d0dc;">Luminosité</span><div style="flex:1;height:6px;border-radius:3px;background:rgba(255,255,255,0.12);position:relative;"><div style="width:80%;height:6px;border-radius:3px;background:#2bb3b1;"></div><div style="position:absolute;left:80%;top:-7px;width:20px;height:20px;margin-left:-10px;border-radius:50%;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,0.25);"></div></div></div>
+          </div>
+          <div style="position:relative;flex:1;display:flex;flex-direction:column;gap:8px;padding:14px;border-radius:26px;background:rgba(22,26,38,0.5);backdrop-filter:blur(34px) saturate(1.9);-webkit-backdrop-filter:blur(34px) saturate(1.9);box-shadow:inset 0 1px 0 rgba(255,255,255,0.22),inset 0 0 0 1px rgba(255,255,255,0.12),0 20px 50px rgba(0,0,0,0.25);min-height:0;">
+            <div style="position:relative;display:flex;justify-content:space-between;align-items:center;padding:2px 6px 6px;"><span style="font-size:15px;font-weight:700;">Notifications</span><span style="font-size:13px;color:#4fd1cc;font-weight:600;">Tout effacer</span></div>
+            <div style="position:relative;display:flex;gap:12px;padding:12px;border-radius:18px;background:rgba(255,255,255,0.1);box-shadow:inset 0 1px 0 rgba(255,255,255,0.15);">
+              <img src="icons/drive.svg" alt="" style="width:34px;height:34px;flex:none;">
+              <div style="display:flex;flex-direction:column;gap:3px;flex:1;"><div style="display:flex;justify-content:space-between;"><span style="font-size:13.5px;font-weight:600;">Stockage</span><span style="font-size:12px;color:#aab2c3;">il y a 2 min</span></div><span style="font-size:13px;color:#c9d0dc;line-height:1.4;">Le disque (C:) est rempli à 62 %.</span></div>
+            </div>
+            <div style="position:relative;display:flex;gap:12px;padding:12px;border-radius:18px;background:rgba(255,255,255,0.1);box-shadow:inset 0 1px 0 rgba(255,255,255,0.15);">
+              <img src="icons/program.svg" alt="" style="width:34px;height:34px;flex:none;">
+              <div style="display:flex;flex-direction:column;gap:8px;flex:1;"><div style="display:flex;justify-content:space-between;"><span style="font-size:13.5px;font-weight:600;">Bonjour</span><span style="font-size:12px;color:#aab2c3;">il y a 14 s</span></div><span style="font-size:13px;color:#c9d0dc;line-height:1.4;">Session ouverte pour Utilisateur.</span><div style="display:flex;gap:6px;"><div style="height:30px;padding:0 14px;border-radius:15px;background:linear-gradient(160deg,#2bb3b1,#0f7d83);color:#fff;font-size:12.5px;font-weight:600;display:flex;align-items:center;">Ouvrir</div><div style="height:30px;padding:0 14px;border-radius:15px;background:rgba(255,255,255,0.07);font-size:12.5px;font-weight:600;display:flex;align-items:center;">Ignorer</div></div></div>
+            </div>
+            <div style="position:relative;display:flex;gap:12px;padding:12px;border-radius:18px;background:rgba(255,255,255,0.1);box-shadow:inset 0 1px 0 rgba(255,255,255,0.15);">
+              <img src="icons/computer.svg" alt="" style="width:34px;height:34px;flex:none;">
+              <div style="display:flex;flex-direction:column;gap:3px;flex:1;"><div style="display:flex;justify-content:space-between;"><span style="font-size:13.5px;font-weight:600;">Système</span><span style="font-size:12px;color:#aab2c3;">08:12</span></div><span style="font-size:13px;color:#c9d0dc;line-height:1.4;">Nouveau périphérique : souris PS/2.</span></div>
+            </div>
+          </div>
+        </div>
+        <dc-import name="Dock" dark="{{ true }}" apps="{{ dBonjour }}" active="" hint-size="100%,80px" style="position:absolute;left:0;right:0;bottom:0;height:80px;"></dc-import>
+      </div>
+    </div>
+
+    <!-- 2n Thème sombre · Terminal -->
+    <div id="2n" data-screen-label="14 Terminal sombre" style="display:flex;flex-direction:column;gap:14px;">
+      <div style="display:flex;align-items:center;gap:12px;"><span style="padding:4px 10px;border-radius:8px;background:#141824;color:#fff;font-size:13px;font-weight:700;">2n</span><span style="font-size:20px;font-weight:600;">Thème sombre · Terminal</span><span style="font-size:14px;color:#4a5163;">Même fenêtre que <a href="#2g">2g</a>, sur fond et barre sombres.</span></div>
+      <div style="position:relative;width:1280px;height:800px;color:#f1f3f8;border-radius:14px;overflow:hidden;box-shadow:0 20px 50px rgba(20,30,60,0.18);">
+        <dc-import name="Wallpaper" dark="{{ true }}" hint-size="1280px,800px" style="position:absolute;inset:0;"></dc-import>
+        <div style="position:absolute;left:200px;top:70px;width:880px;height:560px;display:flex;flex-direction:column;border-radius:24px;overflow:hidden;background:rgba(14,17,26,0.78);backdrop-filter:blur(30px) saturate(1.6);-webkit-backdrop-filter:blur(30px) saturate(1.6);box-shadow:inset 0 1px 0 rgba(255,255,255,0.22),inset 0 0 0 1px rgba(255,255,255,0.08),0 30px 80px rgba(10,10,40,0.45);">
+          <div style="position:absolute;inset:0;background:linear-gradient(170deg,rgba(255,255,255,0.1) 0%,rgba(255,255,255,0) 30%);pointer-events:none;"></div>
+          <div style="position:relative;height:50px;display:flex;align-items:center;gap:6px;padding:0 10px 0 12px;">
+            <div style="display:flex;align-items:center;gap:8px;height:32px;padding:0 14px 0 8px;border-radius:16px;background:rgba(255,255,255,0.12);box-shadow:inset 0 1px 0 rgba(255,255,255,0.15);color:#f1f3f8;font-size:13px;font-weight:600;"><img src="icons/run.svg" alt="" style="width:20px;height:20px;">shell</div>
+            <div style="display:flex;align-items:center;height:32px;padding:0 14px;border-radius:16px;color:#5d667a;font-size:13px;">C:\Documents</div>
+            <div style="width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#5d667a;font-size:18px;">+</div>
+            <div style="flex:1;"></div>
+            <div style="display:flex;gap:2px;padding:3px;border-radius:12px;background:rgba(255,255,255,0.08);box-shadow:inset 0 1px 0 rgba(255,255,255,0.12);color:#f1f3f8;">
+              <div style="width:28px;height:24px;border-radius:9px;display:flex;align-items:center;justify-content:center;"><div style="width:10px;height:2px;border-radius:1px;background:#5d667a;"></div></div>
+              <div style="width:28px;height:24px;border-radius:9px;display:flex;align-items:center;justify-content:center;"><div style="width:9px;height:9px;border-radius:3px;border:1.5px solid #5d667a;box-sizing:border-box;"></div></div>
+              <div style="width:28px;height:24px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;line-height:1;">×</div>
+            </div>
+          </div>
+          <div style="position:relative;flex:1;display:flex;flex-direction:column;gap:4px;padding:14px 24px;font-family:'JetBrains Mono',monospace;font-size:14px;line-height:1.6;color:#d6dce7;">
+            <span style="color:#5d667a;">VelumOS · shell</span>
+            <span style="height:8px;"></span>
+            <span><span style="color:#4fd1cc;">utilisateur</span><span style="color:#5d667a;">@velum</span> <span style="color:#a99cf0;">C:\Documents</span> <span style="color:#5d667a;">›</span> ls</span>
+            <span><span style="color:#f3cd68;">Projets/  Images/  Musique/</span>  notes-reunion.txt  capture.png  <span style="color:#7de673;">demarrage.sh</span></span>
+            <span style="height:8px;"></span>
+            <span><span style="color:#4fd1cc;">utilisateur</span><span style="color:#5d667a;">@velum</span> <span style="color:#a99cf0;">C:\Documents</span> <span style="color:#5d667a;">›</span> uptime</span>
+            <span>en marche depuis 14 s · 3 processus · mémoire 41 / 128 Mo</span>
+            <span style="height:8px;"></span>
+            <span><span style="color:#4fd1cc;">utilisateur</span><span style="color:#5d667a;">@velum</span> <span style="color:#a99cf0;">C:\Documents</span> <span style="color:#5d667a;">›</span> <span style="display:inline-block;width:9px;height:17px;background:#4fd1cc;vertical-align:-3px;"></span></span>
+          </div>
+          <div style="position:relative;height:32px;display:flex;align-items:center;justify-content:space-between;padding:0 18px;border-top:1px solid rgba(255,255,255,0.06);font-family:'JetBrains Mono',monospace;font-size:12px;color:#8a93a8;"><span>UTF-8 · 100×28</span><span>Ctrl+Maj+T nouvel onglet</span></div>
+        </div>
+        <dc-import name="Dock" dark="{{ true }}" apps="{{ dConsole }}" active="Console" hint-size="100%,80px" style="position:absolute;left:0;right:0;bottom:0;height:80px;"></dc-import>
+      </div>
+    </div>
+  </div>
+</section>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      dBonjour: ['Bonjour'],
+      dFiles: ['Fichiers', 'Bonjour'],
+      dSettings: ['Réglages', 'Bonjour'],
+      dConsole: ['Console', 'Bonjour'],
+    };
+  }
+}
+</script>
+</body>
+</html>
