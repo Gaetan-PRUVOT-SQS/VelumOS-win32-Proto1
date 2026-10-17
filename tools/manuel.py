@@ -13,10 +13,12 @@ python3 tools/manuel.py serie NOM [LIGNES]
 python3 tools/manuel.py arreter NOM
 
 Tout est écrit dans build/manuel/NOM/ : journal série, captures, disque.
+Le noyau et l'initrd viennent de $VELUM_BUILD/debug (build/main par défaut).
 """
 
 import argparse
 import hashlib
+import os
 import subprocess
 import sys
 import time
@@ -28,8 +30,9 @@ from vtest import VM, VMError  # noqa: E402
 
 RACINE = Path(__file__).resolve().parent.parent
 SORTIE = RACINE / "build" / "manuel"
-NOYAU = RACINE / "build" / "main" / "debug" / "kernel.elf"
-INITRD = RACINE / "build" / "main" / "debug" / "root"
+DOSSIER_BUILD = RACINE / os.environ.get("VELUM_BUILD", "build/main") / "debug"
+NOYAU = DOSSIER_BUILD / "kernel.elf"
+INITRD = DOSSIER_BUILD / "root"
 LARGEUR = 1024
 PAS = 100
 PAUSE = 0.12
@@ -170,7 +173,7 @@ def cmd_capture(args):
     image = machine.capture(f"{args.fichier}.ppm")
     cible = SORTIE / args.nom / f"{args.fichier}.png"
     image.enregistrer_png(cible)
-    (SORTIE / args.nom / f"{args.fichier}.ppm").unlink()
+    (SORTIE / args.nom / f"{args.nom}.{args.fichier}.ppm").unlink(missing_ok=True)
     if args.zone:
         from PIL import Image
 
@@ -186,7 +189,7 @@ def cmd_rafale(args):
     for i in range(args.nombre):
         image = machine.capture(f"{args.fichier}-{i:02d}.ppm")
         image.enregistrer_png(SORTIE / args.nom / f"{args.fichier}-{i:02d}.png")
-        (SORTIE / args.nom / f"{args.fichier}-{i:02d}.ppm").unlink()
+        (SORTIE / args.nom / f"{args.nom}.{args.fichier}-{i:02d}.ppm").unlink(missing_ok=True)
 
 
 def cmd_planche(args):
