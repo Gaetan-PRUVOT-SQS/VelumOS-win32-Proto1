@@ -5,7 +5,7 @@
 # include "velum/abi/abi_syscall.h"
 # include "velum/abi/abi_types.h"
 
-# define INIT_SERVICES 2
+# define INIT_SERVICES 3
 # define RESTART_MAX 5
 # define RESTART_WINDOW_NS 30000000000ull
 # define INIT_IDLE_NS 1000000000ull

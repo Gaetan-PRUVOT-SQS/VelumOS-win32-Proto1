@@ -6,8 +6,9 @@
 # include "velum/luna.h"
 
 # define SH_ICON_TOP 0
+# define SH_ICON_BIAS_X 1
 # define SH_LABEL_GAP 7
-# define SH_LABEL_FONT FONT_INS_SEMI_12
+# define SH_LABEL_FONT FONT_INS_12
 # define SH_LABEL_TEXT_TOP 1
 # define SH_LABEL_PAD_X 8
 # define SH_LABEL_PAD_Y 2

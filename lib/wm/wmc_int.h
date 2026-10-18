@@ -47,6 +47,7 @@ void		wmc_stash_push(const t_wmcmsg *m);
 bool		wmc_stash_pop(t_wmcmsg *m);
 int			wmc_slot(uint32_t id);
 void		wmc_on_message(t_wmcmsg *m);
+void		wmc_theme_apply(const t_wmcmsg *m);
 int			wmc_attach(t_wmwin *w, const t_wmcmsg *m);
 void		wmc_detach(t_wmwin *w);
 void		wmc_title_copy(char *dst, const char *src);

@@ -17,6 +17,8 @@
 # define APKRUN_BUDGET 200000000ull
 # define APKRUN_MSG_MAX 256
 # define APKRUN_LINE_MAX 640
+# define APKRUN_SYS_ROOT "/system/apps"
+# define APKRUN_DATA_ROOT "/data/apps"
 # define APKRUN_TITLE "Application"
 # define T_HEAD "Cette application ne peut pas continuer."
 # define T_FILE "Le fichier de l'application est illisible."
@@ -24,6 +26,8 @@
 # define T_MEM "Mémoire insuffisante pour lancer l'application."
 # define T_DEX "Le code de l'application est invalide."
 # define T_NOTSUP "L'application emploie une fonction non prise en charge."
+# define T_SIGNER "Le signataire ne correspond plus à celui du registre des applications."
+# define T_REGISTRY "Le registre des applications est illisible."
 # define T_BUDGET "L'application ne répond pas et a été arrêtée."
 # define T_VM "La machine de l'application s'est arrêtée sur une erreur."
 

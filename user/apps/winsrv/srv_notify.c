@@ -1,4 +1,5 @@
 #include "velum/libk.h"
+#include "velum/luna.h"
 #include "ws_srv.h"
 
 bool	ws_listed(const t_wwin *w)
@@ -36,4 +37,54 @@ void	ws_notify_all(t_wsrv *s)
 		ws_notify(s, s->t.z[i], WMS_WIN_ADD);
 		i++;
 	}
+}
+
+static uint32_t	g_theme_dark;
+static uint32_t	g_theme_reduced;
+
+static void	theme_fill(t_wmtheme *m)
+{
+	memset(m, 0, sizeof(*m));
+	ws_hdr(&m->h, WMS_THEME, sizeof(*m), 0);
+	m->dark = g_theme_dark;
+	m->reduced = g_theme_reduced;
+}
+
+void	ws_theme_send(t_wsrv *s, int ci)
+{
+	t_wmtheme	m;
+
+	if (g_theme_dark == 0 && g_theme_reduced == 0)
+		return ;
+	theme_fill(&m);
+	ws_post(s, ci, &m, 0);
+}
+
+void	ws_theme_set(t_wsrv *s, uint32_t dark, uint32_t reduced)
+{
+	t_wmtheme	m;
+	int			ci;
+
+	if (dark == g_theme_dark && reduced == g_theme_reduced)
+		return ;
+	g_theme_dark = dark;
+	g_theme_reduced = reduced;
+	luna_theme_set(dark ? LUNA_THEME_DARK : LUNA_THEME_LIGHT);
+	luna_transparency_set(reduced != 0);
+	theme_fill(&m);
+	ci = 0;
+	while (ci < WS_CLIENT_MAX)
+	{
+		if ((s->c[ci].flags & (WCF_USED | WCF_HELLO | WCF_DEAD))
+			== (WCF_USED | WCF_HELLO))
+			ws_post(s, ci, &m, 0);
+		ci++;
+	}
+	ws_mark(s, s->t.screen);
+}
+
+void	ws_theme_reset(void)
+{
+	g_theme_dark = 0;
+	g_theme_reduced = 0;
 }

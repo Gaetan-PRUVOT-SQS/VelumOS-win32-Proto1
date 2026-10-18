@@ -53,6 +53,8 @@ typedef struct s_thread
 	t_waitq				joiners;
 }	t_thread;
 
+struct s_cpu;
+
 typedef void	(*t_threadfn)(void *arg);
 
 typedef struct s_threadreq
@@ -85,6 +87,7 @@ void			sched_tick(uint64_t now_ns);
 void			sched_idle(void);
 void			sched_irq_exit(void);
 void			sched_set_quantum_ns(uint64_t ns);
+int				sched_cpu_online(struct s_cpu *cpu);
 void			thread_cancel(t_thread *t);
 bool			thread_cancel_pending(void);
 

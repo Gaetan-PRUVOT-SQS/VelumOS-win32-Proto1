@@ -35,5 +35,7 @@ extern int			copy_from_user(void *dst, t_uptr src,
 extern int			copy_to_user(t_uptr dst, const void *src,
 						size_t n) __attribute__((weak));
 extern bool			user_range_ok(t_uptr addr, size_t n) __attribute__((weak));
+extern bool			user_range_wok(t_uptr addr,
+						size_t n) __attribute__((weak));
 
 #endif

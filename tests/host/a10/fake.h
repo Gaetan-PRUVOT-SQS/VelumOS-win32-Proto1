@@ -32,6 +32,7 @@ typedef struct s_fakeobj
 {
 	t_object	obj;
 	int			signals;
+	int			signals_locked;
 }	t_fakeobj;
 
 typedef struct s_fobj
@@ -99,6 +100,7 @@ void		th_relax(void);
 void		ftime_reset(void);
 void		fobj_reset(void);
 int			fobj_signals(const t_object *o);
+int			fobj_signals_locked(const t_object *o);
 void		fproc_set(uint32_t flags);
 void		fproc_clear(void);
 void		fuser_reset(void);

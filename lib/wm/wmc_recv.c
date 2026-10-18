@@ -12,6 +12,8 @@ static uint32_t	expected(uint32_t type)
 
 	if (type == WMS_ERROR)
 		return (sizeof(t_wmhdr));
+	if (type == WMS_THEME)
+		return (sizeof(t_wmtheme));
 	if (type < WMS_HELLO_OK || type > WMS_WIN_UPD)
 		return (0);
 	return (sizes[type - WMS_HELLO_OK]);

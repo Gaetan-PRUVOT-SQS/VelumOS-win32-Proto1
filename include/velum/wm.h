@@ -27,6 +27,7 @@
 # define WMC_SUBSCRIBE 0x000b
 # define WMC_SET_ICON 0x000c
 # define WMC_CAPTURE 0x000d
+# define WMC_SET_THEME 0x000e
 
 # define WMS_HELLO_OK 0x1001
 # define WMS_CREATED 0x1002
@@ -40,6 +41,7 @@
 # define WMS_WIN_ADD 0x100a
 # define WMS_WIN_DEL 0x100b
 # define WMS_WIN_UPD 0x100c
+# define WMS_THEME 0x100d
 # define WMS_ERROR 0x10ff
 
 # define WSTATE_NORMAL 0
@@ -128,6 +130,14 @@ typedef struct s_wminfo
 	char		title[WM_TITLE_MAX];
 }	t_wminfo;
 
+typedef struct s_wmtheme
+{
+	t_wmhdr		h;
+	uint32_t	dark;
+	uint32_t	reduced;
+	uint32_t	reserved;
+}	t_wmtheme;
+
 typedef struct s_wmwin
 {
 	uint32_t	id;
@@ -174,6 +184,7 @@ typedef struct s_wmtitle
 	char		title[WM_TITLE_MAX];
 }	t_wmtitle;
 
+int			wmc_set_theme(const t_wmwin *w, uint32_t dark, uint32_t reduced);
 int			wmc_destroy(t_wmwin *w);
 int			wmc_set_cursor(t_wmwin *w, uint32_t cursor);
 int			wmc_set_icon(t_wmwin *w, uint32_t icon);

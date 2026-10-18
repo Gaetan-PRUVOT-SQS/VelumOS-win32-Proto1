@@ -24,6 +24,7 @@ extern int	pci_boot_init(void) __attribute__((weak));
 extern int	input_boot_init(void) __attribute__((weak));
 extern int	block_boot_init(void) __attribute__((weak));
 extern int	vfs_boot_init(void) __attribute__((weak));
+extern int	net_boot_init(void) __attribute__((weak));
 extern int	cpu_selftest(void) __attribute__((weak));
 extern int	pmm_selftest(void) __attribute__((weak));
 extern int	vmm_selftest(void) __attribute__((weak));

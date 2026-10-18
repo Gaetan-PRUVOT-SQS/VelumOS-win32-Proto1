@@ -27,7 +27,7 @@ void	ws_dispatch(t_wsrv *s, int ci, t_wsrx *rx)
 	static const t_wsreq	req[] = {NULL, ws_req_hello, ws_req_create,
 		ws_req_destroy, ws_req_title, ws_req_rect, ws_req_state,
 		ws_req_present, ws_req_cursor, ws_req_activate, ws_req_workarea,
-		ws_req_subscribe, ws_req_icon, ws_req_capture};
+		ws_req_subscribe, ws_req_icon, ws_req_capture, ws_req_theme};
 	t_wmhdr					h;
 	int						r;
 

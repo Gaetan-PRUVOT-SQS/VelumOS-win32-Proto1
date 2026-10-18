@@ -64,6 +64,6 @@ void	sh_menu_paint(t_shell *sh)
 	l.ntiles = sh->sml.ntiles;
 	l.hot = sh->sm.hot;
 	l.focus = sh->sm.focus;
-	luna_launcher(&sh->menu.surface, &l, sh->sml.panel);
+	luna_launcher_view(&sh->menu.surface, &l, &sh->lmodel, sh->sml.panel);
 	wmc_present(&sh->menu, NULL, 0);
 }

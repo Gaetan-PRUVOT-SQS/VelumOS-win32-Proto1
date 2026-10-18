@@ -12,8 +12,8 @@ int32_t	lp_launch_state(const t_launcher *l, int32_t id)
 	return (st);
 }
 
-static void	paint_tiles(t_surface *s, const t_launcher *l,
-				const t_launcherlayout *lay)
+void	lp_launch_tiles(t_surface *s, const t_launcher *l,
+			const t_launcherlayout *lay)
 {
 	int32_t	i;
 
@@ -40,6 +40,6 @@ void	luna_launcher(t_surface *s, const t_launcher *l, t_rect panel)
 	luna_glass(s, panel, LUNA_GLASS_LAUNCHER);
 	lp_launch_search(s, &lay);
 	lp_launch_title(s, &lay);
-	paint_tiles(s, l, &lay);
+	lp_launch_tiles(s, l, &lay);
 	lp_launch_foot(s, l, &lay);
 }

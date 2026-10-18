@@ -5,8 +5,9 @@
 #include "velum/libk.h"
 #include "velum/timer.h"
 
-static void	cpusched_init(t_cpusched *cs, t_cpu *cpu)
+void	sched_cpusched_init(t_cpusched *cs, t_cpu *cpu)
 {
+	cs->id = cpu->id;
 	spin_init(&cs->lock, "runq");
 	runq_init(&cs->rq);
 	cs->cpu = cpu;
@@ -52,9 +53,11 @@ int	sched_boot_init(void)
 
 	cs = &g_sched.bsp;
 	cpu = cpu_self();
-	cpusched_init(cs, cpu);
+	sched_cpusched_init(cs, cpu);
 	boot_thread_init(&g_sched.boot);
 	cpu->sched = cs;
+	g_sched.cpus[cs->id] = cs;
+	g_sched.span = cs->id + 1;
 	cpu->current = &g_sched.boot.t;
 	cpu->preempt = 0;
 	g_sched.next_tid = 1;
@@ -63,10 +66,14 @@ int	sched_boot_init(void)
 	cs->reaper = boot_spawn("reaper", sched_reaper_main, PRIO_HIGH, cs);
 	if (!cs->idle || !cs->reaper)
 		return (E_NOMEM);
-	cs->idle->kflags |= KT_IDLE;
+	cs->idle->kflags |= KT_IDLE | KT_PINNED;
+	cs->reaper->kflags |= KT_PINNED;
+	cs->idle->home = cs->id;
+	cs->reaper->home = cs->id;
 	cs->idle->t.state = TS_READY;
 	sched_unpark(cs->reaper, false);
 	sched_syscalls_register();
+	sched_smp_setup();
 	klog_info("sched: prêt, quantum %llu us, fils inactif %u et faucheur %u",
 		cs->quantum_ns / 1000, cs->idle->t.tid, cs->reaper->t.tid);
 	irq_enable();

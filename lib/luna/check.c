@@ -4,7 +4,7 @@
 static const t_lop	g_tick[] = {{LOP_LINE, 1, {7, 15, 11, 20, 5}, LC_WHITE,
 	LC_WHITE}, {LOP_LINE, 1, {11, 20, 20, 7, 5}, LC_WHITE, LC_WHITE}};
 
-static void	choice_colors(const t_lchoice *c, t_lrfill *f, t_color *ring)
+void	lp_choice_colors(const t_lchoice *c, t_lrfill *f, t_color *ring)
 {
 	t_cpal	pal;
 
@@ -34,7 +34,7 @@ void	lp_choice(t_surface *s, const t_lchoice *c)
 	t_lrfill	edge;
 	t_color		ring;
 
-	choice_colors(c, &f, &ring);
+	lp_choice_colors(c, &f, &ring);
 	edge = lp_rmake(c->r, c->rad, ring, ring);
 	f.r = lp_inset(edge.r, 1);
 	f.rad = lp_max(edge.rad - 1, 0);
@@ -66,8 +66,6 @@ void	luna_checkbox(t_surface *s, t_point p, t_lunastate st, bool on)
 void	luna_radio(t_surface *s, t_point p, t_lunastate st, bool on)
 {
 	t_lchoice	c;
-	t_lrfill	dot;
-	t_color		ink;
 
 	if (!lp_ok(s) || !lp_pt_ok(p))
 		return ;
@@ -76,12 +74,5 @@ void	luna_radio(t_surface *s, t_point p, t_lunastate st, bool on)
 	c.st = st;
 	c.on = on;
 	c.solid = false;
-	lp_choice(s, &c);
-	if (!on)
-		return ;
-	ink = lp_pal()->accent;
-	if (st == LS_DISABLED)
-		ink = lp_pal()->dim;
-	dot = lp_rmake(lp_inset(lp_clean(c.r), 4), 2, ink, ink);
-	lp_rfill(s, &dot);
+	lp_radio(s, &c);
 }

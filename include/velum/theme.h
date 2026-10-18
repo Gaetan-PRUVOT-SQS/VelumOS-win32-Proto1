@@ -68,6 +68,8 @@
 # define VT_OPAQUE_CONTENT 0xfffbfbfc
 # define VT_OPAQUE_PANEL_D 0xff1b2030
 # define VT_OPAQUE_CONTENT_D 0xff141824
+# define VT_RADIO_BORDER 0xff8a93a8
+# define VT_RADIO_BORDER_D 0xff5d667a
 
 # define VT_R_WINDOW 24
 # define VT_R_WINDOW_LG 26

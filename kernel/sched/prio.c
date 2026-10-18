@@ -32,10 +32,10 @@ static void	prio_apply(t_kthread *kt)
 		kt->t.prio = policy_prio(kt);
 		return ;
 	}
-	cs = sched_cpu();
-	flags = spin_lock_irqsave(&cs->lock);
+	cs = sched_lock_home(kt, &flags);
 	sched_reprio_locked(cs, kt);
 	spin_unlock_irqrestore(&cs->lock, flags);
+	sched_kick(cs);
 }
 
 void	thread_set_prio(t_thread *t, int prio)

@@ -55,5 +55,6 @@ int	syscall_entry_c(t_regs *regs)
 	path = syscall_prepare_return(regs);
 	if (path == KILL_PATH)
 		proc_exit_current(-1);
+	cpu_spec_user_return();
 	return (path);
 }

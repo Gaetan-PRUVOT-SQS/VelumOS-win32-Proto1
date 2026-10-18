@@ -16,5 +16,6 @@ void	lk_begin(t_lt *t, t_color back);
 double	lk_spied(const t_surface *s);
 double	lk_title(t_lt *t, uint32_t style, bool active);
 void	lk_check(const char *what, double ratio);
+void	lk_check_min(const char *what, double ratio, double min);
 
 #endif

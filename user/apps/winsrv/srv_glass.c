@@ -1,8 +1,19 @@
+#include "velum/luna_launcher.h"
 #include "ws_srv.h"
 
 static uint64_t	glass_bytes(int32_t width)
 {
-	return ((uint64_t)luna_glass_need(rect_make(0, 0, width, 80)) * 4);
+	uint64_t	bar;
+	uint64_t	panel;
+
+	bar = (uint64_t)luna_glass_need(rect_make(0, 0, width, 80)) * 4;
+	if (width < LUNA_LAUNCHER_WIDTH)
+		return (bar);
+	panel = (uint64_t)luna_glass_need(rect_make(0, 0, LUNA_LAUNCHER_WIDTH,
+				LUNA_LAUNCHER_HEIGHT)) * 4;
+	if (panel > bar)
+		return (panel);
+	return (bar);
 }
 
 void	ws_glass_open(t_wsrv *s)

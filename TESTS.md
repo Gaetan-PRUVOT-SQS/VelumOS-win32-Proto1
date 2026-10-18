@@ -280,8 +280,9 @@ casse le hit-test (risque de clic perdu), un flou mal borné écrit hors de la s
 | Texte illisible sur fond de verre | contraste WCAG calculé sur fonds variables, clair et sombre | `test_contrast*.c`, `test_colors_ext.c` |
 | Police générée différente d'une exécution à l'autre | génération reproductible, empreintes, budget de taille | `test_genfont.py`, `test_font_budget.c` |
 
-Le relevé du 10 octobre (165 suites, 0 échec pour a17 à a20) était faux : un lot s'arrête au premier test rouge
-(`|| exit 1` dans `mk/host.mk`) et les échecs suivants n'étaient pas vus. Relevé du 16 octobre, tous les binaires lancés
+Le relevé du 10 octobre (165 suites, 0 échec pour a17 à a20) était faux : un lot s'arrêtait au premier test rouge
+(`|| exit 1` dans `mk/host.mk`) et les échecs suivants n'étaient pas vus. Depuis le 18 octobre 2026, le lot lance
+tous ses binaires avant de rendre son code. Relevé du 16 octobre, tous les binaires lancés
 un à un : 773 binaires de test hôte, 767 passent, 6 échouent (`a17/ctrl_maquette`, `a17/theme_contrast`,
 `a17/frame_robust`, `a17/glass_perf`, `a20/render-deskicon`, `a20/render-desklabel`). `make hdrcheck` et `make scan`
 rendent 0 alerte le 17 octobre. Les 24 scénarios QEMU `a01_fault_*` passent en BIOS et en UEFI ; le démarrage sous KVM

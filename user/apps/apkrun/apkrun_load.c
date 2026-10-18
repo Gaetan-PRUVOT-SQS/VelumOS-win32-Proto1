@@ -3,12 +3,54 @@
 #include "velum/libk.h"
 #include "../common/apkglue.h"
 #include "apkrun.h"
+#include "apkrun_trust.h"
 
 static const char	*why(int reason)
 {
 	if (reason <= APKR_OK || reason >= APKR_COUNT)
 		return (T_APK);
 	return (apk_reason(reason));
+}
+
+static int	check_signer(t_apkrun *app, const t_apksig *sig)
+{
+	t_pm	pm;
+	int		r;
+
+	memset(&pm, 0, sizeof(pm));
+	pm_defaults(&pm);
+	pm.sys_root = APKRUN_SYS_ROOT;
+	pm.data_root = APKRUN_DATA_ROOT;
+	pm.fs = apkglue_fs();
+	pm.inspect = apkglue_inspect;
+	r = apkrun_signer_check(&pm, app->man.package, sig->cert_sha256);
+	if (r == E_ACCES)
+		return (apkrun_refuse(app, T_SIGNER));
+	if (r < 0)
+		return (apkrun_refuse(app, T_REGISTRY));
+	return (0);
+}
+
+static int	path_ok(const char *path)
+{
+	size_t	n;
+	size_t	i;
+
+	if (!path)
+		return (0);
+	n = 0;
+	while (n < APKGLUE_PATH_MAX && path[n] != '\0')
+		n++;
+	if (n == 0 || n >= APKGLUE_PATH_MAX)
+		return (0);
+	i = 0;
+	while (i + 1 < n)
+	{
+		if (path[i] == '.' && path[i + 1] == '.')
+			return (0);
+		i++;
+	}
+	return (1);
 }
 
 static int	open_apk(t_apkrun *app, int64_t len)
@@ -29,6 +71,8 @@ static int	open_apk(t_apkrun *app, int64_t len)
 	if (r < 0)
 		return (apkrun_refuse(app, why(app->man.reason)));
 	app->known = 1;
+	if (check_signer(app, &sig) < 0)
+		return (-1);
 	apkrun_log_step(app, "signature ok", "");
 	return (0);
 }
@@ -81,6 +125,10 @@ int	apkrun_load(t_apkrun *app, const char *path)
 {
 	int64_t	n;
 
+	if (!app)
+		return (-1);
+	if (!path_ok(path))
+		return (apkrun_refuse(app, T_FILE));
 	app->path = path;
 	n = apkglue_read_file(path, &app->file);
 	if (n < 0)

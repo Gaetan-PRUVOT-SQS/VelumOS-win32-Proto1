@@ -62,8 +62,10 @@ void	vmm_aspace_destroy(t_aspace *as)
 	kassert_check(!as->kernel, "vmm: destruction de l'espace noyau");
 	if (as->kernel)
 		return ;
-	if (g_vmm.current == as)
+	if (vmm_cpu_current() == as)
 		vmm_switch(NULL);
+	kassert_check(__atomic_load_n(&as->cpumask, __ATOMIC_SEQ_CST) == 0,
+		"vmm: espace detruit encore charge sur un autre coeur");
 	vmm_free_lower(as);
 	pmm_free(as->pml4, PMM_PAGETABLE);
 	free_pool(as->pool_next, as->self_phys);

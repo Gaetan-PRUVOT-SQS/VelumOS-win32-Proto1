@@ -63,7 +63,7 @@ int64_t	sys_input_read(const t_sysargs *args)
 		return (0);
 	if (max > INPQ_LEN)
 		max = INPQ_LEN;
-	if (!user_range_ok(args->a[1], max * sizeof(t_inpevent)))
+	if (!user_range_wok(args->a[1], max * sizeof(t_inpevent)))
 		return (E_FAULT);
 	p = proc_current();
 	if (!p)

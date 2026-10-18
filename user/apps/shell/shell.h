@@ -12,6 +12,7 @@
 # include "../common/timefmt.h"
 # include "../common/uiwin.h"
 # include "desktop.h"
+# include "sh_launch_apk.h"
 # include "startmenu.h"
 # include "taskbar.h"
 # include "tasklist.h"
@@ -68,6 +69,7 @@ typedef struct s_shell
 	t_startmenu		sm;
 	t_smprogs		progs;
 	t_smlayout		sml;
+	t_lmodel		lmodel;
 	t_tbregions		reg;
 	t_rect			cells[DESK_ICONS];
 	t_rect			btn[TASK_MAX];
@@ -78,6 +80,7 @@ typedef struct s_shell
 	int				hot_start;
 	int				menu_shown;
 	t_click			last_click;
+	t_deskstate		desk_state;
 	char			user[SH_USER_MAX];
 	char			clock[CLOCK_TEXT_MAX];
 	char			date[SH_DATE_MAX];
@@ -109,8 +112,15 @@ void	sh_desk_cell(t_shell *sh, int32_t idx);
 void	sh_desk_cell_draw(t_shell *sh, int32_t idx);
 void	sh_desk_mouse(t_shell *sh, const t_wmmouse *m);
 void	sh_desk_key(t_shell *sh, uint32_t vk);
+void	sh_desk_sync(t_shell *sh);
+void	sh_desk_press(t_shell *sh, int32_t hit, const t_wmmouse *m);
+void	sh_desk_move(t_shell *sh, const t_wmmouse *m);
+void	sh_desk_release(t_shell *sh, const t_wmmouse *m);
+void	sh_desk_trash_empty(t_shell *sh);
+void	sh_desk_trash_open(t_shell *sh);
 void	sh_bar_paint(t_shell *sh);
 void	sh_bar_tray(t_shell *sh);
+int		sh_bar_tray_hit(t_shell *sh, int32_t x, int32_t y);
 t_color	sh_ink(void);
 size_t	sh_glass_px(int32_t screen_w);
 int		sh_glass_alloc(t_shell *sh, size_t px);
@@ -127,6 +137,12 @@ void	sh_menu_toggle(t_shell *sh);
 void	sh_menu_mouse(t_shell *sh, const t_wmmouse *m);
 void	sh_menu_key(t_shell *sh, uint32_t vk);
 void	sh_menu_run(t_shell *sh, int cmd);
+void	sh_launch_ui_refresh(t_shell *sh);
+void	sh_launch_ui_open(t_shell *sh);
+void	sh_launch_ui_note(t_shell *sh, uint32_t id);
+int		sh_launch_ui_char(t_shell *sh, uint32_t codepoint);
+int		sh_launch_ui_key(t_shell *sh, uint32_t vk);
+int		sh_launch_ui_mouse(t_shell *sh, const t_wmmouse *m);
 void	sh_date_fmt(uint64_t wall_ns, char *out, size_t size);
 void	sh_clock_arm(t_shell *sh);
 void	sh_clock_tick(t_shell *sh);

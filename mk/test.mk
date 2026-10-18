@@ -42,13 +42,15 @@ UEFI_FLAGS := -drive if=pflash,format=raw,readonly=on,file=$(OVMF_CODE) \
 	-drive if=pflash,format=raw,file=$(O)/ovmf_vars.fd
 
 run: $(O)/disk.img
-	qemu-system-x86_64 -machine q35 -m 256M $(KVM) -drive file=$(O)/disk.img,format=raw,snapshot=on \
+	qemu-system-x86_64 -machine q35 -m 256M $(KVM) -drive file=$(O)/disk.img,if=none,id=sys,format=raw,snapshot=on \
+		-device virtio-blk-pci,drive=sys,disable-legacy=on \
 		-serial stdio -vga std -device isa-debug-exit,iobase=0xf4,iosize=0x04
 
 run-uefi: $(O)/disk.img
 	cp $(OVMF_VARS) $(O)/ovmf_vars.fd
 	qemu-system-x86_64 -machine q35 -m 256M $(KVM) $(UEFI_FLAGS) \
-		-drive file=$(O)/disk.img,format=raw,snapshot=on \
+		-drive file=$(O)/disk.img,if=none,id=sys,format=raw,snapshot=on \
+		-device virtio-blk-pci,drive=sys,disable-legacy=on \
 		-serial stdio -vga std -device isa-debug-exit,iobase=0xf4,iosize=0x04
 
 ci:

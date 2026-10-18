@@ -9,8 +9,11 @@ static void	init_services(t_service *sv)
 	sv[0].flags = PF_DISPLAY | PF_INPUT | PF_LISTEN;
 	sv[0].enabled = 1;
 	sv[1].path = "/system/bin/logon";
-	sv[1].flags = PF_SPAWN | PF_POWER;
+	sv[1].flags = PF_SPAWN | PF_POWER | PF_FSWRITE;
 	sv[1].enabled = 1;
+	sv[2].path = "/system/bin/notif";
+	sv[2].flags = PF_LISTEN;
+	sv[2].enabled = 1;
 }
 
 static uint64_t	init_now(void)

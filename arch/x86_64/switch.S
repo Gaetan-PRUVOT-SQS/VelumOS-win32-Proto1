@@ -35,14 +35,16 @@ sched_thread_trampoline:
 .type arch_enter_user, @function
 arch_enter_user:
 	cli
+	mov rbx, rdx
 	push 0x1b
 	push rsi
 	push 0x202
 	push 0x23
 	push rdi
-	mov rdi, rdx
+	sub rsp, 8
+	call cpu_spec_user_return
+	add rsp, 8
 	xor eax, eax
-	xor ebx, ebx
 	xor ecx, ecx
 	xor edx, edx
 	xor esi, esi
@@ -55,6 +57,8 @@ arch_enter_user:
 	xor r13d, r13d
 	xor r14d, r14d
 	xor r15d, r15d
+	mov rdi, rbx
+	xor ebx, ebx
 	swapgs
 	iretq
 .size arch_enter_user, . - arch_enter_user
