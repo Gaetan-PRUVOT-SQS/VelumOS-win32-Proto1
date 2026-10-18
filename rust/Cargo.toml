@@ -1,0 +1,15 @@
+[workspace]
+resolver = "3"
+members = ["libk", "crypto", "zip", "gfx", "rsa", "axml", "dex", "dexcode", "font", "notif", "settings", "pm", "apk", "wm", "panic", "link"]
+
+[workspace.package]
+edition = "2024"
+license = "GPL-2.0-or-later"
+publish = false
+version = "0.1.0"
+
+[profile.dev]
+panic = "abort"
+
+[profile.release]
+panic = "abort"

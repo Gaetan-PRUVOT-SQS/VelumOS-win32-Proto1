@@ -1,5 +1,5 @@
 SEL := $(or $(ONLY),$(LOTS))
-KSRC_ALL := $(foreach l,$(SEL),$(KSRC_$(l)))
+KSRC_ALL := $(filter-out $(RUST_DROP),$(foreach l,$(SEL),$(KSRC_$(l))))
 KOBJ := $(patsubst %,$(O)/obj/%.o,$(KSRC_ALL))
 KDEP := $(KOBJ:.o=.d)
 
@@ -15,10 +15,11 @@ $(O)/obj/%.S.o: %.S
 	@printf '  AS   %s\n' $<
 	$(Q)$(CC) $(KASFLAGS) -MMD -MP -c $< -o $@
 
-$(O)/kernel.elf: $(KOBJ) link/kernel.ld
+$(O)/kernel.elf: $(KOBJ) link/kernel.ld $(RUST_KERN_LINK)
 	@printf '  LD   %s\n' $@
 	$(Q)$(LD) -nostdlib -static -T link/kernel.ld -z max-page-size=0x1000 \
-		-z noexecstack -Wl,--build-id=sha1 -Wl,--gc-sections $(KOBJ) -lgcc -o $@
+		-z noexecstack -Wl,--build-id=sha1 -Wl,--gc-sections $(KOBJ) \
+		$(RUST_KERN_LINK) -lgcc -o $@
 
 $(O)/disk.cfg: FORCE
 	@mkdir -p $(O)
