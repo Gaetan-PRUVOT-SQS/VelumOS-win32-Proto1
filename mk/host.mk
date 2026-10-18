@@ -6,13 +6,18 @@ HOSTFLAGS := -std=gnu11 -O1 -g -fsanitize=address,undefined \
 HB := $(B)/host
 
 define host_rule
-$(HB)/$(1)/$(notdir $(2:.c=)): $(2) tests/host/harness.c tests/host/harness_eq.c $$(HSRC_$(1)) \
-	$$(wildcard tests/host/$(1)/fake_*.c) $$(wildcard tests/host/$(1)/*.h)
+$(HB)/$(1)/$(notdir $(2:.c=)): $(2) tests/host/harness.c tests/host/harness_eq.c \
+	$$(filter-out $$(RUST_DROP),$$(HSRC_$(1))) \
+	$$(wildcard tests/host/$(1)/fake_*.c) $$(wildcard tests/host/$(1)/*.h) \
+	$$(RUST_HOST_LINK) $$(RUST_HOST_EXTRA)
 	@mkdir -p $$(dir $$@)
 	@$(HOSTCC) $$(HOSTFLAGS) $$(HINC_$(1)) -MM -MP -MT $$@ $(2) tests/host/harness.c \
-		tests/host/harness_eq.c $$(HSRC_$(1)) $$(wildcard tests/host/$(1)/fake_*.c) > $$@.d
-	$(HOSTCC) $$(HOSTFLAGS) $$(HINC_$(1)) $(2) tests/host/harness.c tests/host/harness_eq.c $$(HSRC_$(1)) \
-		$$(wildcard tests/host/$(1)/fake_*.c) -o $$@
+		tests/host/harness_eq.c $$(filter-out $$(RUST_DROP),$$(HSRC_$(1))) \
+		$$(wildcard tests/host/$(1)/fake_*.c) > $$@.d
+	$(HOSTCC) $$(HOSTFLAGS) $$(HINC_$(1)) $(2) tests/host/harness.c tests/host/harness_eq.c \
+		$$(filter-out $$(RUST_DROP),$$(HSRC_$(1))) \
+		$$(wildcard tests/host/$(1)/fake_*.c) $$(RUST_HOST_EXTRA) \
+		$$(if $$(RUST_HOST_LINK),-lc -lgcc,) $$(RUST_HOST_LINK) -o $$@
 HBIN_$(1) += $(HB)/$(1)/$(notdir $(2:.c=))
 HDEP += $(HB)/$(1)/$(notdir $(2:.c=)).d
 endef
