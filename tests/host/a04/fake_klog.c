@@ -22,6 +22,11 @@ void	klog_info(const char *fmt, ...)
 	(void)fmt;
 }
 
+void	klog_warn(const char *fmt, ...)
+{
+	(void)fmt;
+}
+
 void	klog_err(const char *fmt, ...)
 {
 	va_list	ap;

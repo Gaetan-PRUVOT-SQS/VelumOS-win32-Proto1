@@ -16,6 +16,7 @@ void	sched_resched(int why)
 	}
 	flags = spin_lock_irqsave(&cs->lock);
 	sched_pass_locked(cs, why);
+	cs = sched_cpu();
 	spin_unlock(&cs->lock);
 	sched_finish(cs);
 	irq_restore(flags);
@@ -45,6 +46,7 @@ void	sched_pass_locked(t_cpusched *cs, int why)
 		sched_reap_push_locked(cs, prev);
 	next = policy_pick(&cs->rq, prev, why, cs->idle);
 	__atomic_store_n(&cs->need_resched, 0, __ATOMIC_RELEASE);
+	__atomic_store_n(&cs->busy, next != cs->idle, __ATOMIC_RELAXED);
 	if (next->t.quantum_left == 0)
 		next->t.quantum_left = (uint32_t)cs->quantum_ns;
 	next->t.state = TS_RUNNING;

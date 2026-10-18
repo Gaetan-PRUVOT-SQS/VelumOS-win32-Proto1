@@ -136,8 +136,9 @@ Particularités :
 - Les rendus par zone de a20 (`render/test_render_*.c`) rejouent le bureau, la connexion, le dock, le menu et les
   dialogues sur une surface en mémoire et comparent des pixels à des valeurs de la maquette, clair et sombre.
 - `a17/mesure_verre.c` et `a17/bench_glass.c` sont des mesures, pas des tests : la matrice ne les cite pas.
-- Lancer un lot : `make -j3 B=build/<nom> host-a17` (puis a18, a19, a20). Les scénarios QEMU `a20_desktop` et
-  `a20_souris` couvrent la session, pas le rendu du thème.
+- Lancer un lot : `make -j3 B=build/<nom> host-a17` (puis a18, a19, a20). Le lot lance tous ses binaires, puis
+  échoue s'il y en a un de rouge. `make test-host` fait de même d'un lot à l'autre. Les scénarios QEMU
+  `a20_desktop` et `a20_souris` couvrent la session, pas le rendu du thème.
 
 ## Scénarios système (QEMU)
 

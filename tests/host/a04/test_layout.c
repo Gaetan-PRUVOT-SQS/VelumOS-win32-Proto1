@@ -3,8 +3,8 @@
 #include "a04_fake.h"
 #include "velum/err.h"
 
-static const uint32_t	g_shifts[] = {10, 13, 27, 40, 22, 22, 22};
-static const uint32_t	g_larges[] = {64, 64, 64, 64, 0, 3, 65537};
+static const uint32_t	g_shifts[] = {10, 13, 29, 40, 22, 22, 22};
+static const uint32_t	g_larges[] = {64, 64, 64, 64, 0, 3, 262145};
 
 static void	layout_backend_refuses(void)
 {
@@ -49,6 +49,12 @@ static void	layout_limits_are_accepted(void)
 	h_eq_u64("E14 maximum : dalles de 4 Kio", g_heap.arena[0].slots, 16384);
 	h_eq_u64("E14 maximum : pages", g_heap.arena[3].slots, 65536);
 	a04_drain("E14 limites");
+	a04_fresh_with(28, 262144);
+	h_eq_u64("E14 grande RAM : dalles de 4 Kio", g_heap.arena[0].slots, 65536);
+	h_eq_u64("E14 grande RAM : dalles de 16 Kio", g_heap.arena[2].slots, 16384);
+	h_eq_u64("E14 grande RAM : pages", g_heap.arena[3].slots, 262144);
+	kfree(kmalloc(1024));
+	a04_drain("E14 grande RAM");
 }
 
 static void	layout_init_is_idempotent(void)

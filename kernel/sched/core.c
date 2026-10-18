@@ -9,9 +9,14 @@ t_cpusched	*sched_cpu(void)
 
 t_kthread	*sched_kself(void)
 {
+	t_thread	*cur;
+
 	if (!__atomic_load_n(&g_sched.ready, __ATOMIC_ACQUIRE))
 		return (&g_sched.boot);
-	return ((t_kthread *)cpu_self()->current);
+	cur = cpu_self()->current;
+	if (!cur)
+		return (&g_sched.boot);
+	return ((t_kthread *)cur);
 }
 
 t_thread	*sched_current(void)
@@ -21,9 +26,14 @@ t_thread	*sched_current(void)
 
 t_lockstack	*sched_lockstack(void)
 {
+	t_cpusched	*cs;
+
 	if (!__atomic_load_n(&g_sched.ready, __ATOMIC_ACQUIRE))
 		return (NULL);
-	return (&sched_cpu()->locks);
+	cs = sched_cpu();
+	if (!cs)
+		return (NULL);
+	return (&cs->locks);
 }
 
 uint32_t	sched_preempt_count(void)

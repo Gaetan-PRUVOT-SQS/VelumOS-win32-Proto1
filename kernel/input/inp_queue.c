@@ -11,7 +11,8 @@ void	inpq_init(void)
 	spin_init(&g_inputq.lock, "input_queue");
 }
 
-static void	inpq_trim(t_inputq *q, uint32_t type, uint32_t victim)
+static void	inpq_trim(t_inputq *q, uint32_t type, uint32_t victim,
+				t_object **woken)
 {
 	uint32_t	i;
 
@@ -25,14 +26,32 @@ static void	inpq_trim(t_inputq *q, uint32_t type, uint32_t victim)
 	i = 0;
 	while (i < INPQ_READERS)
 	{
+		woken[i] = NULL;
 		if (q->readers[i].used)
-			reader_notify(q, &q->readers[i], type, victim);
+			woken[i] = reader_notify(q, &q->readers[i], type, victim);
+		i++;
+	}
+}
+
+static void	inpq_wake(t_object **woken)
+{
+	uint32_t	i;
+
+	i = 0;
+	while (i < INPQ_READERS)
+	{
+		if (woken[i])
+		{
+			obj_signal(woken[i]);
+			obj_unref(woken[i]);
+		}
 		i++;
 	}
 }
 
 void	input_push(const t_inpevent *ev)
 {
+	t_object	*woken[INPQ_READERS];
 	t_inpevent	copy;
 	uint64_t	flags;
 	uint32_t	victim;
@@ -48,8 +67,9 @@ void	input_push(const t_inpevent *ev)
 	victim = g_inputq.ring[g_inputq.head & INPQ_MASK].type;
 	g_inputq.ring[g_inputq.head & INPQ_MASK] = copy;
 	__atomic_store_n(&g_inputq.head, g_inputq.head + 1, __ATOMIC_RELEASE);
-	inpq_trim(&g_inputq, copy.type, victim);
+	inpq_trim(&g_inputq, copy.type, victim, woken);
 	spin_unlock_irqrestore(&g_inputq.lock, flags);
+	inpq_wake(woken);
 }
 
 int	input_pop(t_inpevent *ev)

@@ -9,7 +9,8 @@ void	logon_start_session(t_logon *lg)
 
 	name = lg->set.list[lg->shown[lg->flow.selected]].name;
 	wmc_set_state(&lg->ui.win, WSTATE_HIDDEN);
-	r = os_spawn(LOGON_SHELL_PATH, name, PF_SPAWN | PF_POWER, &lg->session);
+	r = os_spawn(LOGON_SHELL_PATH, name,
+		PF_SPAWN | PF_POWER | PF_FSWRITE, &lg->session);
 	if (r == 0)
 	{
 		os_log("logon: session ouverte");

@@ -26,6 +26,8 @@ void	sh_menu_mouse(t_shell *sh, const t_wmmouse *m)
 	if (!sh->sm.open)
 		return ;
 	sh_menu_geo(sh);
+	if (sh_launch_ui_mouse(sh, m))
+		return ;
 	item = luna_launcher_hit(&sh->sml, m->x, m->y);
 	if (m->type == INP_MOUSE_MOVE)
 	{

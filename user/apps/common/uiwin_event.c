@@ -36,11 +36,20 @@ static int	on_mouse(t_uiwin *u, const t_uimsg *m)
 	return (UIE_USED);
 }
 
+static int	on_theme(t_uiwin *u)
+{
+	ctl_invalidate(&u->root, u->root.root);
+	uiwin_flush(u);
+	return (UIE_USED);
+}
+
 int	uiwin_event(t_uiwin *u, const t_uimsg *m)
 {
 	const t_wmhdr	*h;
 
 	h = (const t_wmhdr *)m->words;
+	if (u->ready && (size_t)m->len >= sizeof(*h) && h->type == WMS_THEME)
+		return (on_theme(u));
 	if (!u->ready || (size_t)m->len < sizeof(*h) || h->window != u->win.id)
 		return (UIE_NONE);
 	if (h->type == WMS_KEY)

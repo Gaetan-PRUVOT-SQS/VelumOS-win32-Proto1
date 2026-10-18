@@ -8,7 +8,7 @@ uint32_t	wsp_size_of(uint32_t type)
 		sizeof(t_wmcreate), sizeof(t_wmhdr), sizeof(t_wmtitle),
 		sizeof(t_wmrect), sizeof(t_wmarg), sizeof(t_wmpresent),
 		sizeof(t_wmarg), sizeof(t_wmhdr), sizeof(t_wmrect),
-		sizeof(t_wmarg), sizeof(t_wmarg), sizeof(t_wmarg)};
+		sizeof(t_wmarg), sizeof(t_wmarg), sizeof(t_wmarg), sizeof(t_wmtheme)};
 
 	if (type >= sizeof(sizes) / sizeof(sizes[0]))
 		return (0);

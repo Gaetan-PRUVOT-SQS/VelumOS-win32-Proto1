@@ -68,6 +68,8 @@ void	vmm_boot_finish(const t_bootinfo *bi)
 		klog_warn("vmm: pas d'IDT, faute de page non geree");
 	else if (idt_set_handler(VEC_PAGE_FAULT, vmm_page_fault, NULL) < 0)
 		klog_warn("vmm: gestionnaire de faute de page refuse");
+	if (vmm_tlb_init() < 0)
+		klog_warn("vmm: gestionnaire d'IPI de TLB refuse");
 	register_calls();
 	klog_info("vmm: tables %llu Kio, hhdm %u plages jusqu'a %llu Mio, NX %s,"
 		" WC %s", g_vmm.kas.tables * 4, g_vmm.nspan, vmm_hhdm_top() >> 20,

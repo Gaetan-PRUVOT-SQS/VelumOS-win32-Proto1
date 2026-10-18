@@ -58,6 +58,12 @@
 # define ASLR_LO 0x10000000ull
 # define ASLR_HI 0x00007e0000000000ull
 # define ALLOC_GRAN 0x10000ull
+# define VMM_CPUS 64
+# define UNMAP_BATCH 32
+# define VMM_VEC_TLB 0xf3
+# define TLB_RANGE_PAGES 32
+# define TLB_SPIN_MAX 200000000ull
+# define TLB_RESEND 1000000ull
 
 typedef struct s_vmregion
 {
@@ -83,6 +89,7 @@ struct s_aspace
 	uint64_t	pool_next;
 	uint64_t	self_phys;
 	uint64_t	owned;
+	uint64_t	cpumask;
 	uint64_t	tables;
 	uint64_t	pool_pages;
 	uintptr_t	lo;
@@ -92,6 +99,25 @@ struct s_aspace
 	uint32_t	serving;
 	bool		kernel;
 };
+
+typedef struct s_tlbreq
+{
+	uintptr_t	lo;
+	uintptr_t	hi;
+}	t_tlbreq;
+
+typedef struct s_tlb
+{
+	t_aspace	*cur[VMM_CPUS];
+	t_tlbreq	req;
+	uint64_t	pending;
+	uint64_t	spin_max;
+	uint64_t	shots;
+	uint64_t	ipis;
+	uint64_t	timeouts;
+	uint32_t	ticket;
+	uint32_t	serving;
+}	t_tlb;
 
 typedef struct s_hspan
 {
@@ -104,6 +130,7 @@ typedef struct s_vmm
 {
 	t_aspace	kas;
 	t_aspace	*current;
+	t_tlb		tlb;
 	uint64_t	nx;
 	uint64_t	uc_bits;
 	uint64_t	wc_bits;
@@ -139,6 +166,16 @@ typedef struct s_vareq
 extern t_vmm	g_vmm;
 
 void		vmm_flush(t_aspace *as, uintptr_t va);
+void		vmm_tlb_shoot(t_aspace *as, uintptr_t lo, uintptr_t hi);
+void		vmm_tlb_service(void);
+void		vmm_tlb_poll(void);
+void		vmm_tlb_attach(t_aspace *as);
+void		vmm_tlb_detach(t_aspace *as);
+int			vmm_tlb_init(void);
+uint32_t	vmm_cpu_id(void);
+uint32_t	vmm_cpu_total(void);
+t_aspace	*vmm_cpu_current(void);
+void		vmm_cpu_set_current(t_aspace *as);
 uint64_t	vmm_lock(t_aspace *as);
 void		vmm_unlock(t_aspace *as, uint64_t flags);
 uint64_t	vmm_pte_bits(uint32_t fl);

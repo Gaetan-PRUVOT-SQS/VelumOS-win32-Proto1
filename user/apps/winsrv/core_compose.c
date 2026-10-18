@@ -15,7 +15,10 @@ static void	body(const t_wwin *w, t_rect cl, int32_t band, t_surface *s)
 	b.sr = rect_make(0, 0, wg_clamp(w->content.w, 0, cl.w),
 			wg_clamp(w->content.h, 0, rows));
 	b.dr = rect_make(cl.x, cl.y, b.sr.w, b.sr.h);
-	gfx_blit(&b);
+	if (wgl_translucent(w))
+		gfx_blit_alpha(&b);
+	else
+		gfx_blit(&b);
 }
 
 static void	content(const t_wtable *t, int slot, t_surface *s)
@@ -33,7 +36,8 @@ static void	content(const t_wtable *t, int slot, t_surface *s)
 	band = 0;
 	if (wh_decorated(w->style))
 		band = luna_client_band(&lw);
-	if (w->content.px == NULL || w->content.w < cl.w || w->content.h < cl.h)
+	if (!wgl_translucent(w) && (w->content.px == NULL
+			|| w->content.w < cl.w || w->content.h < cl.h))
 		gfx_fill(s, cl, luna_color_window());
 	body(w, cl, band, s);
 	if (band > 0)
@@ -44,6 +48,8 @@ void	wc_window(const t_wtable *t, int slot, t_surface *s)
 {
 	t_lunawin	lw;
 
+	wsh_paint(t, slot, s);
+	wgl_backdrop(t, slot, s);
 	if (wh_decorated(t->w[slot].style))
 	{
 		wh_lunawin(t, slot, &lw);
@@ -68,7 +74,7 @@ void	wc_compose(const t_wtable *t, t_surface *dst, t_wcursor c, t_rect d)
 	{
 		slot = t->z[i];
 		if (wf_visible(&t->w[slot])
-			&& !rect_empty(rect_intersect(t->w[slot].rect, s.clip)))
+			&& !rect_empty(rect_intersect(wsh_extent(t, slot), s.clip)))
 			wc_window(t, slot, &s);
 		i++;
 	}

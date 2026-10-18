@@ -7,6 +7,7 @@
 #include "velum/panic.h"
 #include "velum/proc.h"
 #include "velum/sched.h"
+#include "velum/smp.h"
 
 #define VELUM_VERSION "0.1"
 
@@ -34,6 +35,7 @@ _Noreturn void	kmain(void)
 		panic("boot: collecte des informations impossible");
 	boot_banner();
 	initcalls_run();
+	smp_boot_cmdline();
 	boot_stack_guard_arm();
 	klog_info("VelumOS boot ok");
 	fails = 0;

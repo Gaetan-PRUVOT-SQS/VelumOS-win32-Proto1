@@ -59,7 +59,7 @@ $(B)/host/a20r/%: $(A20_RDIR)/%.c $(A20_ROBJ)
 
 .PHONY: a20-render
 a20-render: $(patsubst $(A20_RDIR)/%.c,$(B)/host/a20r/%,$(A20_RTESTS))
-	@for t in $^; do printf 'host %s\n' "$$t"; "$$t" || exit 1; done
+	@python3 tools/suite_hote.py $^
 
 .PHONY: a20-typo
 a20-typo:
@@ -77,7 +77,7 @@ UAPP_logon_SRC := $(sort $(wildcard user/apps/logon/*.c))
 UAPP_logon_LIBS := $(A20_LIBS)
 UAPP_shell_LOT := a20
 UAPP_shell_SRC := $(sort $(wildcard user/apps/shell/*.c))
-UAPP_shell_LIBS := $(A20_LIBS)
+UAPP_shell_LIBS := $(A20_LIBS) settings
 UAPP_hello_LOT := a20
 UAPP_hello_SRC := $(sort $(wildcard user/apps/hello/*.c))
 UAPP_hello_LIBS := $(A20_LIBS)

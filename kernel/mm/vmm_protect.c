@@ -30,6 +30,12 @@ static void	set_prot(t_aspace *as, uintptr_t va, uintptr_t end, uint32_t p)
 	}
 }
 
+static void	protect_pages(t_aspace *as, uintptr_t va, uintptr_t end, uint32_t p)
+{
+	set_prot(as, va, end, p);
+	vmm_tlb_shoot(as, va, end);
+}
+
 static int	protect_locked(t_aspace *as, uintptr_t va, size_t len, uint32_t p)
 {
 	int	rc;
@@ -47,7 +53,7 @@ static int	protect_locked(t_aspace *as, uintptr_t va, size_t len, uint32_t p)
 		rc = vmm_pool_reserve(as, 2);
 	if (rc < 0)
 		return (rc);
-	set_prot(as, va, va + len, p);
+	protect_pages(as, va, va + len, p);
 	vmm_reg_reflag(as, va, va + len, p);
 	return (0);
 }

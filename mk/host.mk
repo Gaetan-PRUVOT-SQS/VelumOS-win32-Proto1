@@ -23,10 +23,11 @@ $(foreach l,$(LOTS),$(foreach t,$(HT_$(l)),$(eval $(call host_rule,$(l),$(t)))))
 define host_run
 .PHONY: host-$(1)
 host-$(1): $$(HBIN_$(1))
-	@for t in $$(HBIN_$(1)); do printf 'host %s\n' "$$$$t"; "$$$$t" || exit 1; done
+	@python3 tools/suite_hote.py $$(HBIN_$(1))
 endef
 
 $(foreach l,$(LOTS),$(eval $(call host_run,$(l))))
 
 .PHONY: test-host
-test-host: $(foreach l,$(LOTS),host-$(l))
+test-host:
+	$(MAKE) -k --no-print-directory B='$(B)' $(foreach l,$(LOTS),host-$(l))

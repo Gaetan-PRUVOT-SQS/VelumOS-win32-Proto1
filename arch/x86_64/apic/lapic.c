@@ -49,6 +49,26 @@ static void	lapic_program(void)
 	lapic_write(LAPIC_EOI, 0);
 }
 
+static void	lapic_enable_msr(uint64_t base, bool x2)
+{
+	if (!(base & APIC_BASE_EN))
+	{
+		base |= APIC_BASE_EN;
+		msr_write(MSR_APIC_BASE, base);
+	}
+	if (x2)
+		msr_write(MSR_APIC_BASE, base | APIC_BASE_EXTD);
+}
+
+int	lapic_init_ap(void)
+{
+	if (!lapic_ready())
+		return (E_NOENT);
+	lapic_enable_msr(msr_read(MSR_APIC_BASE), lapic_is_x2());
+	lapic_program();
+	return (E_OK);
+}
+
 int	lapic_init(void)
 {
 	uint64_t			base;
@@ -58,14 +78,8 @@ int	lapic_init(void)
 	base = msr_read(MSR_APIC_BASE);
 	x2 = cpu_features()->x2apic || (base & APIC_BASE_EXTD);
 	mmio = NULL;
-	if (!(base & APIC_BASE_EN))
-	{
-		base |= APIC_BASE_EN;
-		msr_write(MSR_APIC_BASE, base);
-	}
-	if (x2)
-		msr_write(MSR_APIC_BASE, base | APIC_BASE_EXTD);
-	else
+	lapic_enable_msr(base, x2);
+	if (!x2)
 	{
 		mmio = lapic_map(base);
 		if (!mmio)

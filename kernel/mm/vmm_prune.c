@@ -25,6 +25,7 @@ static void	prune_entry(t_aspace *as, uint64_t *e, uintptr_t va)
 		return ;
 	*e = 0;
 	vmm_flush(as, va);
+	vmm_tlb_shoot(as, va, va + PAGE_SIZE);
 	pmm_free(child, PMM_PAGETABLE);
 	as->tables--;
 }

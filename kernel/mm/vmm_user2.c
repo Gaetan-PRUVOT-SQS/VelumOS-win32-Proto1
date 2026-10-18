@@ -12,7 +12,7 @@ int	copy_to_user(t_uptr dst, const void *src, size_t n)
 	return (vmm_user_xfer(&c));
 }
 
-bool	user_range_ok(t_uptr addr, size_t n)
+static bool	user_range_state(t_uptr addr, size_t n, bool wr)
 {
 	t_aspace	*as;
 	uint64_t	irq;
@@ -26,9 +26,19 @@ bool	user_range_ok(t_uptr addr, size_t n)
 	if (!as)
 		return (false);
 	irq = vmm_lock(as);
-	rc = vmm_user_check(as, addr, n, false);
+	rc = vmm_user_check(as, addr, n, wr);
 	vmm_unlock(as, irq);
 	return (rc == 0);
+}
+
+bool	user_range_ok(t_uptr addr, size_t n)
+{
+	return (user_range_state(addr, n, false));
+}
+
+bool	user_range_wok(t_uptr addr, size_t n)
+{
+	return (user_range_state(addr, n, true));
 }
 
 static size_t	copy_until_nul(char *dst, const char *src, size_t n)

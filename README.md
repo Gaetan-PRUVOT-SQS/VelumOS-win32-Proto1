@@ -67,7 +67,7 @@ Relevé des reprises des 15 et 16 octobre 2026 (tests hôte lancés tels quels, 
 | `a20/render-deskicon` | bord gauche de l'icône de bureau |
 | `a20/render-desklabel` | largeur des étiquettes du bureau |
 
-Un lot de tests hôte s'arrête au premier test rouge. Le relevé « tout vert » du 10 octobre pour les lots a17 à a20
+Un lot de tests hôte lance tous ses binaires, puis échoue s'il y en a un de rouge. Le relevé « tout vert » du 10 octobre pour les lots a17 à a20
 cachait ces échecs : il n'est plus repris dans ce dépôt.
 
 Ce qui fonctionne :

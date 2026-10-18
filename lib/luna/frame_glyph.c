@@ -1,5 +1,7 @@
 #include "luna_int.h"
 
+#define GLYPH_REACH 16
+
 static void	glyph_box(t_surface *s, t_rect r, int32_t rad, t_color c)
 {
 	t_llayers	l;
@@ -27,10 +29,18 @@ static void	glyph_restore(t_surface *s, t_point c, t_color col)
 	glyph_box(s, lp_rect(c.x - 4, c.y - 2, 7, 7), 2, col);
 }
 
+static bool	glyph_reachable(const t_surface *s, t_point c)
+{
+	return (c.x >= -GLYPH_REACH && c.y >= -GLYPH_REACH
+		&& c.x <= s->w + GLYPH_REACH && c.y <= s->h + GLYPH_REACH);
+}
+
 static void	glyph_close(t_surface *s, t_point c, t_color col)
 {
 	t_lline	l;
 
+	if (!glyph_reachable(s, c))
+		return ;
 	l = (t_lline){lp_pt(c.x * 16 - 56, c.y * 16 - 56), lp_pt(c.x * 16 + 56,
 			c.y * 16 + 56), 28, true};
 	lp_line(s, &l, col);

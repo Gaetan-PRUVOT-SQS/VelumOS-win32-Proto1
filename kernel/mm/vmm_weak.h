@@ -18,7 +18,12 @@ int				syscall_register(uint32_t n, t_sysfn f, const char *s)
 uint64_t		krandom_below(uint64_t bound) __attribute__((weak));
 void			secmaps_forget(t_process *p, uintptr_t va, uint64_t len)
 				__attribute__((weak));
+uint32_t		smp_cpu_count(void) __attribute__((weak));
+uint32_t		smp_cpu_id(void) __attribute__((weak));
+int				smp_send_ipi(uint32_t cpu, uint8_t vec)
+				__attribute__((weak));
 void			vmm_page_fault(t_regs *regs, void *ctx);
+void			vmm_tlb_ipi(t_regs *regs, void *ctx);
 t_aspace		*vmm_sys_caller(t_process **out);
 int				vmm_sys_prot(uint64_t prot, uint32_t *fl);
 int64_t			vmm_sys_valloc(const t_sysargs *a);

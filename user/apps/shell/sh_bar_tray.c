@@ -1,7 +1,14 @@
 #include "velum/luna_dock.h"
+#include "velum/notif.h"
 #include "velum/theme.h"
 #include "../common/uitext.h"
+#include "../common/layout.h"
 #include "shell.h"
+
+
+#pragma weak notif_client_count
+#pragma weak notif_client_toggle
+#pragma weak notif_badge_text
 
 t_color	sh_ink(void)
 {
@@ -44,6 +51,45 @@ static void	put_clock(t_shell *sh, t_rect box)
 	put_text(sh, &st, sh->date, box);
 }
 
+static uint32_t	notif_count(t_shell *sh)
+{
+	uint32_t	n;
+
+	(void)sh;
+	if (notif_client_count == NULL)
+		return (0);
+	if (notif_client_count(&n) >= 0)
+		return (n);
+	return (0);
+}
+
+static void	put_badge(t_shell *sh, t_rect box)
+{
+	char		text[NOTIF_BADGE_MAX];
+	t_uitext	st;
+
+	if (notif_badge_text == NULL)
+		return ;
+	if (notif_badge_text(notif_count(sh), text, sizeof(text)) == 0)
+		return ;
+	st.font = FONT_INS_BOLD_13;
+	st.at.y = box.y + (box.h - ui_font_height(st.font)) / 2;
+	st.color = sh_ink();
+	put_text(sh, &st, text, box);
+}
+
+int	sh_bar_tray_hit(t_shell *sh, int32_t x, int32_t y)
+{
+	t_traygeo	g;
+
+	luna_tray_geo(sh->reg.tray, &g);
+	if (!lay_contains(g.badge, x, y))
+		return (0);
+	if (notif_client_toggle != NULL)
+		notif_client_toggle();
+	return (1);
+}
+
 void	sh_bar_tray(t_shell *sh)
 {
 	t_traygeo	g;
@@ -56,4 +102,5 @@ void	sh_bar_tray(t_shell *sh)
 	st.color = muted_ink();
 	put_text(sh, &st, "FR", g.lang);
 	put_clock(sh, g.clock);
+	put_badge(sh, g.badge);
 }
