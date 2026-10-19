@@ -15,6 +15,8 @@ extern crate velum_dex;
 extern crate velum_dexcode;
 #[cfg(feature = "droid")]
 extern crate velum_droid;
+#[cfg(any(feature = "dvmrt", feature = "dvmin"))]
+extern crate velum_dvm;
 #[cfg(feature = "font")]
 extern crate velum_font;
 #[cfg(feature = "gfx")]
@@ -46,6 +48,10 @@ mod keep_dex;
 mod keep_dexcode;
 #[cfg(feature = "droid")]
 mod keep_droid;
+#[cfg(feature = "dvmin")]
+mod keep_dvmin;
+#[cfg(feature = "dvmrt")]
+mod keep_dvmrt;
 #[cfg(feature = "font")]
 mod keep_font;
 #[cfg(feature = "gfx")]

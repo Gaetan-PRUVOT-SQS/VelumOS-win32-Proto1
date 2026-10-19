@@ -72,6 +72,12 @@ endif
 ifneq ($(filter droid,$(RUST_FEAT_LIST)),)
 RUST_DROP += lib/droid/%
 endif
+ifneq ($(filter dvmrt,$(RUST_FEAT_LIST)),)
+RUST_DROP += lib/dvm/rt_%
+endif
+ifneq ($(filter dvmin,$(RUST_FEAT_LIST)),)
+RUST_DROP += lib/dvm/in_%
+endif
 
 RUST_HOST_FLAGS := --cfg velum_host -C panic=abort
 RUST_KERN_FLAGS := --cfg velum_kernel -C panic=abort -C code-model=kernel \
