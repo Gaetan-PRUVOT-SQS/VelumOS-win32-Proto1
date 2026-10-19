@@ -19,6 +19,7 @@ axml = ["dep:velum-axml"]
 apk = ["dep:velum-apk"]
 dex = ["dep:velum-dex"]
 dexcode = ["dep:velum-dexcode"]
+droid = ["dep:velum-droid"]
 notif = ["dep:velum-notif"]
 settings = ["dep:velum-settings"]
 pm = ["dep:velum-pm"]
@@ -36,6 +37,7 @@ velum-axml = { path = "../axml", optional = true }
 velum-apk = { path = "../apk", optional = true }
 velum-dex = { path = "../dex", optional = true }
 velum-dexcode = { path = "../dexcode", optional = true }
+velum-droid = { path = "../droid", optional = true }
 velum-notif = { path = "../notif", optional = true }
 velum-settings = { path = "../settings", optional = true }
 velum-pm = { path = "../pm", optional = true }

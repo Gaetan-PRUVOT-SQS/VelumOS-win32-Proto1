@@ -1,0 +1,82 @@
+macro_rules! touch {
+    ($name:ident, $($path:path),* $(,)?) => {
+        /// # Safety
+        /// Ancre les symboles dans l'archive. Aucun appelant ne doit l'utiliser.
+        #[unsafe(no_mangle)]
+        unsafe extern "C" fn $name() {
+            $(
+                let _ = core::hint::black_box($path as *const ());
+            )*
+        }
+    };
+}
+
+touch!(
+    velum_keep_droid,
+    velum_droid::dr_act_content,
+    velum_droid::dr_act_finish,
+    velum_droid::dr_act_title,
+    velum_droid::dr_class,
+    velum_droid::dr_classes,
+    velum_droid::dr_cstr,
+    velum_droid::dr_dec16,
+    velum_droid::dr_dotted,
+    velum_droid::dr_fail,
+    velum_droid::dr_host,
+    velum_droid::dr_int_parse,
+    velum_droid::dr_int_tostring,
+    velum_droid::dr_is,
+    velum_droid::dr_ll_orient,
+    velum_droid::dr_log_d,
+    velum_droid::dr_log_e,
+    velum_droid::dr_log_i,
+    velum_droid::dr_log_w,
+    velum_droid::dr_math_abs,
+    velum_droid::dr_math_max,
+    velum_droid::dr_math_min,
+    velum_droid::dr_missing,
+    velum_droid::dr_new16,
+    velum_droid::dr_new8,
+    velum_droid::dr_nop,
+    velum_droid::dr_npe,
+    velum_droid::dr_obj_equals,
+    velum_droid::dr_obj_hash,
+    velum_droid::dr_obj_tostring,
+    velum_droid::dr_release,
+    velum_droid::dr_sb_append_c,
+    velum_droid::dr_sb_append_i,
+    velum_droid::dr_sb_append_j,
+    velum_droid::dr_sb_append_obj,
+    velum_droid::dr_sb_append_z,
+    velum_droid::dr_sb_ascii,
+    velum_droid::dr_sb_length,
+    velum_droid::dr_sb_put,
+    velum_droid::dr_sb_tostring,
+    velum_droid::dr_str,
+    velum_droid::dr_str_charat,
+    velum_droid::dr_str_concat,
+    velum_droid::dr_str_equals,
+    velum_droid::dr_str_hash,
+    velum_droid::dr_str_length,
+    velum_droid::dr_str_self,
+    velum_droid::dr_sys_arraycopy,
+    velum_droid::dr_sys_millis,
+    velum_droid::dr_tab_android,
+    velum_droid::dr_tab_lang,
+    velum_droid::dr_text_of,
+    velum_droid::dr_thr_init_msg,
+    velum_droid::dr_thr_message,
+    velum_droid::dr_tv_gettext,
+    velum_droid::dr_tv_settext,
+    velum_droid::dr_utf8,
+    velum_droid::dr_vg_addview,
+    velum_droid::dr_view_get,
+    velum_droid::dr_view_init,
+    velum_droid::dr_view_listen,
+    velum_droid::dr_view_of,
+    velum_droid::droid_click,
+    velum_droid::droid_install,
+    velum_droid::droid_start,
+    velum_droid::droid_stop,
+    velum_droid::droid_view,
+);

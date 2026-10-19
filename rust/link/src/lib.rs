@@ -13,6 +13,8 @@ extern crate velum_crypto;
 extern crate velum_dex;
 #[cfg(feature = "dexcode")]
 extern crate velum_dexcode;
+#[cfg(feature = "droid")]
+extern crate velum_droid;
 #[cfg(feature = "font")]
 extern crate velum_font;
 #[cfg(feature = "gfx")]
@@ -42,6 +44,8 @@ mod keep_crypto;
 mod keep_dex;
 #[cfg(feature = "dexcode")]
 mod keep_dexcode;
+#[cfg(feature = "droid")]
+mod keep_droid;
 #[cfg(feature = "font")]
 mod keep_font;
 #[cfg(feature = "gfx")]
