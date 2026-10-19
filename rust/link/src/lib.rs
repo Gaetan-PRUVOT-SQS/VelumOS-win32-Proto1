@@ -25,6 +25,8 @@ extern crate velum_font;
 extern crate velum_gfx;
 #[cfg(feature = "libk")]
 extern crate velum_libk;
+#[cfg(feature = "luna")]
+extern crate velum_luna;
 #[cfg(feature = "notif")]
 extern crate velum_notif;
 #[cfg(feature = "pm")]
@@ -62,6 +64,8 @@ mod keep_font;
 mod keep_gfx;
 #[cfg(feature = "libk")]
 mod keep_libk;
+#[cfg(feature = "luna")]
+mod keep_luna;
 #[cfg(feature = "notif")]
 mod keep_notif;
 #[cfg(feature = "pm")]
