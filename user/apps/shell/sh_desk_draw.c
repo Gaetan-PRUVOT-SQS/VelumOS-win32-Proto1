@@ -56,6 +56,9 @@ void	sh_desk_cell_draw(t_shell *sh, int32_t idx)
 	ic = desk_icon((uint32_t)idx);
 	if (!ic || (uint32_t)idx >= sh->placed)
 		return ;
+	sh_desk_sync(sh);
+	if (!desk_visible(&sh->desk_state, (uint32_t)idx))
+		return ;
 	cx = (t_cellctx){sh, sh->cells[idx], sh->selected == idx};
 	clip = sh->desk.surface.clip;
 	gfx_set_clip(&sh->desk.surface, cx.cell);
@@ -65,6 +68,7 @@ void	sh_desk_cell_draw(t_shell *sh, int32_t idx)
 		cx.cell.y + SH_ICON_TOP};
 	sh_icon_shadow(&sh->desk.surface, at, (t_iconid)ic->icon,
 		sh->lm.icon_large);
+	at.x -= SH_ICON_BIAS_X;
 	luna_icon(&sh->desk.surface, at, (t_iconid)ic->icon, sh->lm.icon_large);
 	draw_label(&cx, ic->label);
 	sh->desk.surface.clip = clip;

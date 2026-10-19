@@ -12,6 +12,14 @@
 # define LAPIC_SVR 0xf0
 # define LAPIC_ESR 0x280
 # define LAPIC_ICR_LO 0x300
+# define LAPIC_ICR_HI 0x310
+# define LAPIC_ICR_FIXED 0x000
+# define LAPIC_ICR_INIT 0x500
+# define LAPIC_ICR_SIPI 0x600
+# define LAPIC_ICR_ASSERT 0x4000
+# define LAPIC_ICR_LEVEL 0x8000
+# define LAPIC_ICR_DEST_SHIFT 24
+# define LAPIC_ICR_SPINS 1000000
 # define LAPIC_LVT_TIMER 0x320
 # define LAPIC_LVT_LINT0 0x350
 # define LAPIC_LVT_LINT1 0x360
@@ -86,6 +94,10 @@ void			lapic_set_mode(bool x2, volatile uint32_t *mmio);
 void			lapic_nmi_setup(void);
 uint32_t		lapic_lvt_nmi(uint16_t mps_flags);
 int				lapic_self_ipi(uint8_t vec);
+int				lapic_init_ap(void);
+int				lapic_icr_send(uint32_t dest, uint32_t lo);
+uint32_t		lapic_icr_value(uint32_t mode, uint8_t vec);
+uint64_t		lapic_icr_x2(uint32_t lo, uint32_t dest);
 uint64_t		ioapic_entry(uint8_t vec, uint32_t trig, uint32_t dest,
 					bool masked);
 uint32_t		ioapic_count_from_ver(uint32_t ver);

@@ -82,7 +82,8 @@ uint32_t	reader_take(t_reader *r, t_inpevent *dst, uint32_t max)
 	return (n);
 }
 
-void	reader_notify(t_inputq *q, t_reader *r, uint32_t type, uint32_t victim)
+t_object	*reader_notify(t_inputq *q, t_reader *r, uint32_t type,
+				uint32_t victim)
 {
 	if (q->head - r->cur > INPQ_LEN)
 	{
@@ -93,6 +94,7 @@ void	reader_notify(t_inputq *q, t_reader *r, uint32_t type, uint32_t victim)
 			q->lost++;
 		}
 	}
-	if (r->obj && inp_kind_match(r->kind, type))
-		obj_signal(r->obj);
+	if (r->obj && inp_kind_match(r->kind, type) && obj_tryref(r->obj))
+		return (r->obj);
+	return (NULL);
 }

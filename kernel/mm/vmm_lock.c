@@ -9,7 +9,10 @@ uint64_t	vmm_lock(t_aspace *as)
 	flags = irq_save();
 	ticket = __atomic_fetch_add(&as->ticket, 1, __ATOMIC_RELAXED);
 	while (__atomic_load_n(&as->serving, __ATOMIC_ACQUIRE) != ticket)
+	{
+		vmm_tlb_poll();
 		cpu_relax();
+	}
 	return (flags);
 }
 

@@ -1,3 +1,5 @@
+#include "velum/libk.h"
+#include "velum/abi/abi_syscall.h"
 #include "../common/platform.h"
 #include "shell.h"
 
@@ -19,6 +21,14 @@ void	sh_reap(t_shell *sh)
 	}
 }
 
+static uint32_t	sh_flags_for(const char *path)
+{
+	if (strcmp(path, "/system/bin/fichiers") == 0
+		|| strcmp(path, "/system/bin/reglages") == 0)
+		return (PF_FSWRITE);
+	return (0);
+}
+
 int	sh_launch_arg(t_shell *sh, const char *path, const char *arg)
 {
 	t_handle	h;
@@ -27,7 +37,7 @@ int	sh_launch_arg(t_shell *sh, const char *path, const char *arg)
 	sh_reap(sh);
 	if (arg && arg[0] == '\0')
 		arg = NULL;
-	r = os_spawn(path, arg, 0, &h);
+	r = os_spawn(path, arg, sh_flags_for(path), &h);
 	if (r < 0)
 		return (r);
 	if (sh->nchildren >= SH_CHILD_MAX)

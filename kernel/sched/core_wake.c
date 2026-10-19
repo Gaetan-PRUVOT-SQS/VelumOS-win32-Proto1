@@ -25,20 +25,54 @@ void	sched_unpark_locked(t_cpusched *cs, t_kthread *kt, bool boost)
 		__atomic_store_n(&cs->need_resched, 1, __ATOMIC_RELEASE);
 }
 
+t_cpusched	*sched_lock_home(t_kthread *kt, uint64_t *flags)
+{
+	t_cpusched	*cs;
+
+	while (1)
+	{
+		cs = g_sched.cpus[__atomic_load_n(&kt->home, __ATOMIC_ACQUIRE)];
+		*flags = spin_lock_irqsave(&cs->lock);
+		if (__atomic_load_n(&kt->home, __ATOMIC_ACQUIRE) == cs->id)
+			return (cs);
+		spin_unlock_irqrestore(&cs->lock, *flags);
+	}
+}
+
+static void	unpark_place_new(t_kthread *kt)
+{
+	uint32_t	best;
+
+	if (kt->t.state != TS_NEW || (kt->kflags & KT_PINNED))
+		return ;
+	best = sched_least_loaded(g_sched.cpus,
+			__atomic_load_n(&g_sched.span, __ATOMIC_ACQUIRE));
+	if (best < g_sched.span)
+		__atomic_store_n(&kt->home, best, __ATOMIC_RELEASE);
+}
+
 void	sched_unpark(t_kthread *kt, bool boost)
 {
 	t_cpusched	*cs;
 	uint64_t	flags;
+	bool		kick;
+	bool		crowded;
 
 	if (!__atomic_load_n(&g_sched.ready, __ATOMIC_ACQUIRE))
 	{
 		kt->token = 1;
 		return ;
 	}
-	cs = sched_cpu();
-	flags = spin_lock_irqsave(&cs->lock);
+	unpark_place_new(kt);
+	cs = sched_lock_home(kt, &flags);
 	sched_unpark_locked(cs, kt, boost);
+	kick = __atomic_load_n(&cs->need_resched, __ATOMIC_ACQUIRE) != 0;
+	crowded = sched_load(cs) >= 2;
 	spin_unlock_irqrestore(&cs->lock, flags);
+	if (kick)
+		sched_kick(cs);
+	if (crowded)
+		sched_kick_idle(cs);
 }
 
 void	sched_park(void)
@@ -62,6 +96,7 @@ void	sched_park(void)
 	{
 		kt->t.state = TS_BLOCKED;
 		sched_pass_locked(cs, SR_BLOCK);
+		cs = sched_cpu();
 	}
 	spin_unlock(&cs->lock);
 	sched_finish(cs);

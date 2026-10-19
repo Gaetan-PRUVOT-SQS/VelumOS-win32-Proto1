@@ -17,6 +17,7 @@ int	ws_req_hello(t_wsrv *s, int ci, const void *msg)
 	ok.screen_h = (uint32_t)s->t.screen.h;
 	ok.workarea = s->t.work;
 	ws_post(s, ci, &ok, 0);
+	ws_theme_send(s, ci);
 	return (0);
 }
 

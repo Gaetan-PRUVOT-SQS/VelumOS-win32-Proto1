@@ -57,9 +57,11 @@ static void	pleins_clavier(void)
 
 	boot_open(&sh, g_path3, g_text3);
 	drv_type(&sh, sh.menu.id, "abc d");
-	h_eq_i64("caracteres non transmis", sh.sm.open, 1);
+	h_eq_i64("saisie dans la recherche, menu ouvert", sh.sm.open, 1);
 	h_eq_i64("pas de focus", sh.sm.focus, SM_NO_ITEM);
 	h_eq_u64("aucun lancement", g_fos.nspawn, 0);
+	drv_key(&sh, sh.menu.id, VK_ESCAPE);
+	h_eq_i64("recherche quittee, menu ouvert", sh.sm.open, 1);
 	drv_key(&sh, sh.menu.id, VK_END);
 	drv_key(&sh, sh.menu.id, VK_UP);
 	drv_key(&sh, sh.menu.id, VK_UP);

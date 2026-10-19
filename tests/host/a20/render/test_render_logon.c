@@ -32,7 +32,8 @@ static void	logon_connexion_par_clic_sans_mot_de_passe(void)
 	h_eq_u64("le shell est lance", g_fos.nspawn, 1);
 	h_eq_str("chemin du shell", g_fos.path[0], "/system/bin/shell");
 	h_eq_str("nom du compte en argument", g_fos.arg[0], "Utilisateur");
-	h_eq_u64("privileges minimaux", g_fos.flags[0], PF_SPAWN | PF_POWER);
+	h_eq_u64("privileges de la session, ecriture a deleguer",
+		g_fos.flags[0], PF_SPAWN | PF_POWER | PF_FSWRITE);
 	h_eq_i64("retour a l'ecran de choix", lg.flow.mode, LM_PICK);
 	h_eq_u64("fenetre reaffichee", fwm_find("Ouverture de session")->state,
 		WSTATE_NORMAL);

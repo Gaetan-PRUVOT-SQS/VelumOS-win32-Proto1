@@ -47,19 +47,100 @@ static int	check_rules(t_pm *pm, t_pmwork *w)
 	return (0);
 }
 
-static int	publish(t_pm *pm, t_pmwork *w)
+static void	fill_entry(t_pmwork *w)
 {
-	int	err;
-
 	memset(&w->data[w->slot], 0, sizeof(w->data[w->slot]));
 	w->data[w->slot].info = w->info;
 	w->data[w->slot].origin = PM_ORIGIN_DATA;
 	memcpy(w->data[w->slot].path, w->apk, PM_PATH_MAX);
-	w->data_n += w->fresh;
+}
+
+static int	publish_fresh(t_pm *pm, t_pmwork *w)
+{
+	int	err;
+
+	fill_entry(w);
+	w->data_n++;
 	err = pm_store(pm, w);
-	if (err < 0 && w->fresh)
+	if (err < 0)
 		pm_drop(pm, w->apk);
 	return (err);
+}
+
+static int	copy_out(t_pm *pm, const char *src, const char *dst)
+{
+	char	*buf;
+	size_t	cap;
+	t_text	text;
+	t_span	data;
+	int64_t	n;
+	int		err;
+
+	cap = 64;
+	if (cap > (size_t)pm->max_apk)
+		cap = pm->max_apk;
+	buf = NULL;
+	n = E_OVERFLOW;
+	while (n == E_OVERFLOW)
+	{
+		pm_free(buf);
+		buf = pm_alloc(cap);
+		if (!buf)
+			return (E_NOMEM);
+		text.p = buf;
+		text.cap = cap;
+		n = pm->fs->read(pm->ctx, src, text);
+		if (n != E_OVERFLOW || cap >= (size_t)pm->max_apk)
+			break;
+		if (cap > (size_t)pm->max_apk / 2)
+			cap = pm->max_apk;
+		else
+			cap *= 2;
+	}
+	if (n < 0)
+	{
+		pm_free(buf);
+		return ((int)n);
+	}
+	data.p = (const uint8_t *)buf;
+	data.len = (size_t)n;
+	err = pm->fs->write_new(pm->ctx, dst, data);
+	pm_free(buf);
+	return (err);
+}
+
+static int	publish_update(t_pm *pm, t_pmwork *w)
+{
+	char	bak[PM_PATH_MAX];
+	int		err;
+	int		back;
+
+	if (pm_path(bak, pm->data_root, w->info.package, ".apk.bak") < 0)
+		return (E_INVAL);
+	fill_entry(w);
+	pm_drop(pm, bak);
+	err = copy_out(pm, w->apk, bak);
+	if (err < 0)
+	{
+		pm_drop(pm, bak);
+		return (err);
+	}
+	err = pm->fs->rename(pm->ctx, w->apk_tmp, w->apk);
+	if (err < 0)
+	{
+		pm_drop(pm, bak);
+		return (err);
+	}
+	err = pm_store(pm, w);
+	if (err < 0)
+	{
+		back = pm->fs->rename(pm->ctx, bak, w->apk);
+		if (back < 0)
+			return (back);
+		return (err);
+	}
+	pm_drop(pm, bak);
+	return (0);
 }
 
 static int	commit(t_pm *pm, t_pmwork *w, t_span apk)
@@ -75,14 +156,13 @@ static int	commit(t_pm *pm, t_pmwork *w, t_span apk)
 		return (err);
 	pm_drop(pm, w->apk_tmp);
 	err = pm->fs->write_new(pm->ctx, w->apk_tmp, apk);
-	if (err >= 0)
+	if (err >= 0 && w->fresh)
 		err = pm->fs->rename(pm->ctx, w->apk_tmp, w->apk);
+	if (err >= 0)
+		err = w->fresh ? publish_fresh(pm, w) : publish_update(pm, w);
 	if (err < 0)
-	{
 		pm_drop(pm, w->apk_tmp);
-		return (err);
-	}
-	return (publish(pm, w));
+	return (err);
 }
 
 int	pm_install(t_pm *pm, t_span apk, t_pmentry *out)

@@ -13,7 +13,7 @@ static const t_step	g_steps[] = {
 {"object", object_boot_init}, {"proc", proc_boot_init},
 {"random", random_boot_init}, {"pci", pci_boot_init},
 {"input", input_boot_init}, {"block", block_boot_init},
-{"vfs", vfs_boot_init}, {NULL, NULL}
+{"vfs", vfs_boot_init}, {"net", net_boot_init}, {NULL, NULL}
 };
 
 static void	step_run(const t_step *s, uint32_t idx, uint32_t total)

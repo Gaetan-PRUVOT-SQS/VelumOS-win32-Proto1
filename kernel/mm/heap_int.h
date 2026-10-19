@@ -30,6 +30,9 @@ typedef struct s_heap
 extern t_heap	g_heap;
 
 int				heap_pages_layout(t_heap_layout *out);
+uint32_t		heap_steps_for_ram(uint64_t ram_bytes);
+void			heap_layout_for_ram(uint64_t ram_bytes, t_heap_layout *out);
+uint64_t		heap_window_bytes(const t_heap_layout *lay);
 int				heap_pages_map(uintptr_t va, size_t npages);
 int				heap_pages_unmap(uintptr_t va, size_t npages);
 int				heap_unmap(uintptr_t va, size_t npages);

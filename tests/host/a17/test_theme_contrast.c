@@ -57,8 +57,8 @@ static void	pairs_theme(const char *tag)
 	while (g_pair[i].name != NULL)
 	{
 		snprintf(name, sizeof(name), "%s : %s", tag, g_pair[i].name);
-		lk_check(name, lk_ratio(luna_color(g_pair[i].fg),
-				luna_color(g_pair[i].bg)));
+		lk_check_min(name, lk_ratio(luna_color(g_pair[i].fg),
+				luna_color(g_pair[i].bg)), g_pair[i].min);
 		i++;
 	}
 }

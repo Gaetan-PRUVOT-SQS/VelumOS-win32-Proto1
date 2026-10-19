@@ -45,6 +45,23 @@ static int64_t	thread_result(t_process *p, t_thread *t)
 	return (rc);
 }
 
+static int	thread_stack_budget(const t_process *p, uint64_t size)
+{
+	uint64_t	len;
+
+	if (p->mem_limit == 0 || size > TSTACK_MAX)
+		return (0);
+	len = size;
+	if (len == 0)
+		len = TSTACK_DEFAULT;
+	if (len < TSTACK_MIN)
+		return (0);
+	len = align_up(len, PAGE_SIZE);
+	if (vmm_pages_used(p->aspace) * PAGE_SIZE + len > p->mem_limit)
+		return (E_NOMEM);
+	return (0);
+}
+
 int64_t	sys_thread_create(const t_sysargs *a)
 {
 	t_threadreq	rq;
@@ -58,6 +75,8 @@ int64_t	sys_thread_create(const t_sysargs *a)
 		return (E_INVAL);
 	memset(&st, 0, sizeof(st));
 	rc = syscall_prio_check(a->a[3]);
+	if (rc == 0)
+		rc = thread_stack_budget(p, a->a[2]);
 	if (rc == 0)
 		rc = proc_tstack_alloc(p, a->a[2], a->a[1], &st);
 	if (rc < 0)

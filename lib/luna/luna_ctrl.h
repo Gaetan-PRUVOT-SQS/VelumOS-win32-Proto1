@@ -36,6 +36,8 @@ void		lp_rring(t_surface *s, const t_lrfill *f, int32_t w);
 void		lp_rtop(t_surface *s, const t_lrfill *f);
 void		lp_rfocus(t_surface *s, t_rect r, int32_t rad, t_color c);
 void		lp_choice(t_surface *s, const t_lchoice *c);
+void		lp_choice_colors(const t_lchoice *c, t_lrfill *f, t_color *ring);
+void		lp_radio(t_surface *s, const t_lchoice *c);
 bool		lp_btn_primary(const t_lunabtn *b);
 bool		lp_dark(void);
 t_color		lp_tone_alpha(t_color c, uint32_t a);

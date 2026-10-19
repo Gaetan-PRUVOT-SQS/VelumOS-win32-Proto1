@@ -17,6 +17,13 @@ int	fsys_path_in(t_uptr p, uint64_t len, char *out)
 	return (0);
 }
 
+bool	fsys_user_ok(t_uptr addr, uint64_t n, bool writable)
+{
+	if (writable && user_range_wok)
+		return (user_range_wok(addr, (size_t)n));
+	return (user_range_ok(addr, (size_t)n));
+}
+
 int	fsys_writer(t_process **p)
 {
 	*p = proc_current();

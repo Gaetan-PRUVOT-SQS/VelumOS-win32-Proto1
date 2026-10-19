@@ -48,6 +48,7 @@ ROOTFS_FILES :=
 
 include mk/skel.mk
 include $(sort $(wildcard mk/lot-*.mk))
+include mk/rust.mk
 include mk/kernel.mk
 include mk/user.mk
 include mk/host.mk

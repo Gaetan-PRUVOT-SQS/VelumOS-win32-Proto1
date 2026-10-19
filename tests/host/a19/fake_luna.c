@@ -18,12 +18,23 @@ void	luna_metrics(t_lunametrics *out)
 
 t_color	luna_color_text(void)
 {
+	if (luna_theme_get() == LUNA_THEME_DARK)
+		return (0xffe8ecf4);
 	return (0xff000000);
 }
 
 t_color	luna_color_window(void)
 {
+	if (luna_theme_get() == LUNA_THEME_DARK)
+		return (0xff141824);
 	return (0xffece9d8);
+}
+
+t_color	luna_color_panel(void)
+{
+	if (luna_theme_get() == LUNA_THEME_DARK)
+		return (0xff1b2030);
+	return (0xffeef0f5);
 }
 
 t_color	luna_color_selection(void)

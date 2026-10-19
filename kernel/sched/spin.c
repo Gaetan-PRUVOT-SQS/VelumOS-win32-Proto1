@@ -32,7 +32,7 @@ void	spin_acquire(t_spinlock *l, void *caller)
 	{
 		cpu_relax();
 		spins++;
-		if (SCHED_DEBUG && (spins & SPIN_CHECK_MASK) == 0)
+		if ((spins & SPIN_CHECK_MASK) == 0)
 			spin_stuck_check(l, &start, caller);
 	}
 }

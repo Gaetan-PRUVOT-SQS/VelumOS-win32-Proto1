@@ -21,20 +21,21 @@ $(O)/uobj/%.S.o: %.S
 	$(Q)$(UCC) $(UASFLAGS) -MMD -MP -c $< -o $@
 
 define ulib_rule
-$(O)/ulib/lib$(1).a: $$(patsubst %,$(O)/uobj/%.o,$$(ULIB_$(1)_SRC))
+$(O)/ulib/lib$(1).a: $$(patsubst %,$(O)/uobj/%.o,$$(filter-out $$(RUST_DROP),$$(ULIB_$(1)_SRC)))
 	@mkdir -p $$(dir $$@)
 	rm -f $$@
-	$(UAR) rcsD $$@ $$^
+	if [ -n "$$^" ]; then $(UAR) rcsD $$@ $$^; else printf '%s\n' '!<arch>' > $$@; fi
 endef
 
 define uapp_rule
 $(O)/root/system/bin/$(1): $$(patsubst %,$(O)/uobj/%.o,$$(UAPP_$(1)_SRC)) \
-	$$(foreach l,$$(UAPP_$(1)_LIBS),$(O)/ulib/lib$$(l).a) user/app.ld
+	$$(foreach l,$$(UAPP_$(1)_LIBS),$(O)/ulib/lib$$(l).a) user/app.ld \
+	$$(RUST_USER_LINK) $$(RUST_USER_EXTRA)
 	@mkdir -p $$(dir $$@)
 	$(UCC) $$(ULDFLAGS) -T user/app.ld -o $$@ \
 		$$(patsubst %,$(O)/uobj/%.o,$$(UAPP_$(1)_SRC)) \
 		-Wl,--start-group $$(foreach l,$$(UAPP_$(1)_LIBS),$(O)/ulib/lib$$(l).a) \
-		-Wl,--end-group -lgcc
+		$$(RUST_USER_LINK) $$(RUST_USER_EXTRA) -Wl,--end-group -lgcc
 ROOTFS_FILES += $(O)/root/system/bin/$(1)
 endef
 

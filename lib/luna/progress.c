@@ -6,7 +6,7 @@ void	luna_progress(t_surface *s, t_rect r, uint32_t pct)
 	int32_t		w;
 
 	r = lp_clean(r);
-	if (!lp_ok(s) || r.w < 8 || r.h < 8)
+	if (!lp_ok(s) || r.w < 2 || r.h < 2)
 		return ;
 	f = lp_rmake(r, r.h / 2, lp_tone_track(), lp_tone_track());
 	lp_rfill(s, &f);

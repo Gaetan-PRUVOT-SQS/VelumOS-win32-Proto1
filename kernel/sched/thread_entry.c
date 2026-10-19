@@ -24,6 +24,8 @@ void	sched_idle_main(void *arg)
 	while (1)
 	{
 		irq_disable();
+		if (cs->rq.count == 0 && sched_pull(g_sched.cpus, g_sched.span, cs))
+			__atomic_store_n(&cs->need_resched, 1, __ATOMIC_RELEASE);
 		if (__atomic_load_n(&cs->need_resched, __ATOMIC_ACQUIRE)
 			|| __atomic_load_n(&cs->rq.count, __ATOMIC_ACQUIRE) > 0)
 		{

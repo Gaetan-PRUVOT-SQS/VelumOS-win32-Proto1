@@ -1,3 +1,5 @@
+#include "velum/luna.h"
+#include "velum/luna_colors.h"
 #include "ctl_int.h"
 
 t_color	ctl_color_text(bool enabled)
@@ -19,9 +21,11 @@ t_color	ctl_color_selected_text(void)
 
 t_color	ctl_color_back(bool enabled)
 {
-	if (enabled)
-		return (0xffffffff);
-	return (luna_color_window());
+	if (!enabled)
+		return (luna_color_window());
+	if (luna_theme_get() == LUNA_THEME_DARK)
+		return (luna_color_panel());
+	return (0xffffffff);
 }
 
 t_color	ctl_color_track(void)

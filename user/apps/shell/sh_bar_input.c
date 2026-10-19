@@ -46,6 +46,8 @@ void	sh_bar_mouse(t_shell *sh, const t_wmmouse *m)
 	if (m->type != INP_MOUSE_DOWN
 		|| ((m->buttons >> WM_BTN_SHIFT) & WM_BTN_MASK) != BTN_LEFT)
 		return ;
+	if (sh_bar_tray_hit(sh, m->x, m->y))
+		return ;
 	if (lay_contains(sh->reg.start, m->x, m->y))
 		sh_menu_toggle(sh);
 	else

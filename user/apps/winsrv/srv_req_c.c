@@ -103,3 +103,22 @@ int	ws_req_capture(t_wsrv *s, int ci, const void *msg)
 	s->m.explicit_cap = true;
 	return (0);
 }
+
+int	ws_req_theme(t_wsrv *s, int ci, const void *msg)
+{
+	const t_wmtheme	*rq;
+	int				slot;
+	int				act;
+
+	rq = msg;
+	slot = ws_own(s, ci, rq->h.window);
+	if (slot < 0)
+		return (slot);
+	if (rq->dark > 1 || rq->reduced > 1 || rq->reserved != 0)
+		return (E_INVAL);
+	act = s->t.active;
+	if (ci != s->shell && (act < 0 || s->t.w[act].owner != ci))
+		return (E_PERM);
+	ws_theme_set(s, rq->dark, rq->reduced);
+	return (0);
+}

@@ -136,8 +136,9 @@ Particularités :
 - Les rendus par zone de a20 (`render/test_render_*.c`) rejouent le bureau, la connexion, le dock, le menu et les
   dialogues sur une surface en mémoire et comparent des pixels à des valeurs de la maquette, clair et sombre.
 - `a17/mesure_verre.c` et `a17/bench_glass.c` sont des mesures, pas des tests : la matrice ne les cite pas.
-- Lancer un lot : `make -j3 B=build/<nom> host-a17` (puis a18, a19, a20). Les scénarios QEMU `a20_desktop` et
-  `a20_souris` couvrent la session, pas le rendu du thème.
+- Lancer un lot : `make -j3 B=build/<nom> host-a17` (puis a18, a19, a20). Le lot lance tous ses binaires, puis
+  échoue s'il y en a un de rouge. `make test-host` fait de même d'un lot à l'autre. Les scénarios QEMU
+  `a20_desktop` et `a20_souris` couvrent la session, pas le rendu du thème.
 
 ## Scénarios système (QEMU)
 
@@ -222,6 +223,24 @@ Un test qui échoue une fois sur dix n'est pas toléré, il est analysé. Les ca
 | `[TEST] x ... OK` introuvable | les journaux du test s'intercalent avant le `OK` | la ligne de résultat est écrite en entier sur sa propre ligne |
 | seuil de convoi dépassé | le seuil dépendait du nombre de cœurs de l'hôte | seuil réexprimé indépendamment du parallélisme |
 | `a20_desktop` échoue une fois sur deux | capture juste après la touche, référence prise pendant le premier dessin, captures du BIOS et de l'UEFI sous le même nom | `capture_quand`, `capture_stable`, noms préfixés par la machine |
+
+## Remplacer une bibliothèque par son code Rust
+
+Le lot hôte compile le C tant que `RUST_FEATURES` est vide. Un nom de cette liste retire les `.c` du module et lie l'archive `rust/link` à la place. Le dossier de build ne doit pas être `build/main`.
+
+```
+make -j3 B=build/RUST-luna RUST_FEATURES=luna host-a17
+make -j3 B=build/RUST-ctl RUST_FEATURES=ctl host-a19
+make -j3 B=build/RUST-droid RUST_FEATURES=droid host-d11
+make -j3 B=build/RUST-dvmrt RUST_FEATURES=dvmrt host-d08
+make -j3 B=build/RUST-dvmin RUST_FEATURES=dvmin host-d09
+```
+
+Le lien place `-lc -lgcc` avant l'archive. Les `strlen` des fichiers C du test sont renommés `vk_*`. Le code Rust de l'hôte appelle les noms de la libc. Un objet Rust est tiré en entier : un symbole défini par un `fake_*.c` du lot ne doit pas l'être aussi par la crate. `dvmrt` et `dvmin` restent deux builds, pas une seule archive.
+
+Ces cinq lancements ont été rejoués le 19 octobre 2026, chacun à 0 échec. `luna`, `ctl`, `droid`, `dvmrt` et `dvmin` ne sont pas liées dans le noyau ni dans l'ulib. Les autres noms (`libk`, `crypto`, `gfx`, `font`, `zip`, `rsa`, `axml`, `dex`, `dexcode`, `notif`, `settings`, `pm`, `apk`, `wm`) peuvent l'être. Le détail du découpage est dans le README, section « Portage Rust ».
+
+`cargo test -p velum-<crate> --offline` se lance depuis `rust/`, avec `CARGO_TARGET_DIR` sous `build/`.
 
 ## Lancer les tests
 
