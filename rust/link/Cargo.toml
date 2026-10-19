@@ -27,6 +27,7 @@ notif = ["dep:velum-notif"]
 settings = ["dep:velum-settings"]
 pm = ["dep:velum-pm"]
 font = ["dep:velum-font"]
+luna = ["dep:velum-luna"]
 wm = ["dep:velum-wm"]
 
 [dependencies]
@@ -47,6 +48,7 @@ velum-notif = { path = "../notif", optional = true }
 velum-settings = { path = "../settings", optional = true }
 velum-pm = { path = "../pm", optional = true }
 velum-font = { path = "../font", optional = true }
+velum-luna = { path = "../luna", optional = true }
 velum-wm = { path = "../wm", optional = true }
 
 [lints.rust]

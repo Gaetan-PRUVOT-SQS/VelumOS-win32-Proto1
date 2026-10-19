@@ -61,6 +61,7 @@ dependencies = [
  "velum-font",
  "velum-gfx",
  "velum-libk",
+ "velum-luna",
  "velum-notif",
  "velum-panic",
  "velum-pm",
@@ -69,6 +70,10 @@ dependencies = [
  "velum-wm",
  "velum-zip",
 ]
+
+[[package]]
+name = "velum-luna"
+version = "0.1.0"
 
 [[package]]
 name = "velum-notif"
