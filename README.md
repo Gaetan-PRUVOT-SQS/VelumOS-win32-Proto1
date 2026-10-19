@@ -2,7 +2,7 @@
 
 [![CI](../../actions/workflows/ci.yml/badge.svg?branch=main)](../../actions/workflows/ci.yml)
 
-VelumOS est un système d'exploitation écrit de zéro, en C, pour x86-64. Cette édition (« win32 ») a un bureau
+VelumOS est un système d'exploitation écrit de zéro pour x86-64. L'image qui démarre est compilée depuis le C. Les bibliothèques de `lib/` ont une seconde implémentation en Rust, éteinte tant que `RUST_FEATURES` est vide (voir [Portage Rust](#portage-rust)). Cette édition (« win32 ») a un bureau
 graphique complet : démarrage, ouverture de session, bureau, dock, lanceur d'applications, fenêtres. Son thème,
 dit « verre », existe en clair et en sombre : surfaces translucides floutées, coins arrondis, accent turquoise,
 polices Instrument Sans et JetBrains Mono. Il remplace le premier thème de la tranche 1, qui imitait Windows XP
@@ -43,8 +43,9 @@ ni approuvé par elle, et il n'exécute pas de programmes Windows.
 8. [Décisions de conception](#décisions-de-conception)
 9. [Organisation du dépôt](#organisation-du-dépôt)
 10. [Conventions de code](#conventions-de-code)
-11. [Limites connues](#limites-connues)
-12. [Composants tiers et licence](#composants-tiers-et-licence)
+11. [Portage Rust](#portage-rust)
+12. [Limites connues](#limites-connues)
+13. [Composants tiers et licence](#composants-tiers-et-licence)
 
 ## État du projet
 
@@ -67,7 +68,7 @@ Relevé des reprises des 15 et 16 octobre 2026 (tests hôte lancés tels quels, 
 | `a20/render-deskicon` | bord gauche de l'icône de bureau |
 | `a20/render-desklabel` | largeur des étiquettes du bureau |
 
-Un lot de tests hôte s'arrête au premier test rouge. Le relevé « tout vert » du 10 octobre pour les lots a17 à a20
+Un lot de tests hôte lance tous ses binaires, puis échoue s'il y en a un de rouge. Le relevé « tout vert » du 10 octobre pour les lots a17 à a20
 cachait ces échecs : il n'est plus repris dans ce dépôt.
 
 Ce qui fonctionne :
@@ -284,6 +285,7 @@ puis `cliquer` et `capture`). Les scénarios `tests/qemu/int_captures.py` et `in
 | `sgdisk` (paquet gdisk) et mtools | fabrication de l'image disque | |
 | `curl`, `tar`, `sha256sum` | téléchargement vérifié de Limine | |
 | QEMU et OVMF (edk2) | exécution et tests système | QEMU 10.2.2 |
+| `rustc` et `cargo` | bibliothèques Rust, seulement si `RUST_FEATURES` est défini | 1.99.0, édition 2024 |
 
 Facultatifs : `ruff`, `shellcheck`, `shfmt`, Pillow
 (captures PNG et génération des polices), `pytest`.
@@ -330,6 +332,7 @@ est branché sur le terminal : le journal du noyau y défile. Pour garder la con
 | `make test-host` | tests unitaires de tous les sous-systèmes (long la première fois) |
 | `make test-tools` | tests des outils Python (image disque), nécessite `pytest` |
 | `make B=build/a03 lot LOT=a03` | compile et teste un seul sous-système |
+| `make B=build/RUST-luna RUST_FEATURES=luna host-a17` | même lot hôte, `lib/luna` vient de Rust |
 | `make scan` | contrôle statique de sécurité (fonctions C dangereuses, secrets, idiomes risqués) |
 | `make hdrcheck` | vérifie que chaque en-tête public se compile seul |
 | `make test` | outils, tests hôte, scénarios QEMU |
@@ -570,6 +573,7 @@ user/           libvelum (appels système, libc, crt0), include, apps (init, win
                 apk/ (sources des applis APK d'exemple et d'essai)
 include/velum/  en-têtes publics entre couches, dont abi/ pour l'interface avec les applis
 mk/             fragments de Makefile : un par sous-système (lot-aNN.mk) et la mécanique commune
+rust/           crates des bibliothèques (édition 2024). rust/link les réunit en une archive
 link/           script d'édition de liens du noyau
 tools/          image disque, scénarios QEMU, génération des polices, chaîne d'outils,
                 assembleur DEX et fabrication d'APK
@@ -609,7 +613,30 @@ jamais en retirer ni en changer le sens sans changer la version de l'ABI.
   (`t_uptr`) qu'on n'ouvre que par `copy_from_user` et `copy_to_user`.
 - Toute allocation peut échouer et son chemin d'échec est testé. Toute attente matérielle a un délai.
 - Python : ruff. Shell : shellcheck et shfmt.
+- Rust, quand `RUST_FEATURES` est défini : édition 2024, `no_std` hors des tests, pas de crate externe. Le détail est dans [Portage Rust](#portage-rust).
 - Aucun code tiers, sauf une bibliothèque libre déclarée dans `third_party/` avec sa licence.
+
+## Portage Rust
+
+`make` sans `RUST_FEATURES` compile le C, comme avant. La variable est une liste de noms séparés par des virgules. Chaque nom retire les `.c` du module et lie l'archive produite par `rust/link`. Les en-têtes de `include/velum/` ne bougent pas : l'appelant C voit les mêmes symboles.
+
+| Build | Features réellement liées |
+|-------|---------------------------|
+| Tests hôte | toutes celles nommées dans `RUST_FEATURES` |
+| Noyau | `libk`, `crypto`, `gfx`, `font` |
+| Espace utilisateur | celles du noyau, plus `zip`, `rsa`, `axml`, `dex`, `dexcode`, `notif`, `settings`, `pm`, `apk`, `wm` |
+
+`droid`, `dvmrt`, `dvmin`, `ctl` et `luna` ne sont liées que pour les tests hôte. Les passer à un `make` qui construit le noyau ou l'ulib retire les `.c` sans mettre l'archive Rust à la place. `dvmrt` et `dvmin` ne se combinent pas : l'une sert le lot d08, l'autre le lot d09. Avec `libk`, Rust remplace les chaînes et `memcmp`, pas `printf` (`lib/libk/fmt*.c` reste en C).
+
+Trois cibles. L'hôte est `x86_64-unknown-linux-gnu`. Le noyau est `x86_64-unknown-none`, modèle `kernel`, sans red zone et sans SSE. L'espace utilisateur est le même triplet, en code petit et PIC. Rien ne vient de crates.io.
+
+Lots hôtes rejoués le 19 octobre 2026 avec une seule feature, 0 échec : `host-a17` avec `luna`, `host-a19` avec `ctl`, `host-d11` avec `droid`, `host-d08` avec `dvmrt`, `host-d09` avec `dvmin`. Le lot a17 en Rust passe aussi les quatre binaires a17 de la liste des défauts plus haut. Cette liste décrit le build C, qui n'a pas été rejoué ce jour-là. Le noyau Rust et l'archive utilisateur statique n'ont pas été démarrés sous QEMU.
+
+```
+make -j3 B=build/RUST-luna RUST_FEATURES=luna host-a17
+```
+
+`cargo test` se lance depuis `rust/`, avec `CARGO_TARGET_DIR` pointé sous `build/`.
 
 ## Limites connues
 

@@ -9,21 +9,26 @@ t_aspace	*vmm_kernel_aspace(void)
 
 void	vmm_switch(t_aspace *as)
 {
+	t_aspace	*old;
+
 	if (!g_vmm.ready)
 		return ;
 	if (!as)
 		as = &g_vmm.kas;
-	if (g_vmm.current == as)
+	old = vmm_cpu_current();
+	if (old == as)
 		return ;
+	vmm_tlb_attach(as);
 	mmu_write_cr3(as->pml4);
-	g_vmm.current = as;
+	vmm_cpu_set_current(as);
+	vmm_tlb_detach(old);
 }
 
 void	vmm_flush(t_aspace *as, uintptr_t va)
 {
 	if (!g_vmm.ready)
 		return ;
-	if (as->kernel || as == g_vmm.current)
+	if (as->kernel || as == vmm_cpu_current())
 		mmu_invlpg(va);
 }
 

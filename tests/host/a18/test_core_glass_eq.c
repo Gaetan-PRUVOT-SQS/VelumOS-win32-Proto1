@@ -32,7 +32,7 @@ static t_rect	step(int kind)
 	g_t.w[hz_add(&g_t, WS_DEFAULT)].rect = rect_make(100, 40, 200, 150);
 	g_t.active = 1;
 	paint(g_inc, g_t.screen);
-	old = g_t.w[1].rect;
+	old = wsh_extent(&g_t, 1);
 	if (kind == 0)
 		g_t.w[1].rect = rect_make(100, 120, 200, 150);
 	if (kind == 1)
@@ -41,14 +41,14 @@ static t_rect	step(int kind)
 		g_t.w[1].state = WSTATE_MIN;
 	if (kind == 3)
 	{
-		old = g_t.w[0].rect;
+		old = wsh_extent(&g_t, 0);
 		g_t.w[0].rect = rect_make(20, 20, 120, 100);
 	}
 	if (kind == 1)
-		return (rect_intersect(g_t.w[0].rect, g_t.w[1].rect));
+		return (rect_intersect(wsh_extent(&g_t, 0), wsh_extent(&g_t, 1)));
 	if (kind == 3)
-		return (rect_union(old, g_t.w[0].rect));
-	return (rect_union(old, g_t.w[1].rect));
+		return (rect_union(old, wsh_extent(&g_t, 0)));
+	return (rect_union(old, wsh_extent(&g_t, 1)));
 }
 
 static void	equivalence(void)

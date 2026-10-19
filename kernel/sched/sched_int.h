@@ -51,6 +51,9 @@
 # define RANK_REAPQ 70
 # define KT_STATIC 0x1
 # define KT_IDLE 0x2
+# define KT_PINNED 0x4
+# define VEC_RESCHED 0xf2
+# define RANK_SPIN_BUSY 4194304
 # define SR_YIELD 0
 # define SR_PREEMPT 1
 # define SR_BLOCK 2
@@ -71,6 +74,7 @@ typedef struct s_kthread
 	int32_t				tmo_done;
 	int64_t				tmo_id;
 	uint32_t			kflags;
+	uint32_t			home;
 	uint32_t			irq_depth;
 	uint64_t			user_rsp;
 	uint64_t			ready_ns;
@@ -107,6 +111,10 @@ typedef struct s_cpusched
 	t_spinlock	lock;
 	t_runq		rq;
 	t_cpu		*cpu;
+	uint32_t	id;
+	int32_t		busy;
+	uint64_t	steals;
+	uint64_t	kicks;
 	t_kthread	*idle;
 	t_kthread	*reaper;
 	t_kthread	*dead;
@@ -139,6 +147,8 @@ typedef struct s_schedglob
 	t_kthread	boot;
 	int32_t		ready;
 	uint32_t	next_tid;
+	uint32_t	span;
+	t_cpusched	*cpus[CPU_MAX];
 }	t_schedglob;
 
 extern t_schedglob	g_sched;
@@ -169,6 +179,24 @@ void			sched_syscalls_register(void);
 void			sched_reaper_main(void *arg);
 void			sched_reap_push_locked(t_cpusched *cs, t_kthread *kt);
 void			sched_idle_main(void *arg);
+void			sched_tick_cs(t_cpusched *cs, uint64_t now_ns);
+void			sched_kick(t_cpusched *cs);
+void			sched_kick_idle(t_cpusched *cs);
+void			sched_smp_kick(uint32_t cpu);
+void			sched_smp_setup(void);
+int				sched_cpu_online(t_cpu *cpu);
+void			sched_ipi_resched(t_regs *regs, void *ctx);
+t_cpusched		*sched_lock_home(t_kthread *kt, uint64_t *flags);
+t_kthread		*runq_steal(t_runq *rq);
+uint32_t		sched_victim(t_cpusched *const *tab, uint32_t span,
+					uint32_t self, uint32_t gap);
+bool			sched_pull(t_cpusched *const *tab, uint32_t span,
+					t_cpusched *self);
+uint32_t		sched_load(const t_cpusched *cs);
+uint32_t		sched_least_loaded(t_cpusched *const *tab, uint32_t span);
+uint32_t		sched_idle_peer(t_cpusched *const *tab, uint32_t span,
+					uint32_t except);
+void			sched_cpusched_init(t_cpusched *cs, t_cpu *cpu);
 void			sched_quantum_cb(void *ctx);
 t_kthread		*thread_alloc(const t_threadreq *rq);
 void			thread_free(t_kthread *kt);

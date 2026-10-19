@@ -1,2 +1,3 @@
-Bonjour;/system/bin/hello
-Bonjour APK;/system/bin/apkrun;/system/apps/com.velum.bonjour.apk
+Fichiers;/system/bin/fichiers
+Réglages;/system/bin/reglages
+Console;/system/bin/console

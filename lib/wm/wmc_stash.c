@@ -59,6 +59,8 @@ void	wmc_on_message(t_wmcmsg *m)
 	int		k;
 
 	memcpy(&h, m->buf, sizeof(h));
+	if (h.type == WMS_THEME)
+		wmc_theme_apply(m);
 	if (m->handle == 0)
 		return ;
 	k = -1;

@@ -39,7 +39,7 @@ int64_t	sys_readdir(const t_sysargs *a)
 	rc = fsys_get(a->a[0], OBJ_DIR, HR_READ, &hg);
 	if (rc < 0)
 		return (rc);
-	if (max && !user_range_ok(a->a[1], max * sizeof(t_dirent)))
+	if (max && !user_range_wok(a->a[1], max * sizeof(t_dirent)))
 		rc = E_FAULT;
 	else
 		rc = readdir_loop(hg.obj->impl, a->a[1], max);

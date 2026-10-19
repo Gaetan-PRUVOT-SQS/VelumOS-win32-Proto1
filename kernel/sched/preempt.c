@@ -26,7 +26,7 @@ void	sched_preempt_enable(void)
 			__builtin_return_address(0));
 	cpu->preempt--;
 	cs = cpu->sched;
-	if (cpu->preempt == 0 && __atomic_load_n(&cs->need_resched,
+	if (cs && cpu->preempt == 0 && __atomic_load_n(&cs->need_resched,
 			__ATOMIC_ACQUIRE) && arch_irqs_enabled())
 		sched_resched(SR_PREEMPT);
 }
@@ -40,7 +40,7 @@ void	sched_irq_exit(void)
 		return ;
 	cpu = cpu_self();
 	cs = cpu->sched;
-	if (cpu->preempt == 0 && __atomic_load_n(&cs->need_resched,
+	if (cs && cpu->preempt == 0 && __atomic_load_n(&cs->need_resched,
 			__ATOMIC_ACQUIRE))
 		sched_resched(SR_PREEMPT);
 }

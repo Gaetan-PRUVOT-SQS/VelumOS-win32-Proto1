@@ -8,7 +8,7 @@ void	ws_mark(t_wsrv *s, t_rect r)
 void	ws_mark_win(t_wsrv *s, int slot)
 {
 	if (slot >= 0 && slot < WS_WIN_MAX && s->t.w[slot].id != 0)
-		wdy_add(&s->dirty, s->t.w[slot].rect);
+		wdy_add(&s->dirty, wsh_extent(&s->t, slot));
 }
 
 void	ws_cursor_set(t_wsrv *s, t_point pos, uint32_t shape)

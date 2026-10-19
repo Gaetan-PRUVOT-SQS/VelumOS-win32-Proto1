@@ -62,6 +62,7 @@ typedef struct s_hget
 int			object_boot_init(void);
 t_object	*obj_create(uint32_t type, const t_objops *ops, void *impl);
 void		obj_ref(t_object *obj);
+bool		obj_tryref(t_object *obj);
 void		obj_unref(t_object *obj);
 void		obj_signal(t_object *obj);
 int			obj_wait(t_object *obj, uint64_t timeout_ns);

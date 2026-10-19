@@ -67,6 +67,21 @@ static int	rank_insert(const char *name, uint32_t rank)
 	return (0);
 }
 
+static bool	rank_lock(void)
+{
+	uint32_t	tours;
+
+	tours = 0;
+	while (__atomic_exchange_n(&g_ranks.busy, 1, __ATOMIC_ACQUIRE))
+	{
+		cpu_relax();
+		tours++;
+		if (tours >= RANK_SPIN_BUSY)
+			return (false);
+	}
+	return (true);
+}
+
 int	spin_rank_register(const char *name, uint32_t rank)
 {
 	uint64_t	flags;
@@ -75,8 +90,11 @@ int	spin_rank_register(const char *name, uint32_t rank)
 	if (!name || !name[0] || rank == 0 || rank > 1000)
 		return (E_INVAL);
 	flags = irq_save();
-	while (__atomic_exchange_n(&g_ranks.busy, 1, __ATOMIC_ACQUIRE))
-		cpu_relax();
+	if (!rank_lock())
+	{
+		irq_restore(flags);
+		return (E_BUSY);
+	}
 	rc = rank_insert(name, rank);
 	__atomic_store_n(&g_ranks.busy, 0, __ATOMIC_RELEASE);
 	irq_restore(flags);

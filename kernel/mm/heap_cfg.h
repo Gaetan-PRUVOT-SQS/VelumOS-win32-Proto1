@@ -24,14 +24,14 @@
 # define HEAP_LARGE_HDR 64
 # define HEAP_SLAB_MIN_PCT 93
 # define HEAP_SHIFT_MIN 14
-# define HEAP_SHIFT_MAX 26
+# define HEAP_SHIFT_MAX 28
 # define HEAP_LARGE_MIN 4
-# define HEAP_LARGE_MAX 65536
-# define HEAP_WORDS_S0 256
-# define HEAP_WORDS_S1 128
-# define HEAP_WORDS_S2 64
-# define HEAP_WORDS_L 1024
-# define HEAP_WORDS_ALL 1472
+# define HEAP_LARGE_MAX 262144
+# define HEAP_WORDS_S0 1024
+# define HEAP_WORDS_S1 512
+# define HEAP_WORDS_S2 256
+# define HEAP_WORDS_L 4096
+# define HEAP_WORDS_ALL 5888
 # define HEAP_FILL_ALLOC 0xa5
 # define HEAP_FILL_FREE 0xdd
 # define HEAP_FILL_ZONE 0xfd
@@ -43,6 +43,8 @@
 # define HEAP_SPIN_LIMIT 0x10000000ull
 # define HEAP_SHIFT_KERNEL 26
 # define HEAP_LARGE_KERNEL 65536
+# define HEAP_RAM_STEP_MID 0x80000000ull
+# define HEAP_RAM_STEP_HIGH 0x200000000ull
 
 typedef enum e_heap_kind
 {

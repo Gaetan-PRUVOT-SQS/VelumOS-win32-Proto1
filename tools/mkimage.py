@@ -2,7 +2,7 @@
 """Image disque démarrable de VelumOS : GPT, Limine en BIOS et en UEFI, sans droits root.
 
 mkimage.py --noyau kernel.elf --sortie disk.img [--initrd DOSSIER] [--limine DOSSIER]
-           [--resolution 1024x768] [--cmdline TEXTE] [--esp-mio 64]
+           [--resolution 1024x768] [--cmdline TEXTE] [--esp-mio 64] [--data-mio 40]
 mkimage.py --comparer CONSTRUCTION_A CONSTRUCTION_B
 
 --comparer compare deux constructions (dossiers contenant kernel.elf, disk.img et root/) :
@@ -11,6 +11,8 @@ premier octet différent s'il y en a, code de sortie 1 en cas de différence (`m
 
 Partition 1 : ESP FAT (Limine, limine.conf, noyau, initrd au format cpio newc).
 Partition 2 : démarrage BIOS (1 Mio, second étage de Limine pour GPT).
+Partition 3 : /data, FAT32 d'étiquette VELUMDATA (comptes, réglages, applis APK), vide au départ ;
+--data-mio 0 la supprime. Le noyau la reconnaît à cette étiquette.
 Outils externes : sgdisk (gdisk), mtools (mformat, mmd, mcopy) et l'outil `limine`
 que `make limine` prépare dans build/limine.
 
@@ -38,6 +40,10 @@ NOM_ENTREE = "VelumOS"
 ESPACE_IDENTIFIANTS = uuid.UUID("7c1d2a54-3e0b-5c4f-9a6e-56656c756d4f")
 EPOQUE_FAT_MIN = 315532800
 EPOQUE_DEFAUT = 0
+DATA_MIO_DEFAUT = 40
+DATA_MIO_MIN = 34
+ETIQUETTE_DATA = "VELUMDATA"
+TYPE_DONNEES = "0700"
 
 
 class Erreur(Exception):
@@ -51,16 +57,24 @@ class Plan:
     bios_taille: int
     esp_debut: int
     esp_taille: int
+    data_debut: int = 0
+    data_taille: int = 0
 
 
-def planifier(esp_mio):
+def planifier(esp_mio, data_mio=0):
     if esp_mio < 8:
         raise Erreur("ESP de 8 Mio au moins")
+    if data_mio != 0 and data_mio < DATA_MIO_MIN:
+        raise Erreur(f"/data de {DATA_MIO_MIN} Mio au moins pour un FAT32 valide, ou 0")
     bios_debut = MIO
     esp_debut = 2 * MIO
     esp_taille = esp_mio * MIO
-    taille = esp_debut + esp_taille + MIO
-    return Plan(taille, bios_debut, MIO, esp_debut, esp_taille)
+    data_debut = esp_debut + esp_taille
+    data_taille = data_mio * MIO
+    taille = data_debut + data_taille + MIO
+    if data_taille == 0:
+        data_debut = 0
+    return Plan(taille, bios_debut, MIO, esp_debut, esp_taille, data_debut, data_taille)
 
 
 @dataclass(frozen=True)
@@ -69,6 +83,8 @@ class Identifiants:
     esp: str
     bios: str
     serie_fat: str
+    data: str = ""
+    serie_data: str = ""
 
 
 def epoque_source():
@@ -83,11 +99,14 @@ def identifiants(epoque):
         return uuid.uuid5(ESPACE_IDENTIFIANTS, f"{epoque}/{role}")
 
     serie = derive("fat").int >> 96
+    serie_data = derive("fat-data").int >> 96
     return Identifiants(
         str(derive("disque")).upper(),
         str(derive("esp")).upper(),
         str(derive("bios")).upper(),
         f"{serie:08X}",
+        str(derive("data")).upper(),
+        f"{serie_data:08X}",
     )
 
 
@@ -167,14 +186,29 @@ def config_limine(resolution, cmdline, avec_initrd, hash_noyau=None, hash_initrd
 def commande_gpt(image, plan, ident):
     esp_fin = (plan.esp_debut + plan.esp_taille) // SECTEUR - 1
     bios_fin = (plan.bios_debut + plan.bios_taille) // SECTEUR - 1
-    return [
+    commande = [
         "sgdisk", "-o", "-U", ident.disque,
         "-n", f"1:{plan.esp_debut // SECTEUR}:{esp_fin}", "-t", "1:EF00", "-c", "1:ESP",
         "-u", f"1:{ident.esp}",
         "-n", f"2:{plan.bios_debut // SECTEUR}:{bios_fin}", "-t", "2:EF02", "-c", "2:bios",
         "-u", f"2:{ident.bios}",
-        str(image),
     ]  # fmt: skip
+    if plan.data_taille:
+        data_fin = (plan.data_debut + plan.data_taille) // SECTEUR - 1
+        commande += [
+            "-n", f"3:{plan.data_debut // SECTEUR}:{data_fin}", "-t", f"3:{TYPE_DONNEES}",
+            "-c", "3:data", "-u", f"3:{ident.data}",
+        ]  # fmt: skip
+    return [*commande, str(image)]
+
+
+def formater_data(image, plan, ident, env):
+    if not plan.data_taille:
+        return
+    cible = f"{image}@@{plan.data_debut}"
+    secteurs = str(plan.data_taille // SECTEUR)
+    lancer(["mformat", "-i", cible, "-F", "-T", secteurs, "-h", "64", "-s", "32",
+            "-v", ETIQUETTE_DATA, "-N", ident.serie_data, "::"], env)  # fmt: skip
 
 
 def remplir_esp(image, plan, fichiers, ident, env):
@@ -240,7 +274,7 @@ def verifier_entrees(args, limine):
 def fabriquer(args):
     limine = args.limine
     verifier_entrees(args, limine)
-    plan = planifier(args.esp_mio)
+    plan = planifier(args.esp_mio, args.data_mio)
     epoque = epoque_source()
     ident = identifiants(epoque)
     env = environnement_outils(epoque)
@@ -254,6 +288,7 @@ def fabriquer(args):
     lancer(commande_gpt(image, plan, ident), env)
     fichiers, empreintes = fichiers_esp(travail, args, limine, initrd)
     remplir_esp(image, plan, fichiers, ident, env)
+    formater_data(image, plan, ident, env)
     verifier_empreintes(image, plan, empreintes, env)
     lancer([str(limine / "limine"), "bios-install", str(image)], env)
     lancer(["sgdisk", "-v", str(image)])
@@ -391,6 +426,7 @@ def analyser(argv):
     parseur.add_argument("--resolution", default="1024x768")
     parseur.add_argument("--cmdline", default="")
     parseur.add_argument("--esp-mio", type=int, default=64)
+    parseur.add_argument("--data-mio", type=int, default=DATA_MIO_DEFAUT)
     args = parseur.parse_args(argv)
     if args.comparer is None and (args.noyau is None or args.sortie is None):
         parseur.error("--noyau et --sortie sont requis (ou --comparer A B)")
@@ -408,8 +444,8 @@ def main(argv):
     except Erreur as erreur:
         print(f"mkimage : {erreur}", file=sys.stderr)
         return 1
-    taille, esp = plan.taille // MIO, plan.esp_taille // MIO
-    print(f"{args.sortie} : {taille} Mio, ESP {esp} Mio, Limine BIOS et UEFI")
+    taille, esp, data = plan.taille // MIO, plan.esp_taille // MIO, plan.data_taille // MIO
+    print(f"{args.sortie} : {taille} Mio, ESP {esp} Mio, /data {data} Mio, Limine BIOS et UEFI")
     return 0
 
 

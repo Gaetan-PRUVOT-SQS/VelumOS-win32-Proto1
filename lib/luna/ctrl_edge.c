@@ -60,7 +60,10 @@ void	lp_rfocus(t_surface *s, t_rect r, int32_t rad, t_color c)
 	t_lrfill	f;
 	int32_t		m;
 
+	r = lp_clean(r);
+	if (r.w <= 0 || r.h <= 0)
+		return ;
 	m = LCT_FOCUS_GAP + LCT_FOCUS_W;
-	f = lp_rmake(lp_inset(lp_clean(r), -m), rad + m, c, c);
+	f = lp_rmake(lp_inset(r, -m), rad + m, c, c);
 	lp_rring(s, &f, LCT_FOCUS_W);
 }

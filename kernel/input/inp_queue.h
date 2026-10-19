@@ -42,7 +42,7 @@ t_reader	*reader_acquire(uint32_t kind);
 void		reader_attach(t_reader *r, t_object *obj);
 void		reader_release(t_reader *r);
 uint32_t	reader_take(t_reader *r, t_inpevent *dst, uint32_t max);
-void		reader_notify(t_inputq *q, t_reader *r, uint32_t type,
+t_object	*reader_notify(t_inputq *q, t_reader *r, uint32_t type,
 				uint32_t victim);
 int			reader_ready(const t_reader *r);
 void		inplog_event(const t_inpevent *ev);

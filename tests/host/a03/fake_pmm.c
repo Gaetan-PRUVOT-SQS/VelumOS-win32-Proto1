@@ -39,6 +39,7 @@ void	pmm_free(uint64_t phys, t_pmm_owner owner)
 		g_fake.errors++;
 		return ;
 	}
+	fake_check_stale(phys);
 	g_fake.used[i] = 0;
 	g_fake.live[owner]--;
 	memset(g_fake.arena + i * 4096, 0xdd, 4096);

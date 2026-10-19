@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include "harness.h"
 #include "help.h"
+#include "velum/luna_launcher.h"
 
 static t_wsrv	g_s;
 
@@ -22,9 +23,12 @@ static void	verre_alloue(void)
 	uint64_t	need;
 
 	h_eq_i64("ouverture", hs_start(&g_s, 640, 480), 0);
-	need = (uint64_t)luna_glass_need(rect_make(0, 0, 640, 80)) * 4;
+	need = (uint64_t)luna_glass_need(rect_make(0, 0, LUNA_LAUNCHER_WIDTH,
+				LUNA_LAUNCHER_HEIGHT)) * 4;
+	h_true(need >= (uint64_t)luna_glass_need(rect_make(0, 0, 640, 80)) * 4,
+		"le lanceur domine la barre de 640 px");
 	h_true(g_s.glass != NULL, "tampon de verre alloue");
-	h_eq_u64("taille luna_glass_need(640x80) * 4", g_s.glass_bytes, need);
+	h_eq_u64("taille luna_glass_need(panneau du lanceur) * 4", g_s.glass_bytes, need);
 	hs_stop(&g_s);
 	h_true(g_s.glass == NULL && g_s.glass_bytes == 0, "tampon libere");
 	h_true(g_s.back.px == NULL, "fond libere");

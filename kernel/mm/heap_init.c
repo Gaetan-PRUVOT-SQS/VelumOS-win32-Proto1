@@ -5,6 +5,8 @@
 
 t_heap					g_heap;
 
+extern int				meminfo_register(void) __attribute__((weak));
+
 static const uint16_t	g_word_off[HEAP_ARENAS] = {0, HEAP_WORDS_S0,
 	HEAP_WORDS_S0 + HEAP_WORDS_S1,
 	HEAP_WORDS_S0 + HEAP_WORDS_S1 + HEAP_WORDS_S2};
@@ -65,6 +67,12 @@ int	heap_boot_init(void)
 	heap_lock_init(&g_heap.large.lock, "heap.large");
 	g_heap.fail_after = -1;
 	g_heap.ready = 1;
+	if (meminfo_register && meminfo_register() < 0)
+		klog_warn("heap: appel meminfo non enregistré");
+	klog_info("heap: fenetre %llu Mio, dalles de %llu Mio, grands blocs %llu"
+		" Mio", heap_window_bytes(&lay) >> 20,
+		(1ull << lay.slab_shift) >> 20,
+		((uint64_t)lay.large_pages << PAGE_SHIFT) >> 20);
 	klog_info("heap: %u classes, dalles 4/8/16 Kio, %u Kio de bitmaps",
 		HEAP_CLASSES,
 		(unsigned)((sizeof(g_heap.bits) + sizeof(g_heap.heads)) / 1024));

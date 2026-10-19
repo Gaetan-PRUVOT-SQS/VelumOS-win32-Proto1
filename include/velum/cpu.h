@@ -116,5 +116,6 @@ int				cpu_selftest(void);
 void			cpu_stack_report(const t_regs *regs, uint64_t cr2);
 void			cpu_spec_user_return(void);
 bool			cpu_spec_verw_active(void);
+void			cpu_spec_apply_local(void);
 
 #endif

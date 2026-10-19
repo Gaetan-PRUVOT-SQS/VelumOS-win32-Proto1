@@ -8,6 +8,8 @@ static int64_t	io_chunk(t_fsio *io, uint8_t *kb, uint64_t done, uint64_t n)
 	t_vio	v;
 	int64_t	rc;
 
+	if (n && !fsys_user_ok(io->ubuf + done, n, !io->write))
+		return (E_FAULT);
 	v.dst = NULL;
 	v.src = kb;
 	if (!io->write)
@@ -61,8 +63,6 @@ static int64_t	fsys_io(t_fsio *io)
 		io->len = VFS_IO_MAX;
 	if (io->len == 0)
 		return (io_chunk(io, NULL, 0, 0));
-	if (!user_range_ok(io->ubuf, io->len))
-		return (E_FAULT);
 	cap = io->len;
 	if (cap > FSYS_CHUNK)
 		cap = FSYS_CHUNK;

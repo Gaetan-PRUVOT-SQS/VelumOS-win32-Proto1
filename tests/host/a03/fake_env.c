@@ -48,6 +48,7 @@ void	fake_reset(void)
 	memset(&g_fake, 0, sizeof(g_fake));
 	g_fake.arena = arena;
 	g_fake.fail_after = -1;
+	g_fake.ncpu = 1;
 	memset(&g_vmm, 0, sizeof(g_vmm));
 	g_vmm.nx = PTE_NX;
 	g_vmm.uc_bits = PTE_PWT | PTE_PCD;

@@ -47,8 +47,13 @@ double	lk_title(t_lt *t, uint32_t style, bool active)
 	return (lk_spied(&t->s));
 }
 
-void	lk_check(const char *what, double ratio)
+void	lk_check_min(const char *what, double ratio, double min)
 {
 	printf("  contraste %-34s %5.2f\n", what, ratio);
-	h_true(ratio >= LK_AA, what);
+	h_true(ratio >= min, what);
+}
+
+void	lk_check(const char *what, double ratio)
+{
+	lk_check_min(what, ratio, LK_AA);
 }

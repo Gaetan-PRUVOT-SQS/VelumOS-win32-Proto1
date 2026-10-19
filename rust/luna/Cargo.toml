@@ -1,0 +1,17 @@
+[package]
+name = "velum-luna"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[lints.rust]
+unsafe_op_in_unsafe_fn = "deny"
+unexpected_cfgs = { level = "warn", check-cfg = [
+    "cfg(velum_kernel)",
+    "cfg(velum_user)",
+    "cfg(velum_host)",
+] }
+
+[lints.clippy]
+undocumented_unsafe_blocks = "deny"

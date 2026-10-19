@@ -47,6 +47,7 @@ int			fsys_quota_take(uint32_t pid);
 void		fsys_quota_drop(uint32_t pid);
 int			fsys_path_in(t_uptr p, uint64_t len, char *out);
 int			fsys_writer(t_process **p);
+bool		fsys_user_ok(t_uptr addr, uint64_t n, bool writable);
 int			fsys_get(uint64_t h, uint32_t type, uint32_t right, t_hget *hg);
 int			fsys_get_any(uint64_t h, t_hget *hg);
 int			fsys_handle_new(t_process *p, t_vfile *f, t_handle *out);

@@ -1,0 +1,63 @@
+[package]
+name = "velum-link"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[lib]
+crate-type = ["staticlib", "rlib"]
+
+[features]
+handler = ["velum-panic/handler"]
+libk = ["dep:velum-libk"]
+crypto = ["dep:velum-crypto"]
+ctl = ["dep:velum-ctl"]
+zip = ["dep:velum-zip"]
+gfx = ["dep:velum-gfx"]
+rsa = ["dep:velum-rsa"]
+axml = ["dep:velum-axml"]
+apk = ["dep:velum-apk"]
+dex = ["dep:velum-dex"]
+dexcode = ["dep:velum-dexcode"]
+droid = ["dep:velum-droid"]
+dvmrt = ["dep:velum-dvm", "velum-dvm/runtime"]
+dvmin = ["dep:velum-dvm", "velum-dvm/interp"]
+notif = ["dep:velum-notif"]
+settings = ["dep:velum-settings"]
+pm = ["dep:velum-pm"]
+font = ["dep:velum-font"]
+luna = ["dep:velum-luna"]
+wm = ["dep:velum-wm"]
+
+[dependencies]
+velum-panic = { path = "../panic" }
+velum-libk = { path = "../libk", optional = true }
+velum-crypto = { path = "../crypto", optional = true }
+velum-ctl = { path = "../ctl", optional = true }
+velum-zip = { path = "../zip", optional = true }
+velum-gfx = { path = "../gfx", optional = true }
+velum-rsa = { path = "../rsa", optional = true }
+velum-axml = { path = "../axml", optional = true }
+velum-apk = { path = "../apk", optional = true }
+velum-dex = { path = "../dex", optional = true }
+velum-dexcode = { path = "../dexcode", optional = true }
+velum-droid = { path = "../droid", optional = true }
+velum-dvm = { path = "../dvm", optional = true }
+velum-notif = { path = "../notif", optional = true }
+velum-settings = { path = "../settings", optional = true }
+velum-pm = { path = "../pm", optional = true }
+velum-font = { path = "../font", optional = true }
+velum-luna = { path = "../luna", optional = true }
+velum-wm = { path = "../wm", optional = true }
+
+[lints.rust]
+unsafe_op_in_unsafe_fn = "deny"
+unexpected_cfgs = { level = "warn", check-cfg = [
+    "cfg(velum_kernel)",
+    "cfg(velum_user)",
+    "cfg(velum_host)",
+] }
+
+[lints.clippy]
+undocumented_unsafe_blocks = "deny"

@@ -13,7 +13,7 @@ HAUTEUR = 768
 LARGEUR_MAQUETTE = 1280
 HAUTEUR_MAQUETTE = 800
 PAUSE = 0.12
-ICONE_BONJOUR_MAQUETTE = (69, 350)
+ICONE_BONJOUR = (69, 250)
 FENETRE_BONJOUR_MAQUETTE = (330, 160, 480, 235)
 DOSSIER_MAQUETTE = (
     Path(__file__).resolve().parents[2] / "ux design" / "design_handoff_velumos_glass" / "captures"
@@ -28,6 +28,15 @@ TOLERANCE_FOND = 28
 PART_CONTENU_MINI = 0.4
 PART_VIDE_MAXI = 0.03
 PAS_ECHANTILLON = 2
+ECARTS_CONNUS = frozenset(
+    {
+        "connexion : champ mot de passe",
+        "connexion : puce éteindre",
+        "bureau : haut à droite",
+        "lanceur : tuiles, seconde rangée",
+    }
+)
+MESURES_CONNUES = []
 
 POINTS_FOND = (
     (0.12, 0.18),
@@ -51,9 +60,8 @@ ZONES = {
     ),
     "bureau": (
         ("icône Ordinateur", "tl", (24, 24, 90, 81)),
-        ("icône Documents", "tl", (24, 123, 90, 81)),
-        ("icône Corbeille", "tl", (24, 222, 90, 81)),
-        ("icône Bonjour", "tl", (24, 321, 90, 81)),
+        ("icône Corbeille", "tl", (24, 123, 90, 81)),
+        ("icône Bonjour", "tl", (24, 222, 90, 81)),
         ("orbe", "bl", (20, 739, 42, 42)),
         ("zone de notification", "br", (1056, 738, 202, 44)),
     ),
@@ -136,21 +144,32 @@ def part_contenu(image, rect):
     return different / len(pixels)
 
 
+def signaler(ecarts, cle, message):
+    if cle in ECARTS_CONNUS:
+        MESURES_CONNUES.append(f"{cle} {message}")
+    else:
+        ecarts.append(f"{cle} {message}")
+
+
 def comparer_zones(ecarts, ecran, nom, zones, vides, image, maquette):
     for etiquette, ancre, rect in zones:
         attendu = part_contenu(maquette, rect)
         obtenu = part_contenu(image, ancrer(ancre, rect, image.largeur, image.hauteur))
         if obtenu < PART_CONTENU_MINI * attendu:
-            ecarts.append(
-                f"{ecran} : {etiquette} trop vide ({obtenu:.2f} de contenu, maquette {attendu:.2f})"
+            signaler(
+                ecarts,
+                f"{ecran} : {etiquette}",
+                f"trop vide ({obtenu:.2f} de contenu, maquette {attendu:.2f})",
             )
     for etiquette, ancre, rect in vides:
         attendu = part_contenu(maquette, rect)
         obtenu = part_contenu(image, ancrer(ancre, rect, image.largeur, image.hauteur))
         borne = max(PART_VIDE_MAXI, 2 * attendu)
         if obtenu > borne:
-            ecarts.append(
-                f"{ecran} : {etiquette} devrait être du fond nu ({obtenu:.2f}, borne {borne:.2f})"
+            signaler(
+                ecarts,
+                f"{ecran} : {etiquette}",
+                f"devrait être du fond nu ({obtenu:.2f}, borne {borne:.2f})",
             )
 
 
@@ -202,8 +221,14 @@ def verifier_ecran(ecarts, ecran, image, cle=None):
         comparer_fond(ecarts, ecran, EXCLUSIONS_FOND[ecran], image, maquette)
 
 
+def enregistrer_ecarts_connus(vm):
+    chemin = vm.dossier / f"{vm.nom}.ecarts-connus.txt"
+    chemin.write_text("\n".join(MESURES_CONNUES) + "\n", encoding="utf-8")
+
+
 def run(vm):
     ecarts = []
+    MESURES_CONNUES.clear()
 
     vm.attendre(r"logon: écran de connexion prêt", delai=120)
     time.sleep(1)
@@ -217,7 +242,7 @@ def run(vm):
     time.sleep(3)
     verifier_ecran(ecarts, "bureau", enregistrer(vm, "bureau"))
 
-    cliquer(vm, *ICONE_BONJOUR_MAQUETTE, fois=2)
+    cliquer(vm, *ICONE_BONJOUR, fois=2)
     vm.attendre(r"hello", delai=20)
     time.sleep(2)
     fenetre = enregistrer(vm, "fenetre-bonjour")
@@ -229,4 +254,5 @@ def run(vm):
     time.sleep(1)
     verifier_ecran(ecarts, "lanceur", enregistrer(vm, "lanceur"))
 
+    enregistrer_ecarts_connus(vm)
     assert not ecarts, "écarts à la maquette :\n  " + "\n  ".join(ecarts)

@@ -73,6 +73,8 @@
 # define SYS_VPROTECT 0xa2
 # define SYS_VQUERY 0xa3
 
+# define SYS_MEMINFO 0xbc
+
 # define SYS_MAX 0xff
 
 # define PF_SPAWN 0x01
@@ -82,7 +84,7 @@
 # define PF_FSWRITE 0x10
 # define PF_POWER 0x20
 # define PF_ADMIN 0x40
-# define PF_ALL 0x7f
+# define PF_ALL 0xff
 
 # define PROT_R 0x01
 # define PROT_W 0x02
