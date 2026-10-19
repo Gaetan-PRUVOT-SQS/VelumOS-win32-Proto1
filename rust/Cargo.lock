@@ -27,6 +27,10 @@ name = "velum-droid"
 version = "0.1.0"
 
 [[package]]
+name = "velum-dvm"
+version = "0.1.0"
+
+[[package]]
 name = "velum-font"
 version = "0.1.0"
 
@@ -48,6 +52,7 @@ dependencies = [
  "velum-dex",
  "velum-dexcode",
  "velum-droid",
+ "velum-dvm",
  "velum-font",
  "velum-gfx",
  "velum-libk",
