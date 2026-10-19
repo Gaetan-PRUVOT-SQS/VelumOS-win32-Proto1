@@ -78,6 +78,9 @@ endif
 ifneq ($(filter dvmin,$(RUST_FEAT_LIST)),)
 RUST_DROP += lib/dvm/in_%
 endif
+ifneq ($(filter ctl,$(RUST_FEAT_LIST)),)
+RUST_DROP += lib/ctl/%
+endif
 
 RUST_HOST_FLAGS := --cfg velum_host -C panic=abort
 RUST_KERN_FLAGS := --cfg velum_kernel -C panic=abort -C code-model=kernel \

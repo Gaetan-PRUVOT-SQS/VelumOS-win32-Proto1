@@ -12,6 +12,7 @@ crate-type = ["staticlib", "rlib"]
 handler = ["velum-panic/handler"]
 libk = ["dep:velum-libk"]
 crypto = ["dep:velum-crypto"]
+ctl = ["dep:velum-ctl"]
 zip = ["dep:velum-zip"]
 gfx = ["dep:velum-gfx"]
 rsa = ["dep:velum-rsa"]
@@ -32,6 +33,7 @@ wm = ["dep:velum-wm"]
 velum-panic = { path = "../panic" }
 velum-libk = { path = "../libk", optional = true }
 velum-crypto = { path = "../crypto", optional = true }
+velum-ctl = { path = "../ctl", optional = true }
 velum-zip = { path = "../zip", optional = true }
 velum-gfx = { path = "../gfx", optional = true }
 velum-rsa = { path = "../rsa", optional = true }

@@ -15,6 +15,10 @@ name = "velum-crypto"
 version = "0.1.0"
 
 [[package]]
+name = "velum-ctl"
+version = "0.1.0"
+
+[[package]]
 name = "velum-dex"
 version = "0.1.0"
 
@@ -49,6 +53,7 @@ dependencies = [
  "velum-apk",
  "velum-axml",
  "velum-crypto",
+ "velum-ctl",
  "velum-dex",
  "velum-dexcode",
  "velum-droid",

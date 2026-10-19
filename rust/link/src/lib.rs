@@ -9,6 +9,8 @@ extern crate velum_apk;
 extern crate velum_axml;
 #[cfg(feature = "crypto")]
 extern crate velum_crypto;
+#[cfg(feature = "ctl")]
+extern crate velum_ctl;
 #[cfg(feature = "dex")]
 extern crate velum_dex;
 #[cfg(feature = "dexcode")]
@@ -42,6 +44,8 @@ mod keep_apk;
 mod keep_axml;
 #[cfg(feature = "crypto")]
 mod keep_crypto;
+#[cfg(feature = "ctl")]
+mod keep_ctl;
 #[cfg(feature = "dex")]
 mod keep_dex;
 #[cfg(feature = "dexcode")]
