@@ -69,6 +69,9 @@ RUST_DROP += lib/wm/%
 RUST_HOST_EXTRA += $(B)/wm_luna.o
 RUST_USER_EXTRA += $(B)/wm_luna_user.o
 endif
+ifneq ($(filter droid,$(RUST_FEAT_LIST)),)
+RUST_DROP += lib/droid/%
+endif
 
 RUST_HOST_FLAGS := --cfg velum_host -C panic=abort
 RUST_KERN_FLAGS := --cfg velum_kernel -C panic=abort -C code-model=kernel \
